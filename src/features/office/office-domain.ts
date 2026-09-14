@@ -27,6 +27,11 @@ export type OfficeSnapshot = {
   events: OfficeEvent[];
 };
 
+export type OfficeWorkspaceState = {
+  activeRunId: string | null;
+  runs: OfficeSnapshot[];
+};
+
 export type OfficeAction =
   | { type: "START" }
   | { type: "REQUEST_USER" }
@@ -46,9 +51,9 @@ function eventFor(snapshot: OfficeSnapshot, input: Omit<OfficeEvent, "id" | "occ
   return { ...input, id: `${snapshot.runId}-${now.getTime()}-${snapshot.events.length}`, occurredAt: now.toISOString() };
 }
 
-export function createOfficeSnapshot(now = new Date()): OfficeSnapshot {
+export function createOfficeSnapshot(now = new Date(), runId = `office-local-run-${now.getTime()}`): OfficeSnapshot {
   return {
-    runId: "office-local-run",
+    runId,
     title: "Campanha de lançamento",
     brief: "Preparar a primeira publicação da semana com texto, revisão e entrega rastreável.",
     state: "empty",

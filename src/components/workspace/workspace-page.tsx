@@ -352,6 +352,6 @@ export default function WorkspacePage() {
     <CanvasMenuSheet open={menuOpen} setOpen={setMenuOpen} view={view} setView={setView} canvasState={canvasState} setCanvasState={setCanvasState} theme={theme} setTheme={setTheme} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} onOpenPlatform={() => setPlatformOpen(true)} />
     <CanvasNotificationsDrawer open={notificationsOpen} setOpen={setNotificationsOpen} activities={activityFeed} notice={notice} onOpenActivity={openActivity} />
     <PlatformDrawer open={platformOpen} setOpen={setPlatformOpen} activeWorkspaceId={workspaceScopeId} onWorkspaceChange={changeWorkspace} role={activeRole} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} />
-    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} loading={office.loading} error={office.error} onDispatch={office.dispatch} onRetry={office.retry} />
+    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} />
   </main>;
 }

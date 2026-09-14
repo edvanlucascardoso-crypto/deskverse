@@ -484,6 +484,23 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .platform-state.empty { color: var(--muted-foreground); }
 .text-button { width: fit-content; padding: 0; border: 0; color: inherit; background: transparent; font-size: 11px; font-weight: 600; text-decoration: underline; }
 .office-drawer { width: min(760px, 100%); }
+.office-runs { margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.office-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.office-section-heading h2 { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--foreground); font-size: 16px; font-weight: 600; }
+.office-simulation-note { margin: 9px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
+.office-run-list { display: grid; gap: 7px; max-height: 245px; margin-top: 12px; overflow-y: auto; }
+.office-run-list-item { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 56px; padding: 9px 10px; border: 1px solid var(--border); border-radius: var(--radius-md-value); color: var(--foreground); background: var(--card); text-align: left; }
+.office-run-list-item:hover, .office-run-list-item.active { border-color: color-mix(in srgb, var(--primary) 48%, var(--border)); background: color-mix(in srgb, var(--primary) 7%, var(--card)); }
+.office-run-list-item.active { box-shadow: inset 2px 0 0 var(--primary); }
+.office-run-list-status { display: grid; width: 26px; height: 26px; place-items: center; border: 1px solid var(--border-strong); border-radius: 50%; color: var(--muted-foreground); background: var(--secondary); }
+.office-run-list-status.working { color: var(--primary); }
+.office-run-list-status.WAITING_USER, .office-run-list-status.WAITING_APPROVAL { color: #ffcc66; }
+.office-run-list-status.error { color: var(--destructive); }
+.office-run-list-status.success { color: #65d98b; }
+.office-run-list-copy { display: grid; min-width: 0; gap: 3px; }
+.office-run-list-copy strong { overflow: hidden; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.office-run-list-copy small { overflow: hidden; color: var(--muted-foreground); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.office-run-list-item > svg { color: var(--primary); }
 .office-run-heading { margin: 0 0 18px; }
 .office-run-heading > div { min-width: 0; }
 .office-run-heading h2 { font-size: 21px; letter-spacing: -.35px; }
@@ -573,6 +590,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (max-width: 430px) {
   .auth-card { padding: 24px 20px; }
   .platform-page { padding: 18px 16px; }
+  .office-section-heading { align-items: stretch; flex-direction: column; }
   .office-run-heading { display: grid; }
   .office-state-pill { width: fit-content; }
   .office-event header { display: grid; gap: 3px; }

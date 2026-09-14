@@ -1,20 +1,25 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { localOfficeRepository } from "./local-office-repository";
-import { createOfficeSnapshot, reduceOfficeSnapshot, type OfficeAction, type OfficeSnapshot } from "./office-domain";
+import { createOfficeSnapshot, reduceOfficeSnapshot, type OfficeAction, type OfficeWorkspaceState } from "./office-domain";
+
+function newLocalRunId() {
+  return `office-local-run-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 export function useOfficeStore(workspaceId: string, userId: string) {
-  const [snapshot, setSnapshot] = useState<OfficeSnapshot | null>(null);
+  const [officeState, setOfficeState] = useState<OfficeWorkspaceState>({ activeRunId: null, runs: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const snapshot = useMemo(() => officeState.runs.find((run) => run.runId === officeState.activeRunId) ?? null, [officeState]);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     const result = await localOfficeRepository.load(workspaceId, userId);
-    if (result.ok) setSnapshot(result.snapshot);
-    else { setError(result.message); if (result.lastSnapshot) setSnapshot(result.lastSnapshot); }
+    if (result.ok) setOfficeState(result.state);
+    else { setError(result.message); if (result.lastState) setOfficeState(result.lastState); }
     setLoading(false);
   }, [userId, workspaceId]);
 
@@ -24,14 +29,37 @@ export function useOfficeStore(workspaceId: string, userId: string) {
   }, [load]);
 
   const dispatch = useCallback((action: OfficeAction) => {
-    setSnapshot((current) => reduceOfficeSnapshot(current ?? createOfficeSnapshot(), action));
+    setOfficeState((current) => {
+      if (!current.activeRunId) return current;
+      return {
+        ...current,
+        runs: current.runs.map((run) => run.runId === current.activeRunId ? reduceOfficeSnapshot(run, action) : run),
+      };
+    });
+    setError(null);
+  }, []);
+
+  const selectRun = useCallback((runId: string) => {
+    setOfficeState((current) => current.runs.some((run) => run.runId === runId) ? { ...current, activeRunId: runId } : current);
+    setError(null);
+  }, []);
+
+  const createRun = useCallback(() => {
+    const run = createOfficeSnapshot(new Date(), newLocalRunId());
+    setOfficeState((current) => ({ activeRunId: run.runId, runs: [run, ...current.runs] }));
+    setError(null);
+  }, []);
+
+  const runScenario = useCallback((actions: OfficeAction[]) => {
+    const run = actions.reduce((current, action) => reduceOfficeSnapshot(current, action), createOfficeSnapshot(new Date(), newLocalRunId()));
+    setOfficeState((current) => ({ activeRunId: run.runId, runs: [run, ...current.runs] }));
     setError(null);
   }, []);
 
   useEffect(() => {
-    if (!snapshot) return;
-    void localOfficeRepository.save(workspaceId, userId, snapshot).catch(() => setError("A atualização ficou visível, mas não pôde ser salva neste dispositivo."));
-  }, [snapshot, userId, workspaceId]);
+    if (!officeState.runs.length) return;
+    void localOfficeRepository.save(workspaceId, userId, officeState).catch(() => setError("A alteração apareceu aqui, mas não pôde ser salva neste dispositivo."));
+  }, [officeState, userId, workspaceId]);
 
-  return { snapshot, loading, error, dispatch, retry: load };
+  return { snapshot, runs: officeState.runs, activeRunId: officeState.activeRunId, loading, error, dispatch, selectRun, createRun, runScenario, retry: load };
 }
