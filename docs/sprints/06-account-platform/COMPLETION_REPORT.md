@@ -11,9 +11,9 @@ As sete sprints da fase foram executadas em ordem: 06-01, 06-02, 06-03, 06-04, 0
 - `yarn typecheck`: aprovado com geração Prisma.
 - `yarn db:validate`: schema válido.
 - `yarn db:diff`: diff do schema gerado e conferido contra a migration versionada; a migration inclui explicitamente a extensão pgvector.
-- `yarn db:status`: alcançou o Neon e identificou `20260914120000_account_platform_init` como pendente; não houve `migrate deploy`.
-- Smoke HTTP local: `/`, `/login`, `/workspace?demo=1` e `/api/health` retornaram `200`; `/api/workspaces` sem sessão retornou `401`.
-- `yarn build`: compilação Next 16/Turbopack concluída, com rotas server e shell dinâmico.
+- `prisma migrate deploy`: aplicou `20260914120000_account_platform_init` no Neon; execuções seguintes confirmaram que não há migrations pendentes.
+- Smoke HTTP de produção sem sessão: `/`, `/workspace`, `/workspace?demo=1` e `/settings` retornaram `307` para `/login`; `/login` retornou `200`.
+- `yarn build`: compilação Next 16/Turbopack concluída, com rota raiz e shell dinâmicos. O build exige `BETTER_AUTH_URL` e `BETTER_AUTH_SECRET` em produção.
 
 ## Roteiro de demonstração
 
@@ -29,4 +29,4 @@ A validação visual automatizada não foi concluída porque o CUA não ofereceu
 
 ## Próximo passo
 
-Executar o deploy da migration em banco aprovado, configurar os três ambientes e repetir o roteiro em navegador real antes de promover a fase a `COMPLETE` puro.
+Configurar os três ambientes com segredos próprios e repetir o roteiro em navegador real antes de promover a fase a `COMPLETE` puro.

@@ -6,7 +6,7 @@ As cinco sprints da fase foram executadas em ordem: 05-01, 05-02, 05-03, 05-04 e
 
 ## Evidências
 
-- `yarn test`: 4 arquivos, 9 testes aprovados; a máquina de estados cobre checkpoint de usuário, aprovação, rejeição, retry e entrega.
+- `yarn test`: 4 arquivos, 9 testes aprovados; a máquina de estados cobre checkpoint de usuário, aprovação, rejeição, retry e bloqueia a entrega até uma aprovação humana registrada.
 - `yarn lint`: aprovado.
 - `yarn typecheck`: aprovado.
 - `yarn build`: compilação Next 16/Turbopack concluída.

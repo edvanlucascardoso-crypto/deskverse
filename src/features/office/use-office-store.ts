@@ -24,13 +24,14 @@ export function useOfficeStore(workspaceId: string, userId: string) {
   }, [load]);
 
   const dispatch = useCallback((action: OfficeAction) => {
-    setSnapshot((current) => {
-      const next = reduceOfficeSnapshot(current ?? createOfficeSnapshot(), action);
-      void localOfficeRepository.save(workspaceId, userId, next).catch(() => setError("A atualização ficou visível, mas não pôde ser salva neste dispositivo."));
-      return next;
-    });
+    setSnapshot((current) => reduceOfficeSnapshot(current ?? createOfficeSnapshot(), action));
     setError(null);
-  }, [userId, workspaceId]);
+  }, []);
+
+  useEffect(() => {
+    if (!snapshot) return;
+    void localOfficeRepository.save(workspaceId, userId, snapshot).catch(() => setError("A atualização ficou visível, mas não pôde ser salva neste dispositivo."));
+  }, [snapshot, userId, workspaceId]);
 
   return { snapshot, loading, error, dispatch, retry: load };
 }

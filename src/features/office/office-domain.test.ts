@@ -15,13 +15,17 @@ describe("office flow state machine", () => {
     expect(resumed.events).toHaveLength(3);
   });
 
-  it("protects approval and makes recovery visible", () => {
+  it("requires a human approval before delivery and preserves recovery", () => {
     const started = reduceOfficeSnapshot(createOfficeSnapshot(now), { type: "START" }, now);
+    const blocked = reduceOfficeSnapshot(started, { type: "COMPLETE" }, now);
     const approval = reduceOfficeSnapshot(started, { type: "REQUEST_APPROVAL" }, now);
     const rejected = reduceOfficeSnapshot(approval, { type: "REJECT" }, now);
     const retry = reduceOfficeSnapshot(rejected, { type: "RETRY" }, now);
-    const completed = reduceOfficeSnapshot(retry, { type: "COMPLETE" }, now);
+    const renewedApproval = reduceOfficeSnapshot(retry, { type: "REQUEST_APPROVAL" }, now);
+    const approved = reduceOfficeSnapshot(renewedApproval, { type: "APPROVE" }, now);
+    const completed = reduceOfficeSnapshot(approved, { type: "COMPLETE" }, now);
     expect(approval.state).toBe("WAITING_APPROVAL");
+    expect(blocked).toBe(started);
     expect(rejected.delivery.status).toBe("pending");
     expect(retry.state).toBe("working");
     expect(completed.state).toBe("success");

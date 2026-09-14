@@ -14,13 +14,13 @@ type Member = { id: string; userId: string; name: string; email: string; role: W
 const demoWorkspaces: WorkspaceOption[] = [{ id: "workspace-demo", name: "Estúdio Aurora", organizationName: "Estúdio Aurora", memberCount: 3, role: "OWNER", updatedAt: "agora" }];
 const demoMembers: Member[] = [{ id: "member-demo-you", userId: "current-user", name: "Você", email: "demonstração local", role: "OWNER" }, { id: "member-demo-marina", userId: "social", name: "Marina Social", email: "Agente de mídias sociais", role: "MEMBER" }];
 
-type PlatformDrawerProps = { open: boolean; setOpen: (open: boolean) => void; activeWorkspaceId: string; onWorkspaceChange: (workspaceId: string) => void; role: WorkspaceRole; workspaceName: string };
+type PlatformDrawerProps = { open: boolean; setOpen: (open: boolean) => void; activeWorkspaceId: string; onWorkspaceChange: (workspaceId: string, role?: WorkspaceRole) => void; role: WorkspaceRole; workspaceName: string };
 
 async function readResponse(response: Response) {
   return response.json().catch(() => ({})) as Promise<{ message?: string; workspaces?: WorkspaceOption[]; members?: Member[]; member?: Member; workspace?: WorkspaceOption }>;
 }
 
-export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceChange, role, workspaceName }: PlatformDrawerProps) {
+export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceChange, role: fallbackRole, workspaceName }: PlatformDrawerProps) {
   const [workspaces, setWorkspaces] = useState<WorkspaceOption[]>(demoWorkspaces);
   const [members, setMembers] = useState<Member[]>(demoMembers);
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,7 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
   const createForm = useForm<CreateWorkspaceInput>({ resolver: zodResolver(createWorkspaceInputSchema), defaultValues: { name: "" } });
   const memberForm = useForm<AddWorkspaceMemberInput>({ resolver: zodResolver(addWorkspaceMemberInputSchema), defaultValues: { email: "", role: "MEMBER" } });
   const currentWorkspace = useMemo(() => workspaces.find((workspace) => workspace.id === activeWorkspaceId) ?? workspaces[0], [activeWorkspaceId, workspaces]);
+  const role = currentWorkspace?.role ?? fallbackRole;
   const canManageMembers = can(role, "member:manage");
 
   useEffect(() => {
@@ -40,12 +41,12 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
     void Promise.resolve().then(() => { if (!cancelled) { setLoading(true); setError(null); } return fetch("/api/workspaces"); }).then(async (response) => {
       const body = await readResponse(response);
       if (cancelled) return;
-      if (response.ok && body.workspaces?.length) { setWorkspaces(body.workspaces); onWorkspaceChange(body.workspaces[0].id); setFeedback("Workspaces sincronizados"); }
+      if (response.ok && body.workspaces?.length) { const selected = body.workspaces.find((workspace) => workspace.id === activeWorkspaceId) ?? body.workspaces[0]; setWorkspaces(body.workspaces); onWorkspaceChange(selected.id, selected.role); setFeedback("Workspaces sincronizados"); }
       else if (response.status !== 401) setError(body.message ?? "Não foi possível carregar os workspaces.");
       else setFeedback("Modo demonstração local: alterações ficam neste dispositivo.");
     }).catch(() => { if (!cancelled) { setError("A conexão falhou; o último workspace continua disponível."); setWorkspaces((current) => current.length ? current : demoWorkspaces); } }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [onWorkspaceChange, open]);
+  }, [activeWorkspaceId, onWorkspaceChange, open]);
 
   useEffect(() => {
     if (!open || !currentWorkspace) return;
@@ -65,7 +66,7 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
     const body = await readResponse(response);
     if (response.ok && body.workspace) {
       setWorkspaces((current) => [...current, body.workspace as WorkspaceOption]);
-      onWorkspaceChange((body.workspace as WorkspaceOption).id);
+      onWorkspaceChange((body.workspace as WorkspaceOption).id, (body.workspace as WorkspaceOption).role);
       createForm.reset();
       setShowCreate(false);
       setFeedback("Workspace criado e selecionado.");
@@ -74,7 +75,7 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
     if (response.status === 401 && activeWorkspaceId === "workspace-demo") {
       const demo = { id: `workspace-local-${workspaces.length + 1}`, name: values.name, organizationName: "Organização local", memberCount: 1, role: "OWNER" as const, updatedAt: "agora" };
       setWorkspaces((current) => [...current, demo]);
-      onWorkspaceChange(demo.id);
+      onWorkspaceChange(demo.id, demo.role);
       createForm.reset();
       setShowCreate(false);
       setFeedback("Workspace local criado neste dispositivo.");
@@ -88,7 +89,7 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
     const response = await fetch(`/api/workspaces/${currentWorkspace?.id ?? activeWorkspaceId}/members`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(values) });
     const body = await readResponse(response);
     if (response.ok && body.member) {
-      setMembers((current) => [...current, body.member as Member]);
+      setMembers((current) => current.some((member) => member.id === (body.member as Member).id) ? current.map((member) => member.id === (body.member as Member).id ? body.member as Member : member) : [...current, body.member as Member]);
       memberForm.reset({ email: "", role: "MEMBER" });
       setShowMemberForm(false);
       setFeedback("Pessoa adicionada e evento auditado.");

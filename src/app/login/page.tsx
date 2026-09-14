@@ -25,7 +25,9 @@ export default function LoginPage() {
 
   const getReturnTo = () => {
     const candidate = new URLSearchParams(window.location.search).get("returnTo");
-    return candidate?.startsWith("/") ? candidate : "/workspace";
+    if (!candidate?.startsWith("/")) return "/workspace";
+    const target = new URL(candidate, window.location.origin);
+    return target.origin === window.location.origin ? `${target.pathname}${target.search}${target.hash}` : "/workspace";
   };
 
   const submit = form.handleSubmit(async (values) => {

@@ -6,6 +6,17 @@ import { can, type WorkspaceRole } from "@/lib/permissions/rbac";
 import { parseWorkspaceId } from "@/lib/platform/workspace-scope";
 import type { AddWorkspaceMemberInput, CreateWorkspaceInput, WorkspacePreferenceInput } from "./workspace-contracts";
 
+export type WorkspaceSummary = {
+  id: string;
+  organizationId: string;
+  organizationName: string;
+  name: string;
+  slug: string;
+  role: WorkspaceRole;
+  memberCount: number;
+  updatedAt: string;
+};
+
 const safePart = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 42) || "user";
 const slugify = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "workspace";
 
@@ -28,7 +39,7 @@ function summaryFromMember(member: {
     organization: { name: string };
     _count: { members: number };
   };
-}) {
+}): WorkspaceSummary {
   return {
     id: member.workspace.id,
     organizationId: member.workspace.organizationId,
@@ -76,8 +87,7 @@ export async function ensureDefaultWorkspace(user: { id: string; name: string; e
 }
 
 export async function createWorkspace(userId: string, input: CreateWorkspaceInput) {
-  const membership = await prisma.workspaceMember.findFirst({ where: { userId }, select: { workspace: { select: { organizationId: true } } } });
-  const organizationId = membership?.workspace.organizationId ?? defaultOrganizationId(userId);
+  const organizationId = defaultOrganizationId(userId);
   await prisma.organization.upsert({
     where: { id: organizationId },
     update: {},
@@ -108,7 +118,9 @@ export async function createWorkspace(userId: string, input: CreateWorkspaceInpu
     });
     return created;
   });
-  return workspace;
+  const access = await getWorkspaceAccess(workspace.id, userId);
+  if (!access) throw new Error("Não foi possível confirmar o acesso ao workspace criado.");
+  return summaryFromMember(access as typeof access & { role: WorkspaceRole });
 }
 
 export async function getWorkspaceAccess(workspaceId: string, userId: string) {
@@ -138,6 +150,11 @@ export async function addWorkspaceMember(workspaceId: string, actorId: string, i
   if (!access || !can(access.role, "member:manage")) return { ok: false as const, reason: "forbidden" as const };
   const user = await prisma.user.findUnique({ where: { email: input.email.toLowerCase() }, select: { id: true, name: true, email: true } });
   if (!user) return { ok: false as const, reason: "user_not_found" as const };
+  const existing = await prisma.workspaceMember.findUnique({
+    where: { workspaceId_userId: { workspaceId: access.workspaceId, userId: user.id } },
+    select: { role: true },
+  });
+  if (existing?.role === "OWNER") return { ok: false as const, reason: "owner_protected" as const };
   const member = await prisma.workspaceMember.upsert({
     where: { workspaceId_userId: { workspaceId: access.workspaceId, userId: user.id } },
     update: { role: input.role },
@@ -151,6 +168,7 @@ export async function addWorkspaceMember(workspaceId: string, actorId: string, i
       actorId,
       action: "workspace.member.updated",
       source: "workspace-settings",
+      before: { userId: user.id, role: existing?.role ?? null },
       after: { userId: user.id, email: user.email, role: input.role },
       nextStep: "A pessoa pode acessar o workspace após autenticar",
     },
