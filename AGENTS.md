@@ -152,13 +152,13 @@ O Gate A0 é: plano de mídias sociais → texto → design quando disponível �
 
 ## UI / Style Guide
 
-- A fonte de verdade visual é `STYLE_GUIDE_DARK_APPLE.md`: a interface usa Dark Apple/macOS Big Sur como padrão global.
+- A fonte de verdade visual é `STYLE_GUIDE_DARK_APPLE.md`: apesar do nome histórico, a interface usa a identidade drawer-first dark workspace como padrão global.
 - Reutilize os tokens de `src/app/globals.css` para cor, raio, tipografia, borda e sombra; não crie novos valores locais sem justificativa.
 - A paleta base deve permanecer em preto, grafite, cinza e branco. Turquesa é a cor primária; cores de status só aparecem em estados e atividade.
 - Não introduza azul como cor estrutural, neon, glow, glassmorphism ou estética gamer. Prefira bordas discretas, sombras suaves e superfícies opacas.
 - Use a pilha tipográfica Apple (`-apple-system`, `BlinkMacSystemFont`, `SF Pro Display`, `SF Pro Text`, `Inter`) e pesos 400 para texto, 500 para controles e 600 para títulos.
 - Use somente os raios 10, 14, 18, 22 e 28px definidos nos tokens. Ícones devem usar traço fino e controles devem ter foco visível acessível.
-- Movimento segue o padrão Apple: transições curtas (~180ms), sem bounce, respeitando `prefers-reduced-motion` e sem esconder estados de erro ou espera.
+- Movimento segue o padrão drawer-first: transições curtas (~180ms), sem bounce, respeitando `prefers-reduced-motion` e sem esconder estados de erro ou espera.
 - Todo componente shadcn baixado, instalado ou criado deve ser composto com esses mesmos tokens e superfícies — inclusive `dialog`, `sheet/drawer`, `button`, `input`, `select`, `tabs`, `tooltip` e estados de feedback. Não aceite o tema padrão do shadcn como acabamento final e não crie exceções visuais por componente.
 - Preserve espaço visual: a superfície principal deve priorizar a tarefa central e não acumular controles, contexto ou metadados acima dela.
 - Conteúdo secundário deve abrir sob demanda em `dialog`, drawer, modal ou collapse, com o estado inicial fechado quando não for necessário para completar a tarefa principal.
