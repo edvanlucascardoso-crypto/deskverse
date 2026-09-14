@@ -1,0 +1,25 @@
+# Local Blender MCP checkout and runtime state
+tools/blender/blender-codex-mcp/
+tools/blender/.headless-blender.pid
+tools/blender/headless-blender.log
+
+# JavaScript dependencies and generated build output
+**/node_modules/
+**/build/
+**/.cache/
+**/.parcel-cache/
+**/.next/
+**/*.tsbuildinfo
+
+# Generated MCP inspection artifacts
+assets/_mcp_test/*.png
+assets/_mcp_test/*.blend
+assets/_mcp_test/*.glb
+
+# Local archive of legacy 3D assets/Blender sources/concept images (see
+# archive/deskverse-3d-legacy-stem-era-2026-09-11.7z). Not committed; the
+# git history predating the archive already preserves these files.
+archive/
+
+# Source archives kept locally outside the project tree
+archives/

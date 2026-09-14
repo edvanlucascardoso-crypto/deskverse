@@ -1,0 +1,84 @@
+{
+  "manifestVersion": 1,
+  "updatedAt": "2026-09-12",
+  "sourceOfTruth": [
+    "AGENTS.md",
+    "docs/sprints/SPRINT_STATUS.md",
+    "docs/sprints/00-meta/SPRINT_MANIFEST.json",
+    "docs/sprints/<phase>/README.md",
+    "docs/sprints/<phase>/SPRINT-<id>.md"
+  ],
+  "nextPriority": "SPRINT-06-01",
+  "phaseOrder": [
+    { "id": "00", "path": "completed/00-user-visual-concepts", "status": "archived", "sprintCount": 1 },
+    { "id": "01", "path": "01-web-foundation", "status": "complete_with_integration_requirements", "sprintCount": 4 },
+    { "id": "02", "path": "02-canvas-foundation", "status": "complete_with_integration_requirements", "sprintCount": 4 },
+    { "id": "03", "path": "03-canvas-interactions", "status": "complete_with_integration_requirements", "sprintCount": 4 },
+    { "id": "04", "path": "04-people-and-activity", "status": "complete_with_integration_requirements", "sprintCount": 4 },
+    { "id": "05", "path": "05-office-experience", "status": "planned", "sprintCount": 5 },
+    { "id": "06", "path": "06-account-platform", "status": "planned", "sprintCount": 7 },
+    { "id": "07", "path": "07-onboarding-knowledge", "status": "planned", "sprintCount": 7 },
+    { "id": "08", "path": "08-work-and-human-loop", "status": "planned", "sprintCount": 8 },
+    { "id": "09", "path": "09-agent-execution", "status": "planned", "sprintCount": 8 },
+    { "id": "10", "path": "10-mvp-agents", "status": "planned", "sprintCount": 7 },
+    { "id": "11", "path": "11-integrations-and-planning", "status": "planned", "sprintCount": 7 },
+    { "id": "12", "path": "12-billing-and-usage", "status": "planned", "sprintCount": 5 },
+    { "id": "13", "path": "13-public-site-and-guide", "status": "planned", "sprintCount": 4 },
+    { "id": "14", "path": "14-security-and-release", "status": "planned", "sprintCount": 8 },
+    { "id": "15", "path": "15-future-agents", "status": "planned", "sprintCount": 19 },
+    { "id": "16", "path": "16-collaboration", "status": "planned", "sprintCount": 1 }
+  ],
+  "executionOverrides": [
+    {
+      "sequence": ["SPRINT-06-01", "SPRINT-06-02", "SPRINT-06-03", "SPRINT-06-04", "SPRINT-06-05", "SPRINT-06-06", "SPRINT-06-07"],
+      "mustPrecede": "SPRINT-05-01",
+      "reason": "A fundação de plataforma do MVP (limites, Neon, autenticação, workspace, permissões, serviços) precede melhorias visuais não essenciais da Fase 05."
+    }
+  ],
+  "serviceSprints": [
+    { "id": "SPRINT-10-03-SVC-01", "path": "10-mvp-agents/10-03-designer/services/SPRINT-10-03-SVC-01-mcp-media.md", "ownerSprint": "SPRINT-10-03", "runtime": "external_api", "blocksMvp": false },
+    { "id": "SPRINT-11-04-SVC-01", "path": "11-integrations-and-planning/11-04-whatsapp/services/SPRINT-11-04-SVC-01-mcp-channels.md", "ownerSprint": "SPRINT-11-04", "runtime": "Railway", "blocksMvp": false },
+    { "id": "SPRINT-15-12-SVC-01", "path": "15-future-agents/agents/15-12-edicao-de-video/services/SPRINT-15-12-SVC-01-video-engine.md", "ownerSprint": "SPRINT-15-12", "runtime": "Northflank", "blocksMvp": false },
+    { "id": "SPRINT-15-13-SVC-01", "path": "15-future-agents/agents/15-13-efeitos-visuais/services/SPRINT-15-13-SVC-01-vfx-extension.md", "ownerSprint": "SPRINT-15-13", "runtime": "Northflank", "blocksMvp": false }
+  ],
+  "gates": [
+    {
+      "id": "A0",
+      "name": "primeiro fluxo de agente",
+      "requires": ["SPRINT-08-02", "SPRINT-09-08", "SPRINT-10-04"],
+      "sequence": ["Mídias Sociais planeja", "Redator escreve", "Designer opcional", "humano aprova", "entrega confirmada"],
+      "fallback": "Sem capacidade ou entitlement do Designer, concluir Mídias Sociais → Redator com aviso explícito."
+    }
+  ],
+  "dependencyExceptions": [],
+  "agentModel": {
+    "runtime": "AgentRuntime",
+    "runtimeImplementation": "Eve",
+    "inferenceGateway": "InferenceGateway",
+    "inferenceImplementation": "VercelAIGateway",
+    "delegation": "capability",
+    "persistentKinds": ["leader", "specialist"],
+    "ephemeralKind": "worker",
+    "seniority": ["junior", "pleno", "senior", "especialista"],
+    "economicsMetric": "cost_per_successful_task"
+  },
+  "reasoningPolicy": {
+    "openai": { "maxAllowed": false },
+    "anthropic": { "maxAllowed": false },
+    "museSpark": { "maxAllowed": "profile_and_benchmark" },
+    "kimi": { "maxAllowed": "profile_and_benchmark" },
+    "otherFamilies": { "maxAllowed": "explicit_profile_only" },
+    "auditFields": ["requestedReasoning", "effectiveReasoning", "downgradeReason"]
+  },
+  "queuePolicy": {
+    "logicalQueues": ["leader_session", "workspace_capability"],
+    "physicalQueues": ["LLM", "CPU", "GPU", "BROWSER", "RENDER"],
+    "priorities": ["URGENT", "HIGH", "NORMAL", "LOW"],
+    "ordering": "FIFO within priority with aging",
+    "fairness": ["workspace", "leader"],
+    "reliability": ["lease", "heartbeat", "backpressure", "idempotency", "technical_retry", "deduplication_when_applicable", "dead_letter", "cascade_cancel"],
+    "humanWait": "checkpoint_and_release_worker",
+    "uiRule": "show queue state/depth and estimate only when reliable; never promise fixed position"
+  },
+  "uiLanguage": "pt-BR"
+}
