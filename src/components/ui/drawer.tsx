@@ -4,6 +4,29 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 function Drawer({ open, handleOnly = false, closeThreshold = 1 / 3, scrollLockTimeout = 0, fixed = true, repositionInputs = false, autoFocus = false, ...props }: React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Root>) {
+  const isNonModal = props.modal === false;
+
+  React.useEffect(() => {
+    if (!open || !isNonModal) return;
+    const background = document.querySelector<HTMLElement>("[data-drawer-background]");
+    if (!background) return;
+
+    const previousAriaHidden = background.getAttribute("aria-hidden");
+    const revealBackground = () => {
+      if (background.getAttribute("aria-hidden") === "true") background.removeAttribute("aria-hidden");
+    };
+
+    revealBackground();
+    const observer = new MutationObserver(revealBackground);
+    observer.observe(background, { attributes: true, attributeFilter: ["aria-hidden"] });
+
+    return () => {
+      observer.disconnect();
+      if (previousAriaHidden === null) background.removeAttribute("aria-hidden");
+      else background.setAttribute("aria-hidden", previousAriaHidden);
+    };
+  }, [isNonModal, open]);
+
   React.useEffect(() => {
     if (!open) return;
     const preventBackgroundScroll = (event: TouchEvent) => {

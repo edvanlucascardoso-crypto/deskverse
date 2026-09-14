@@ -40,7 +40,7 @@ export function WorkspaceCanvas({ canvasState, entries, selected, focused, zoom,
   const leaders = entries.filter(({ agent }) => agent.kind === "leader");
   const renderTile = ({ agent, activity }: AgentEntry, index: number) => <Fragment key={agent.id}><AgentTile agent={agent} activity={activity} selected={selected === agent.id} focused={focused === agent.id} isReordering={isReordering} animationEvent={animationEvent} animationIndex={index} reduced={reduced} tileRef={(node) => { tileRefs.current[agent.id] = node; }} onDragStart={onDragStart} onPreviewReorder={onPreviewReorder} onOrderCommit={onOrderCommit} onOrderCancel={onOrderCancel} onSelect={() => onSelect(agent.id)} /></Fragment>;
   return <>
-    <section className={"workspace-canvas" + (isReordering ? " is-reordering" : "")} tabIndex={0} onKeyDown={onCanvasKeyDown} aria-busy={isReordering} aria-label="Canvas em grade de agentes. Use as setas para navegar e Escape para limpar a seleção.">
+    <section className={"workspace-canvas" + (isReordering ? " is-reordering" : "")} role="region" tabIndex={0} onKeyDown={onCanvasKeyDown} aria-busy={isReordering} aria-label="Canvas em grade de agentes. Use as setas para navegar e Escape para limpar a seleção.">
     <AnimatePresence mode="wait">
       {canvasState === "loading" && <Feedback icon={<LoaderCircle className="spin" size={30} />} title="Atualizando o canvas" text="Buscando presença e atividade dos agentes." />}
       {canvasState === "empty" && <Feedback icon={<Sparkles size={30} />} title="O canvas está pronto" text="Quando os agentes começarem a trabalhar, eles aparecerão aqui." action={<button className="primary-button" onClick={onRecover}><RotateCcw size={16} /> Atualizar</button>} />}

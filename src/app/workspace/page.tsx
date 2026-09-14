@@ -10,5 +10,5 @@ export default async function WorkspaceRoute({ searchParams }: { searchParams: P
   const params = await searchParams;
   const demoAllowed = isLocalDemoEnabled() && params.demo === "1";
   if (!session && !demoAllowed) redirect("/login?returnTo=/workspace");
-  return <WorkspacePage />;
+  return <WorkspacePage demoMode={demoAllowed} />;
 }

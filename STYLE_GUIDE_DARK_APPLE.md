@@ -1,35 +1,45 @@
-# Deskverse — Dark Apple UI
+# Deskverse — Geist-inspired Workspace UI
 
-Este documento é a fonte de verdade visual do Deskverse. A interface deve seguir a linguagem Dark Apple/macOS Big Sur: superfícies opacas em preto e grafite, tipografia Apple, controles discretos e movimento curto.
+Este arquivo mantém o nome histórico para preservar referências existentes. A direção visual atual é uma linguagem SaaS técnica, neutra e precisa, inspirada no Geist e em produtos modernos para times de tecnologia, sem copiar a marca, o logotipo ou a identidade da Vercel.
 
-## Tokens
+## Princípios
+
+- O canvas continua sendo a superfície principal, ocupando a viewport inteira; contexto, atividade e configurações aparecem em drawers ou diálogos sob demanda.
+- A composição é uma grade espacial única de agentes, nunca um Kanban, uma lista de tarefas ou colunas de status.
+- A base cromática é preto, branco e cinzas neutros. O turquesa do Deskverse é o único acento de marca; roxo, vermelho, amarelo e verde comunicam apenas estados.
+- Superfícies são opacas, com bordas finas, sombras mínimas e no máximo um gradiente vertical muito sutil para separar níveis de elevação.
+- Tipografia usa `Geist`, `Geist Sans`, `Inter`, `ui-sans-serif` e `system-ui` nessa ordem de fallback. Dados técnicos, IDs e código usam `Geist Mono`/`Consolas`.
+- Pesos: 400 para texto, 500 para controles, 600 para títulos. Raios permitidos: 10, 14, 18, 22 e 28px.
+- Foco visível, áreas de toque confortáveis, estados completos e `prefers-reduced-motion` são parte do componente, não acabamento posterior.
+
+## Tokens CSS
+
+Os tokens vivem em `src/app/globals.css` e devem ser reutilizados antes de qualquer valor local:
 
 ```css
---background: #0D0F12;
---foreground: #F5F5F7;
---card: #15171A;
---card-foreground: #F5F5F7;
---popover: #191B1F;
---popover-foreground: #F5F5F7;
---muted: #1E2126;
---muted-foreground: #A5A8B0;
---border: rgba(255,255,255,0.08);
---input: rgba(255,255,255,0.08);
---primary: #4ED7C8;
---primary-foreground: #08110F;
---secondary: #1E2126;
---secondary-foreground: #F5F5F7;
---accent: #23262B;
---accent-foreground: #F5F5F7;
---destructive: #FF5F57;
+--background       /* viewport */
+--foreground       /* texto principal */
+--card             /* superfície elevada */
+--secondary        /* controle e superfície auxiliar */
+--muted-foreground /* texto secundário */
+--border           /* divisão discreta */
+--border-strong    /* foco estrutural */
+--brand            /* turquesa Deskverse */
+--action-primary   /* preto no claro, branco no escuro */
+--ring             /* foco acessível */
+--status-*         /* estados com significado */
+--space-*          /* escala de espaçamento */
+--shadow-*         /* elevação mínima */
 ```
 
-## Regras
+## Componentes
 
-- Use `-apple-system`, `BlinkMacSystemFont`, `SF Pro Display`, `SF Pro Text` ou `Inter`.
-- Pesos: 400 para texto, 500 para controles e 600 para títulos.
-- Raios permitidos: 10, 14, 18, 22 e 28px.
-- Use bordas discretas e sombras suaves; não use glow, glassmorphism, neon, azul estrutural ou estética gamer.
-- Turquesa é a cor primária. Cores adicionais devem comunicar somente status ou ação.
-- Transições devem ser curtas (~180ms), sem bounce, e respeitar `prefers-reduced-motion`.
-- Ícones usam traços finos, com foco visível e acessível nos controles.
+- `primary-button` é uma ação sólida neutra; `secondary-button` é uma ação de suporte com borda.
+- Inputs, selects, tabs, listas e cards compartilham borda, raio, foco e ritmo vertical.
+- Drawers preservam o contexto do canvas e se reorganizam como sheets de tela cheia em mobile.
+- Tiles permanecem quadrados, compactos e centralizados; quatro posições por linha são preservadas em mobile/tablet.
+- Status não depende apenas de cor: o ponto, o texto/label e a borda devem comunicar a mesma condição.
+
+## Acessibilidade e movimento
+
+Contraste deve ser suficiente para texto e controles, todos os controles somente com ícone precisam de `aria-label` e tooltip, e nenhuma animação pode esconder erro, espera humana ou indisponibilidade. As transições são curtas, sem bounce, e são reduzidas quando a pessoa usuária prefere menos movimento.

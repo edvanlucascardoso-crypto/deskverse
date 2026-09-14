@@ -115,12 +115,12 @@ export function isActiveActivity(activity: AgentActivity) {
 }
 
 export function statusColor(activity: AgentActivity) {
-  if (activity === "working" || activity === "communicating") return "#a18dff";
-  if (activity === "error" || activity === "blocked") return "#f05f68";
-  if (activity === "waiting") return "#f4c64e";
-  if (activity === "paused" || activity === "unknown") return "#a5a8b0";
-  if (activity === "completed") return "#46d3c2";
-  return "#63c77a";
+  if (activity === "working" || activity === "communicating") return "var(--status-working)";
+  if (activity === "error" || activity === "blocked") return "var(--status-error)";
+  if (activity === "waiting") return "var(--status-waiting)";
+  if (activity === "paused" || activity === "unknown") return "var(--status-muted)";
+  if (activity === "completed") return "var(--status-complete)";
+  return "var(--status-available)";
 }
 
 export function activityLabel(activity: AgentActivity) {

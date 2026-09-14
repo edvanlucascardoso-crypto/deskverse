@@ -25,14 +25,14 @@ import { useWorkspaceSnapshot } from "@/features/workspace/use-workspace-snapsho
 
 type WorkspaceListResponse = { message?: string; workspaces?: Array<{ id: string; role: WorkspaceRole }> };
 
-export default function WorkspacePage() {
+export default function WorkspacePage({ demoMode = false }: { demoMode?: boolean }) {
   const session = authClient.useSession();
   const authenticatedUserId = session.data?.user?.id ?? null;
   const userId = authenticatedUserId ?? "demo-user";
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
   const [activeRole, setActiveRole] = useState<WorkspaceRole>("OWNER");
   const [workspaceBootstrapError, setWorkspaceBootstrapError] = useState<string | null>(null);
-  const workspaceRepository = useMemo(() => authenticatedUserId ? platformWorkspaceRepository : localWorkspaceRepository, [authenticatedUserId]);
+  const workspaceRepository = useMemo(() => authenticatedUserId && !demoMode ? platformWorkspaceRepository : localWorkspaceRepository, [authenticatedUserId, demoMode]);
   const workspaceScopeId = activeWorkspaceId ?? "workspace-demo";
   const orderScope = useMemo(() => ({ workspaceId: workspaceScopeId, userId }), [userId, workspaceScopeId]);
   const workspace = useWorkspaceSnapshot(activeWorkspaceId, workspaceRepository);
@@ -100,14 +100,13 @@ export default function WorkspacePage() {
   }, [authenticatedUserId, changeWorkspace]);
 
   useEffect(() => {
-    if (session.isPending) return;
-    if (!authenticatedUserId) {
+    if (demoMode || !authenticatedUserId) {
       const timer = window.setTimeout(() => changeWorkspace("workspace-demo"), 0);
       return () => window.clearTimeout(timer);
     }
     const timer = window.setTimeout(() => { void loadUserWorkspace(); }, 0);
     return () => window.clearTimeout(timer);
-  }, [authenticatedUserId, changeWorkspace, loadUserWorkspace, session.isPending]);
+  }, [authenticatedUserId, changeWorkspace, demoMode, loadUserWorkspace]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -337,12 +336,12 @@ export default function WorkspacePage() {
     if (authenticatedUserId && (!activeWorkspaceId || workspaceBootstrapError)) void loadUserWorkspace();
     else void refreshWorkspace();
   }, [activeWorkspaceId, authenticatedUserId, loadUserWorkspace, refreshWorkspace, workspaceBootstrapError]);
-  const effectiveCanvasState: CanvasState = session.isPending || workspace.loading || (Boolean(authenticatedUserId) && !activeWorkspaceId && !workspaceBootstrapError) ? "loading" : workspace.error || workspaceBootstrapError ? "error" : canvasState;
+  const effectiveCanvasState: CanvasState = (!demoMode && session.isPending) || workspace.loading || (!demoMode && Boolean(authenticatedUserId) && !activeWorkspaceId && !workspaceBootstrapError) ? "loading" : workspace.error || workspaceBootstrapError ? "error" : canvasState;
   const effectiveCanvasError = workspaceBootstrapError ?? workspace.error;
 
-  return <main className={"app-shell " + theme}>
+  return <main className={"app-shell " + theme} data-drawer-background>
     <section className="content" id="canvas">
-      <CanvasNavbar query={query} onQueryChange={setQuery} agents={allAgents} onSelectAgent={(id) => { setSelected(id); setFocused(id); }} onOpenMenu={() => { setNotificationsOpen(false); setMenuOpen(true); }} onOpenNotifications={() => { setMenuOpen(false); setNotificationsOpen(true); }} onOpenConversations={() => { setConversationMode("global"); setConversationState("success"); setConversationOpen(true); }} onOpenOfficeControls={() => setOfficeOpen(true)} onAddLeader={() => setCreatorOpen(true)} onOpenAnimationTests={() => setAnimationDrawerOpen(true)} notificationActive={notificationPulse} />
+      <CanvasNavbar workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} query={query} onQueryChange={setQuery} agents={allAgents} onSelectAgent={(id) => { setSelected(id); setFocused(id); }} onOpenMenu={() => { setNotificationsOpen(false); setMenuOpen(true); }} onOpenNotifications={() => { setMenuOpen(false); setNotificationsOpen(true); }} onOpenConversations={() => { setConversationMode("global"); setConversationState("success"); setConversationOpen(true); }} onOpenOfficeControls={() => setOfficeOpen(true)} onAddLeader={() => setCreatorOpen(true)} onOpenAnimationTests={() => setAnimationDrawerOpen(true)} notificationActive={notificationPulse} />
       <CanvasDndProvider><WorkspaceCanvas canvasState={effectiveCanvasState} errorMessage={effectiveCanvasError} entries={entries} selected={selected} focused={focused} zoom={zoom} communication={communication} isReordering={isReordering} animationEvent={animationEvent} reduced={reduced} onSelect={(id) => { setSelected(id); setFocused(id); }} onDragStart={beginAgentDrag} onPreviewReorder={reorderAgents} onOrderCommit={commitAgentOrder} onOrderCancel={cancelAgentOrder} onCanvasKeyDown={onCanvasKeyDown} onRecover={recoverWorkspace} /></CanvasDndProvider>
     </section>
     <AnimatePresence>{selectedAgent && <AgentContextPanel agent={selectedAgent} activity={currentActivity(selectedAgent.id)} reduced={reduced} onClose={() => setSelected(null)} onOpenPrivateChat={() => openPrivateChat(selectedAgent.id)} onStartMeeting={() => startMeeting(selectedAgent.id)} />}</AnimatePresence>

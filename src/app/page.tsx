@@ -9,5 +9,5 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const [session, params] = await Promise.all([getServerSession(), searchParams]);
   const demoAllowed = isLocalDemoEnabled() && params.demo === "1";
   if (!session && !demoAllowed) redirect("/login?returnTo=/");
-  return <WorkspacePage />;
+  return <WorkspacePage demoMode={demoAllowed} />;
 }
