@@ -98,3 +98,11 @@ Envio, publicação, mudança financeira e outro efeito irreversível exigem app
 8. Observabilidade, segurança e gates de release.
 
 Agentes futuros não bloqueiam o MVP. Cada agente posterior mantém, na sua pasta, as sprints de MCP/API/worker que ele requer.
+
+## Implementação registrada em 14/09/2026
+
+- O app usa Next 16 com rotas server/API e `proxy.ts`; a configuração anterior de export estático foi removida para permitir Better Auth e persistência no servidor.
+- Prisma 7 usa `prisma.config.ts`, `DATABASE_URL` para a aplicação e `DIRECT_URL` para migrations quando fornecido. A migration `20260914120000_account_platform_init` cria o boundary multi-tenant e habilita pgvector.
+- O código mantém `AgentRuntime`, `InferenceGateway`, `WorkerExecutionProvider`, `McpRemoteClient`, `QueueBackend` e `AssetStorage` como contratos; o desenvolvimento usa adaptadores locais deterministicamente testáveis.
+- As variáveis ficam documentadas em `.env.example`; `.env*` é ignorado pelo Git. O Neon configurado no ambiente foi apenas consultado: a migration está pendente e deve ser aplicada por operação aprovada.
+- O projeto Sites existente ainda aponta para publicação estática em `out`. O shell autenticado com rotas server requer um destino compatível com Next server antes de nova publicação.

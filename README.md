@@ -5,8 +5,8 @@ Fonte operacional do Deskverse, consolidada em 12/09/2026. O produto atual é um
 ## Estado atual
 
 - Fases 01–04: `COMPLETE_WITH_INTEGRATION_REQUIREMENTS` — fundação web, canvas, interações e presença local entregues.
-- Próxima prioridade: `SPRINT-06-01 — Estrutura final da aplicação e limites de responsabilidade`.
-- Fases 05–16: planejadas, com as dependências registradas no manifesto.
+- Fases 05 e 06: `COMPLETE_WITH_INTEGRATION_REQUIREMENTS` — experiência do escritório, conta, plataforma, autenticação, RBAC e contratos operacionais entregues.
+- Próxima prioridade: `SPRINT-07-01 — Onboarding e contexto inicial`.
 - Os materiais antigos de engine 3D/Stem permanecem apenas em `docs/sprints/retired/`; não são runtime paralelo do MVP web atual.
 
 ## Fonte de verdade
@@ -49,8 +49,8 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/02-canvas-foundation` | Fundamento do Canvas | completa com integrações | 4 |
 | `docs/sprints/03-canvas-interactions` | Interações do Canvas | completa com integrações | 4 |
 | `docs/sprints/04-people-and-activity` | Pessoas e atividade | completa com integrações | 4 |
-| `docs/sprints/05-office-experience` | Experiência do Escritório | planejada | 5 |
-| `docs/sprints/06-account-platform` | Plataforma da conta | planejada | 6 |
+| `docs/sprints/05-office-experience` | Experiência do Escritório | completa com integrações | 5 |
+| `docs/sprints/06-account-platform` | Plataforma da conta | completa com integrações | 7 |
 | `docs/sprints/07-onboarding-knowledge` | Onboarding e conhecimento | planejada | 7 |
 | `docs/sprints/08-work-and-human-loop` | Trabalho e loop humano | planejada | 8 |
 | `docs/sprints/09-agent-execution` | Execução de agentes | planejada | 8 |

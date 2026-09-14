@@ -11,6 +11,11 @@ tools/blender/headless-blender.log
 **/.next/
 **/*.tsbuildinfo
 
+# Environment files: only the documented, non-secret templates are tracked.
+.env*
+!.env.example
+!.env.test
+
 # Generated MCP inspection artifacts
 assets/_mcp_test/*.png
 assets/_mcp_test/*.blend

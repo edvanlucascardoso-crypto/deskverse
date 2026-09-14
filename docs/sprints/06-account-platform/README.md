@@ -15,7 +15,8 @@ Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
 3. SPRINT-06-03 — Autenticação e sessão
 4. SPRINT-06-04 — Organizações workspaces e membros
 5. SPRINT-06-05 — Permissões por função
-6. SPRINT-06-07 — Shell autenticado e navegação
+6. SPRINT-06-06 — Configuração operacional da plataforma
+7. SPRINT-06-07 — Shell autenticado e navegação
 
 Convites e entrada de colaboradores não fazem parte da primeira entrega da plataforma. A SPRINT-16-01 só pode iniciar depois que os agentes do MVP existirem, mas é independente e não precisa aguardar o fim do roadmap.
 

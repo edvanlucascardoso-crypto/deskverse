@@ -11,9 +11,11 @@ SPRINT_MANIFEST.json define a ordem, as dependências e o ambiente. Este arquivo
 - Fase 02 — Fundamento do Canvas: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. O canvas local entrega grupos, tipos, modos de foco, densidade e responsividade; persistência de layout permanece pendente.
 - Fase 03 — Interações do Canvas: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. O canvas local entrega zoom limitado, foco, multiseleção, arranjo por arraste/teclado, filtros e Drawer móvel; preferências e posição ainda não persistem.
 - Fase 04 — Pessoas e atividade: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Cards locais de identidade e presença, todos os estados de trabalho, chat global, chat privado, reunião local, comunicação espacial sequencial e linha do tempo acionável foram entregues; fonte autenticada de presença, atividade persistida e transporte em tempo real permanecem como integração futura.
-- Fases 05–16: PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e seus agentes são independentes entre si; nunca bloqueiam a entrega dos agentes já estabelecidos da Fase 10.
+- Fase 05 — Experiência do Escritório: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Store local, atividade incremental, simulador, checkpoints, aprovação humana, recuperação e loop até entrega foram entregues; runtime real e evidência visual CUA aguardam ambiente integrado.
+- Fase 06 — Conta e Plataforma: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Limites de aplicação, schema multi-tenant, migration pgvector, Better Auth, workspaces, membros, RBAC, contratos operacionais, healthcheck e shell protegido foram entregues; deploy da migration, serviços externos e evidência visual CUA aguardam ambiente integrado.
+- Fases 07–16: PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e seus agentes são independentes entre si; nunca bloqueiam a entrega dos agentes já estabelecidos da Fase 10.
 - Antes de iniciar a criação dos agentes da Fase 10, a SPRINT-08-02 deve entregar a tela de arquivos dos projetos com UploadThing, Data Table paginada com busca no desktop e lista de cards no mobile.
-- Próxima sprint obrigatória: SPRINT-06-01 — Estrutura final da aplicação e limites de responsabilidade. A sequência 06-01 a 06-07 é o override de plataforma que deve preceder a Sprint 05-01.
+- Próxima sprint obrigatória: SPRINT-07-01 — Onboarding e contexto inicial. As sequências 06-01 a 06-07 e 05-01 a 05-05 já foram implementadas; as integrações pendentes permanecem visíveis nos relatórios das fases.
 
 O roadmap é validado por dependências, não apenas pelo número da fase. O Designer do MVP não depende de pipeline próprio de imagem: usa a API de imagens da OpenAI e UploadThing. A plataforma própria de imagem fica na SPRINT-15-19, posterior ao MVP.
 
