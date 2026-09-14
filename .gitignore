@@ -11,6 +11,11 @@ tools/blender/headless-blender.log
 **/.next/
 **/*.tsbuildinfo
 
+# Playwright test output
+playwright-report/
+test-results/
+blob-report/
+
 # Environment files: only the documented, non-secret templates are tracked.
 .env*
 !.env.example
