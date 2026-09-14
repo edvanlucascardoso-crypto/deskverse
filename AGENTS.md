@@ -79,7 +79,16 @@ Antes de escolher ou iniciar uma sprint, leia:
 
 O manifesto define ordem, dependências, ambiente e prioridade. Sprints ativas ficam em docs/sprints/<fase>/. Sprints concluídas ficam em docs/sprints/completed/<fase>/.
 
-A próxima prioridade é SPRINT-06-01 — Estrutura final da aplicação e limites de responsabilidade. A fundação 06-01 a 06-07 precede a Sprint 05-01 por override explícito do manifesto.
+A próxima prioridade é SPRINT-07-01 — Onboarding e contexto inicial. A fundação 06-01 a 06-07 precedeu a Sprint 05-01 por override explícito do manifesto.
+
+## Checkpoints executivos
+
+- Depois de cada conjunto relevante de sprints executadas — no mínimo ao encerrar uma fase ou uma fundação que altere a direção do produto — criar um checkpoint executivo objetivo e detalhado.
+- Os checkpoints ficam em pastas irmãs de `docs/sprints`, imediatamente depois da última fase incluída no conjunto e antes da próxima fase planejada.
+- Usar o padrão `docs/sprints/<última-fase>-checkpoint-<n>` para preservar a ordenação natural. Exemplo: `docs/sprints/06-checkpoint-1` deve aparecer depois de `06-account-platform` e antes de `07-onboarding-knowledge`.
+- O `README.md` do checkpoint deve registrar o corte temporal, escopo, status, entregas por fase e sprint, evidências de validação, integrações pendentes, riscos, itens explicitamente fora do escopo e a próxima prioridade, com links para os documentos-fonte.
+- Para produzir o checkpoint, conferir `SPRINT_STATUS.md`, `SPRINT_MANIFEST.json`, `SUPERVISOR_PROMPT.md`, o README da fase e seus relatórios de conclusão e integração. Não apresentar integração pendente, mock, fixture ou evidência ausente como funcionalidade concluída.
+- Numerar checkpoints em sequência e manter os anteriores imutáveis, salvo correção explícita de fato ou decisão documentada.
 
 ## Ordem de criação dos agentes do MVP
 
