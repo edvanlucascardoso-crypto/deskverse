@@ -1,8 +1,8 @@
 # SPRINT-15-13 — Especialista de efeitos visuais
 
-**Fase:** 15 — Agentes Futuros  
-**Status inicial:** PLANNED  
-**Dependências:** SPRINT-15-12  
+**Fase:** 15 — Agentes Futuros
+**Status inicial:** PLANNED
+**Dependências:** SPRINT-15-12
 **Superfície principal:** composição, efeitos, segurança e approval
 
 ## Objetivo

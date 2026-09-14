@@ -2,6 +2,8 @@
 
 Capturar o contexto de trabalho da empresa, processar arquivos com rastreabilidade e tornar informações úteis para humanos e agentes sem inventar fatos.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-07-01 — Filas de trabalho e jobs assíncronos

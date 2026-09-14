@@ -1,8 +1,8 @@
 # SPRINT-15-12 — Agente de edição de vídeo + serviços headless
 
-**Fase:** 15 — Agentes Futuros  
-**Status inicial:** PLANNED  
-**Dependências:** SPRINT-15-11, Fase 09 e segurança de serviços  
+**Fase:** 15 — Agentes Futuros
+**Status inicial:** PLANNED
+**Dependências:** SPRINT-15-11, Fase 09 e segurança de serviços
 **Superfície principal:** briefing -> timeline -> preview -> approval -> render
 
 ## Objetivo

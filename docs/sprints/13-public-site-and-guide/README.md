@@ -2,6 +2,8 @@
 
 Definir a linguagem visual da aplicação e explicar o produto para novos usuários, mostrando o valor do canvas e conduzindo a uma primeira experiência sem promessas não implementadas. A landing page deve ser chamativa e icônica sem romper usabilidade, acessibilidade ou a identidade do workspace.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-13-01 — Style guide e arquitetura da página pública

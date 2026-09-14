@@ -2,6 +2,8 @@
 
 Transformar o canvas em uma experiência de escritório observável, com estado local, atividade e um simulador seguro para desenvolver a interface antes do runtime real.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-05-01 — Estado local do escritório

@@ -2,6 +2,8 @@
 
 Representar objetivos, planos, tarefas, entregas, arquivos e decisões humanas como trabalho rastreável, com telas de consulta separadas quando necessário, pausa e retomada explícitas.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-08-01 — Projetos objetivos planos e tarefas

@@ -2,6 +2,8 @@
 
 Pré-requisitos: Fase 09 completa e tela de arquivos da SPRINT-08-02 disponível. O Designer do MVP usa a API de imagens da OpenAI e não depende da plataforma própria de mídia.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Estrutura do MVP
 
 No produto, **Mídias Sociais é o líder**. `Copywriter` e `Designer` continuam como nomes técnicos internos; na interface aparecem como **Redator** e **Designer**, ambos especialistas compartilháveis. O fluxo visível é:

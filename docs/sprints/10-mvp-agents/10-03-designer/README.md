@@ -5,3 +5,5 @@ Sprint funcional canônica: [SPRINT-10-03](../SPRINT-10-03.md). O MVP usa um pro
 ## Serviço associado
 
 - [Gateway externo de imagens](services/SPRINT-10-03-SVC-01-mcp-media.md): integração privada com a API de imagens da OpenAI e UploadThing. A plataforma própria é posterior, na SPRINT-15-19.
+
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).

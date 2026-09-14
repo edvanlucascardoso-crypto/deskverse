@@ -6,6 +6,8 @@ Esta fase é a fundação operacional do MVP e, por override no manifesto, execu
 
 Construir a base de conta, organização e workspace que permite separar dados e controlar acesso sem contaminar o canvas com regras de infraestrutura.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-06-01 — Estrutura final da aplicação e limites de responsabilidade

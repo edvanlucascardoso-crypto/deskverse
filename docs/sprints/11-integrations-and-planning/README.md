@@ -2,6 +2,8 @@
 
 Conectar ferramentas e canais externos ao fluxo de trabalho, mantendo autorização, aprovação, rastreabilidade e fallback claros.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-11-01 — Criação visual assistida

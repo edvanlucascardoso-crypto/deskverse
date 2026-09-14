@@ -2,6 +2,8 @@
 
 Criar a fundação de execução do Deskverse com foco em custo por tarefa concluída, isolamento e troca simples de modelos.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Decisões de arquitetura
 
 - **Runtime padrão:** Eve, atrás da interface `AgentRuntime`; a lógica de produto não depende diretamente do framework.

@@ -2,6 +2,8 @@
 
 Introduzir planos, limites, créditos e preferências de IA sem interromper o trabalho de forma opaca.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-12-01 — Assinaturas e retorno ao workspace

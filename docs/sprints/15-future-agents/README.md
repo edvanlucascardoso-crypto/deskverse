@@ -2,6 +2,8 @@
 
 Adicionar funções sobre a mesma fundação da Fase 09. Todo agente futuro declara `kind`, capabilities, senioridade e `InferenceProfile`; especialistas devem ser reutilizados pela área compartilhada de Especialistas antes de criar capacidades duplicadas.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Regra de prioridade
 
 Esta fase é um **catálogo pós-MVP**, não uma sequência bloqueante. O MVP é exclusivamente Mídias Sociais, Redator e Designer (Fase 10), mais seus gates técnicos já declarados. Nenhuma sprint 15-xx pode ser requisito, gate ou dependência implícita do MVP, da Fase 11 ou de release.

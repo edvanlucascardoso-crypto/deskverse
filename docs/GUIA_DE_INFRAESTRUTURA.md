@@ -8,6 +8,7 @@
 | Banco relacional e vetores | Neon PostgreSQL | Fonte transacional; uma base por ambiente. |
 | Cache e filas físicas | Redis gerenciado | Transporte de fila; a política continua no Deskverse. |
 | Arquivos do MVP | UploadThing | Artefatos dos três primeiros agentes; binários não passam pelo LLM. |
+| Gerenciamento de arquivos posterior | Pydio Cells no Northflank | Migração headless após o MVP; Deskverse continua dono de metadados e autorização. |
 | Mídia própria posterior | Cloudflare R2 | Asset Service headless, URLs assinadas e multipart. |
 | Inferência | Vercel AI Gateway | `InferenceGateway`; sem APIs diretas no MVP. |
 | Execução durável | Eve | `AgentRuntime`; política e custo pertencem ao Deskverse. |
@@ -22,15 +23,16 @@ Fases 01–04 são protótipo local. Não declarar estes componentes como implem
 ```text
 Browser -> Vercel (app/API) -> Neon
                          -> UploadThing / API de imagens da OpenAI (MVP)
+                         -> Pydio Cells no Northflank (pós-MVP, após migração)
                          -> Eve / Vercel AI Gateway
-                         -> Redis scheduler -> Northflank workers -> R2
+                         -> Redis scheduler -> Northflank workers -> R2 (mídia pesada quando aplicável)
 ```
 
 O app não chama worker diretamente: persiste tarefa, o scheduler resolve especialidade/classe e o worker retira por lease/heartbeat. Espera de usuário ou aprovação salva checkpoint e libera worker.
 
 ## Ambientes
 
-Criar `development`, `staging` e `production`, cada um com Neon, Redis, UploadThing, Vercel e, quando a plataforma própria de mídia for iniciada, R2 e Northflank próprios. Não reutilizar banco, filas, bucket, OAuth ou chaves de produção em preview.
+Criar `development`, `staging` e `production`, cada um com Neon, Redis, UploadThing e Vercel. Depois do MVP, cada ambiente que adotar Pydio terá um serviço Pydio Cells no Northflank e storage persistente próprio. Não reutilizar banco, filas, bucket, OAuth ou chaves de produção em preview.
 
 ## Neon PostgreSQL
 
@@ -48,7 +50,7 @@ Redis sustenta `LLM`, `CPU`, `GPU`, `BROWSER` e `RENDER`, além de rate limit, d
 
 A política não fica no backend: prioridade, FIFO por faixa, aging, justiça entre workspaces/líderes, backpressure, retry técnico, dead-letter e cancelamento em cascata são regras do Deskverse. Falha semântica retorna ao líder, não repete cegamente.
 
-## Northflank: serviços e workers próprios posteriores
+## Northflank: serviços, workers e Pydio posteriores
 
 Cada serviço é privado, sem painel público, com container reproduzível, healthcheck e variáveis por ambiente:
 
@@ -59,6 +61,7 @@ Cada serviço é privado, sem painel público, com container reproduzível, heal
 | `deskverse-worker-browser` | BROWSER | navegação isolada e autorizada |
 | `deskverse-mcp-channels` | MCP/API | WhatsApp, Instagram e ações externas auditáveis |
 | `deskverse-mcp-media` | MCP/API | composição, edição e metadados de mídia |
+| `deskverse-pydio` | Files/API | gerenciamento headless de arquivos após a migração do MVP |
 
 Workers consomem a fila autenticados, renovam heartbeat, validam payload e devolvem referência de resultado. MCPs usam schemas pequenos, `workspaceId`, escopo de credencial, idempotency key, timeout, auditoria e resposta estruturada.
 
@@ -90,7 +93,8 @@ Envio, publicação, mudança financeira e outro efeito irreversível exigem app
 3. Redis/scheduler e contratos de task/run.
 4. Eve + Vercel AI Gateway pelas interfaces internas.
 5. API de imagens da OpenAI para o Designer do MVP.
-6. Asset Service R2 e workers Northflank somente na plataforma própria de mídia.
-7. Observabilidade, segurança e gates de release.
+6. Pydio Cells no Northflank, somente após a migração aprovada do storage do MVP.
+7. Asset Service R2 e workers Northflank somente na plataforma própria de mídia.
+8. Observabilidade, segurança e gates de release.
 
 Agentes futuros não bloqueiam o MVP. Cada agente posterior mantém, na sua pasta, as sprints de MCP/API/worker que ele requer.

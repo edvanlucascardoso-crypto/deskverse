@@ -2,6 +2,8 @@
 
 Preparar o produto para operar com isolamento, privacidade, observabilidade, testes e um lançamento revisável.
 
+Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
+
 ## Ordem
 
 1. SPRINT-14-01 — Testes de isolamento entre workspaces
