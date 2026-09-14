@@ -38,6 +38,7 @@ Essa ordem preserva o Gate A0, agora com Social Media como `LeaderAgent` e Copy/
 - A fila separa sessão do líder, especialidade compartilhada e classe física, com prioridade, FIFO por faixa, aging, fairness, limites de concorrência, backpressure, lease/heartbeat, retry técnico idempotente, deduplicação quando aplicável, dead-letter e cancelamento em cascata.
 - `cost_per_successful_task` é o critério econômico primário para promover um modelo/profile; preço por token é apenas uma dimensão do trace.
 - GPT-5.6 Luna é a única exceção OpenAI para `max`, condicionada a profile, provider efetivo e benchmark; GPT-5.6 Sol, os demais modelos OpenAI e Anthropic permanecem sem `max`.
+- A revisão de neutralidade de fornecedor elevou Muse Spark 1.3 (`max`, quando suportado pelo caminho efetivo) a escalonador padrão dos agentes generalistas; DeepSeek V4.1 Flash deixou de ser restrito a microtarefas. GPT-5.6 Sol permanece apenas como último recurso quando não houver paridade comprovada ou o risco exigir.
 - O Designer do MVP usa um orquestrador com API de imagens da OpenAI e UploadThing. Qwen-Image, FLUX.2 Klein e Image Editing Tool própria entram na plataforma de mídia posterior, com master aprovada e recomposição determinística.
 - Neon é o banco transacional; Northflank hospeda serviços e workers próprios posteriores; Redis, storage e GPU ficam atrás de interfaces do Deskverse conforme `docs/GUIA_DE_INFRAESTRUTURA.md`.
 - PRDs soltos de acesso, imagem e vídeo foram absorvidos nas sprints responsáveis e removidos para manter uma fonte operacional única.

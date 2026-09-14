@@ -27,7 +27,7 @@ Todo agente configurável possui quatro níveis independentes de permissão:
 | Sênior | high | tarefas complexas, revisão e maior budget |
 | Especialista | xhigh ou equivalente | maior profundidade economicamente permitida |
 
-`max` é permitido somente para GPT-5.6 Luna entre os modelos OpenAI, quando o `ModelCapabilityProfile`, o provider efetivo e o benchmark demonstrarem suporte e ganho. GPT-5.6 Sol, os demais modelos OpenAI e Anthropic não usam `max`. Para Muse, Kimi e outras famílias, `max` continua condicionado ao suporte real, profile e benchmark. O trace registra `requested_reasoning` e `effective_reasoning`; nunca promover silenciosamente.
+`max` é permitido somente para GPT-5.6 Luna entre os modelos OpenAI, quando o `ModelCapabilityProfile`, o provider efetivo e o benchmark demonstrarem suporte e ganho. GPT-5.6 Sol, os demais modelos OpenAI e Anthropic não usam `max`. Muse Spark 1.3, Kimi e DeepSeek V4.1 Flash podem usar `max` quando o caminho efetivo do provider realmente o suportar, o profile estiver habilitado e o benchmark demonstrar ganho. O trace registra `requested_reasoning` e `effective_reasoning`; nunca promover silenciosamente nem esconder uma tradução para `xhigh`.
 
 Senioridade **não concede tools, scopes ou autonomia adicional**. Autorização é uma camada separada.
 

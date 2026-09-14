@@ -9,7 +9,7 @@
 ## Inference profile default
 
 **Primary:** Claude Sonnet 5  \
-**Escalation:** GPT-5.6 Sol  \
+**Escalation:** Muse Spark 1.3 (`max`, quando o provider efetivo suportar)  \
 A senioridade vem da Fase 09; trocar o modelo padrão exige benchmark/decisão registrada, não apenas preferência do implementador.
 ## Objetivo
 

@@ -9,7 +9,8 @@
 ## Inference profile default
 
 **Primary:** Gemini 3.1 Pro  \
-**Escalation:** GPT-5.6 Sol + aprovação humana  \
+**Escalation:** Muse Spark 1.3 (`max`, quando o provider efetivo suportar) + aprovação humana  \
+GPT-5.6 Sol permanece somente como último recurso quando o benchmark ou a avaliação de risco não demonstrar paridade.
 A senioridade vem da Fase 09; trocar o modelo padrão exige benchmark/decisão registrada, não apenas preferência do implementador.
 ## Objetivo
 

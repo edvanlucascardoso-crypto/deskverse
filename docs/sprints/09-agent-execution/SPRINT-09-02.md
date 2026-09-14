@@ -43,7 +43,7 @@ Nunca escolher modelo/provedor antes de classificar agente, estado e tarefa.
 | Especialista | xhigh/equivalente |
 
 - OpenAI: somente GPT-5.6 Luna pode ter `maxAllowed` quando o `ModelCapabilityProfile`, o provider efetivo e o benchmark autorizarem; GPT-5.6 Sol e os demais modelos OpenAI permanecem com `maxAllowed=false`. Anthropic permanece com `maxAllowed=false`; Especialista termina em `xhigh` ou maior nível abaixo de max quando aplicável.
-- Muse Spark/Kimi: `max` pode ser permitido no `ModelCapabilityProfile` do modelo para Especialista quando a capacidade real do caminho escolhido suportar e o benchmark justificar. Outras famílias permanecem proibidas até haver profile explícito; não existe regra universal de `max`.
+- Muse Spark 1.3/Kimi: `max` pode ser permitido no `ModelCapabilityProfile` para Especialista e tarefas long-horizon quando a capacidade real do caminho escolhido suportar e o benchmark justificar. DeepSeek V4.1 Flash segue a mesma regra por profile explícito. Se o Gateway traduzir `max` para `xhigh`, registrar essa tradução no `effective_reasoning`; outras famílias permanecem proibidas até haver profile explícito.
 - Se o modelo não oferecer o nível pedido, registrar downgrade explícito em `effective_reasoning`.
 - Kimi K3 tem thinking sempre ativo; senioridade deve controlar budget, contexto, iterações e output mesmo quando o thinking não puder ser desligado.
 
@@ -53,25 +53,25 @@ Valores são **snapshot**, nunca hardcode de billing; consultar o catálogo do G
 
 | Modelo | Preço de referência US$/1M in/out | Uso Deskverse | Diretriz do adapter |
 |---|---:|---|---|
-| DeepSeek V4.1 Flash | 0.15 / 0.60 | microtarefas/alto volume | contexto/tools mínimos, respostas curtas, escalate cedo |
+| DeepSeek V4.1 Flash | 0.15 / 0.60 | generalista agentic econômico/alto volume | medium/high por padrão; tools, multimodalidade e tarefas de complexidade média; `max` com profile/provider/benchmark; escalar por risco, não apenas por tamanho |
 | GPT-5.6 Luna | 0.20 / 1.20 | classificação/transformação | structured output estrito, baixa iteração; `max` somente com profile e benchmark |
 | Qwen 3.5 Plus | 0.40 / 2.40 | multimodal/visual/copy/análise | aproveitar tools + visão; bom default econômico especializado |
-| Muse Spark 1.3 | 1.25 / 4.25 | agente generalista/agentic | manter plano/estado, tool filtering, aproveitar cache; default de muitos líderes |
+| Muse Spark 1.3 | 1.25 / 4.25 | agente generalista/agentic/long-horizon | default de muitos líderes; `max` para tarefas difíceis quando suportado; manter plano/estado, tool filtering e cache |
 | Claude Sonnet 5 | 2 / 10 | engenharia de software | contexto de repositório seletivo, ferramentas de código, revisão estruturada |
 | Gemini 3.1 Pro | 2 / 12 | planilhas/financeiro/multimodal pesado | contexto multimodal seletivo, structured output e tools |
 | Kimi K3 | 3 / 12.75+ | long-horizon/visual/engenharia | thinking always-on; compaction/checkpoints e budgets rígidos |
-| GPT-5.6 Sol | 2 / 10 promocional no Gateway | escalation/frontier | somente tarefas difíceis; structured tools; nunca `max` |
+| GPT-5.6 Sol | 2 / 10 promocional no Gateway | último recurso frontier/alto risco | somente após falha ou benchmark sem paridade de perfil mais barato; structured tools; nunca `max` |
 
 Também suportar Muse Spark Contributor **somente por opt-in para dados não sensíveis**, pois o preço reduzido implica política de uso de dados distinta; nunca rotear conteúdo confidencial automaticamente.
 
 ## Estratégia de harness por família
 
-- **Muse Spark:** otimizar para loops agentic longos; manter plano/checkpoint persistente, tool set pequeno por estado, prefixo estável para cache e revisão somente quando o risco justificar.
+- **Muse Spark:** tratar 1.3 como generalista agentic, não como simples escalonador; usar `max` no caminho suportado para tarefas long-horizon difíceis, manter plano/checkpoint persistente, tool set pequeno por estado, prefixo estável para cache e revisão somente quando o risco justificar.
 - **Kimi K3:** thinking é sempre ativo; evitar despejar 1M de contexto só porque cabe. Usar retrieval + compaction/checkpoints, limitar output/iterações e reservar para long-horizon/multimodal difícil.
-- **OpenAI GPT-5.6:** structured outputs/function tools estritos, schemas pequenos, reasoning proporcional à senioridade; Sol é escalation, Luna é worker barato e pode usar `max` somente com profile/provider/benchmark autorizados.
+- **OpenAI GPT-5.6:** structured outputs/function tools estritos, schemas pequenos, reasoning proporcional à senioridade; Sol é último recurso, Luna é worker barato e pode usar `max` somente com profile/provider/benchmark autorizados.
 - **Anthropic Claude:** manter system/tool prefix estável, habilitar caching automático do Gateway quando elegível, contexto de repositório seletivo e tool results compactados. `max` bloqueado.
 - **Gemini:** enviar mídia somente quando necessária, preferir structured output e contexto multimodal seletivo; usar níveis altos para planilhas/financeiro/visão complexa, não como default global.
-- **DeepSeek:** worker barato de alto volume; poucas tools, output curto, iterações baixas e escalation cedo quando confiança/resultado falhar.
+- **DeepSeek:** generalista econômico com alto volume; permitir tarefas de complexidade média, tools e multimodalidade com budgets controlados; usar `max` quando o profile/provider suportar e escalar por risco, falha semântica ou necessidade de contexto/execução superior.
 - **Qwen:** default econômico para visão, copy e análise; schemas de tool claros, entradas multimodais reduzidas e decomposição de tarefas visuais antes de escalar para Kimi.
 
 Essas regras são hipóteses iniciais derivadas das capacidades documentadas e devem ser calibradas pelo Deskverse Agent Benchmark.
@@ -91,7 +91,7 @@ Essas regras são hipóteses iniciais derivadas das capacidades documentadas e d
 - Trocar modelo via configuração sem alterar Agent Core.
 - Um mesmo model ID pode mudar de provider sem conhecimento do agente.
 - Trace mostra agente, senioridade, model, provider final, reasoning pedido/efetivo, tokens, cache, custo e fallback.
-- Teste cobre GPT-5.6 Luna com capability-aware `max`, GPT-5.6 Sol/outros OpenAI e Anthropic sem `max`, além de Kimi/Muse com capability-aware `max`.
+- Teste cobre GPT-5.6 Luna, Muse Spark 1.3 e DeepSeek V4.1 Flash com capability-aware `max`, GPT-5.6 Sol/outros OpenAI e Anthropic sem `max`, além de Kimi com capability-aware `max`.
 - Model catalog/preços não dependem de constantes antigas.
 
 ## Referências pesquisadas

@@ -11,7 +11,7 @@
 
 **Kind:** `LeaderAgent`  \
 **Primary:** Muse Spark 1.3  \
-**Escalation:** GPT-5.6 Sol  \
+**Escalation:** Muse Spark 1.3 (`max`, quando o provider efetivo suportar)  \
 Subtarefas simples podem ser delegadas aos especialistas compartilhados com DeepSeek V4.1 Flash/Luna quando o benchmark permitir.
 ## Objetivo
 

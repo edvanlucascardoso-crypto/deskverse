@@ -16,27 +16,27 @@ Defaults priorizam custo-benefício; o Deskverse Agent Benchmark pode substituí
 
 | Sprint / função | Modelo primário | Escalation/especialista |
 |---|---|---|
-| 15-01 Growth | Muse Spark 1.3 | GPT-5.6 Sol |
+| 15-01 Growth | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
 | 15-02 Motion Design | Qwen 3.5 Plus | Kimi K3 |
-| 15-03 Desenvolvimento Web | Claude Sonnet 5 | GPT-5.6 Sol |
-| 15-04 Tráfego | Muse Spark 1.3 | GPT-5.6 Sol |
-| 15-05 Contabilidade BR | Gemini 3.1 Pro | GPT-5.6 Sol + aprovação humana |
-| 15-06 Gestão | Muse Spark 1.3 | GPT-5.6 Sol |
-| 15-07 Pré-vendas/SDR | Muse Spark 1.3 | GPT-5.6 Sol |
-| 15-08 Fechamento | Muse Spark 1.3 | GPT-5.6 Sol |
-| 15-09 Pós-vendas | Muse Spark 1.3 | GPT-5.6 Sol |
+| 15-03 Desenvolvimento Web | Claude Sonnet 5 | Muse Spark 1.3 (`max`) |
+| 15-04 Tráfego | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
+| 15-05 Contabilidade BR | Gemini 3.1 Pro | Muse Spark 1.3 (`max`) + aprovação humana; GPT-5.6 Sol somente último recurso |
+| 15-06 Gestão | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
+| 15-07 Pré-vendas/SDR | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
+| 15-08 Fechamento | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
+| 15-09 Pós-vendas | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
 | 15-10 Atendimento | DeepSeek V4.1 Flash | Muse Spark 1.3 |
-| 15-11 Gestão de Projetos | Muse Spark 1.3 | GPT-5.6 Sol |
+| 15-11 Gestão de Projetos | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
 | 15-12 Edição de Vídeo | Qwen 3.5 Plus | Kimi K3 |
 | 15-13 Efeitos Visuais | Qwen 3.5 Plus | Kimi K3 |
 | 15-14 Controle Financeiro | Qwen 3.5 Plus | Gemini 3.1 Pro |
 | 15-15 Dados e BI | Qwen 3.5 Plus | Gemini 3.1 Pro |
 | 15-16 Inteligência de Mercado | Muse Spark 1.3 | Kimi K3 |
 | 15-17 Observador humano | sem LLM obrigatório | — |
-| 15-18 Liderança multi-grupo | Muse Spark 1.3 | GPT-5.6 Sol |
+| 15-18 Liderança multi-grupo | Muse Spark 1.3 | Muse Spark 1.3 (`max`) |
 | 15-19 Plataforma própria de imagem | — | — |
 
-DeepSeek/Luna continuam elegíveis para microtarefas, classificação e transformação dentro dos runs. Não promover modelo caro apenas por senioridade; primeiro aumentar reasoning/budget dentro do profile quando isso for mais eficiente.
+DeepSeek V4.1 Flash e Luna continuam elegíveis para classificação e transformação, mas o DeepSeek também pode assumir tarefas agentic de complexidade média e alto volume. Não promover modelo caro apenas por senioridade; primeiro aumentar reasoning/budget dentro do profile quando isso for mais eficiente.
 
 ## Arquivos e mídias
 

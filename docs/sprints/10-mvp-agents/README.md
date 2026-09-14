@@ -28,11 +28,11 @@ O modelo é um **default**, não vendor lock-in. O benchmark da SPRINT-09-08 pod
 
 | Função | Modelo primário | Escalation | Motivo |
 |---|---|---|---|
-| Mídias Sociais | Muse Spark 1.3 | GPT-5.6 Sol | bom uso de ferramentas/agência por custo moderado |
+| Mídias Sociais | Muse Spark 1.3 | Muse Spark 1.3 (`max`) | mesmo perfil generalista com maior esforço; GPT-5.6 Sol fica como último recurso |
 | Redator | Qwen 3.5 Plus | Muse Spark 1.3 | custo baixo e boa capacidade geral/multimodal |
 | Designer | Qwen 3.5 Plus | Kimi K3 | visão + ferramentas baratas; Kimi para tarefas visuais longas/complexas |
 
-DeepSeek V4.1 Flash e GPT-5.6 Luna podem executar subtarefas/microtarefas do pool quando o benchmark permitir, sem mudar a identidade lógica do agente. O Luna pode usar `max` somente sob a exceção de policy registrada na Fase 09; isso se refere ao LLM de inferência, não aos modelos de imagem da SPRINT-15-19.
+DeepSeek V4.1 Flash é um generalista econômico para tarefas agentic de complexidade média e alto volume; GPT-5.6 Luna pode executar transformações estruturadas. Ambos podem usar `max` quando o profile, o provider efetivo e o benchmark permitirem, sem mudar a identidade lógica do agente. Isso se refere aos LLMs de inferência, não aos modelos de imagem da SPRINT-15-19.
 
 ## Senioridade
 
