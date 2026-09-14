@@ -20,6 +20,7 @@ type WorkspaceCanvasProps = {
   isReordering: boolean;
   animationEvent: CanvasAnimationEvent | null;
   reduced: boolean | null;
+  errorMessage?: string | null;
   onSelect: (id: string) => void;
   onDragStart: (id: string) => void;
   onPreviewReorder: (sourceId: string, targetId: string) => void;
@@ -29,7 +30,7 @@ type WorkspaceCanvasProps = {
   onRecover: () => void;
 };
 
-export function WorkspaceCanvas({ canvasState, entries, selected, focused, zoom, communication, isReordering, animationEvent, reduced, onSelect, onDragStart, onPreviewReorder, onOrderCommit, onOrderCancel, onCanvasKeyDown, onRecover }: WorkspaceCanvasProps) {
+export function WorkspaceCanvas({ canvasState, entries, selected, focused, zoom, communication, isReordering, animationEvent, reduced, errorMessage, onSelect, onDragStart, onPreviewReorder, onOrderCommit, onOrderCancel, onCanvasKeyDown, onRecover }: WorkspaceCanvasProps) {
   const wallRef = useRef<HTMLDivElement>(null);
   const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const gridColumns = Math.max(1, Math.ceil(Math.sqrt(entries.length)));
@@ -43,7 +44,7 @@ export function WorkspaceCanvas({ canvasState, entries, selected, focused, zoom,
     <AnimatePresence mode="wait">
       {canvasState === "loading" && <Feedback icon={<LoaderCircle className="spin" size={30} />} title="Atualizando o canvas" text="Buscando presença e atividade dos agentes." />}
       {canvasState === "empty" && <Feedback icon={<Sparkles size={30} />} title="O canvas está pronto" text="Quando os agentes começarem a trabalhar, eles aparecerão aqui." action={<button className="primary-button" onClick={onRecover}><RotateCcw size={16} /> Atualizar</button>} />}
-      {canvasState === "error" && <Feedback error icon={<CircleAlert size={30} />} title="Não foi possível atualizar" text="Os últimos estados conhecidos continuam seguros." action={<button className="secondary-button" onClick={onRecover}>Tentar novamente</button>} />}
+      {canvasState === "error" && <Feedback error icon={<CircleAlert size={30} />} title="Não conseguimos carregar o canvas agora" text={errorMessage ?? "Verifique sua conexão e tente novamente. O que já estava salvo continua preservado."} action={<button className="secondary-button" onClick={onRecover}>Tentar novamente</button>} />}
       {canvasState === "success" && <motion.div ref={wallRef} className="agent-wall" id="agents" layout={!reduced} initial={false} animate={{ opacity: 1 }} style={wallStyle}>
         {communication && <CommunicationLink communication={communication} wallRef={wallRef} tileRefs={tileRefs} scale={zoom / 100} reduced={reduced} />}
         <div className="agent-zone"><div className="agent-zone-grid">{leaders.map(renderTile)}</div></div>
