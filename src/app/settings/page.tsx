@@ -6,6 +6,6 @@ export const dynamic = "force-dynamic";
 
 export default async function SettingsRoute() {
   const session = await getServerSession();
-  if (!session && process.env.NODE_ENV === "production") redirect("/login?returnTo=/settings");
+  if (!session) redirect("/login?returnTo=/settings");
   return <SettingsPage />;
 }

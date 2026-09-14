@@ -8,13 +8,12 @@ function hasSessionCookie(request: NextRequest) {
 }
 
 export function proxy(request: NextRequest) {
-  if (process.env.NODE_ENV !== "production") return NextResponse.next();
   const pathname = request.nextUrl.pathname;
-  const isProtected = protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  const isProtected = pathname === "/" || protectedPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
   if (!isProtected || request.nextUrl.searchParams.get("demo") === "1" || hasSessionCookie(request)) return NextResponse.next();
   const login = new URL("/login", request.url);
   login.searchParams.set("returnTo", pathname);
   return NextResponse.redirect(login);
 }
 
-export const config = { matcher: ["/workspace/:path*", "/settings/:path*"] };
+export const config = { matcher: ["/", "/workspace/:path*", "/settings/:path*"] };

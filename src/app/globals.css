@@ -578,3 +578,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .office-event header { display: grid; gap: 3px; }
   .checkpoint-tag { font-size: 9px; }
 }
+
+.session-menu { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: space-between; gap: 9px; margin-left: auto; }
+.session-menu-loading { min-height: 40px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-sm-value); color: var(--muted-foreground); background: var(--secondary); font-size: 11px; }
+.session-menu-empty { padding: 8px 9px; border: 1px solid var(--border); border-radius: var(--radius-md-value); background: var(--card); }
+.session-identity { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.session-identity > span:last-child { display: grid; min-width: 0; gap: 2px; }
+.session-identity strong, .session-identity small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.session-identity strong { max-width: 170px; color: var(--foreground); font-size: 11px; font-weight: 600; }
+.session-identity small { max-width: 170px; color: var(--muted-foreground); font-size: 10px; }
+.session-avatar { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border-radius: 50%; color: var(--primary-foreground); background: var(--primary); font-size: 10px; font-weight: 700; }
+.session-logout { flex: 0 0 auto; }
+
+@media (max-width: 430px) {
+  .session-identity strong, .session-identity small { max-width: 125px; }
+}
