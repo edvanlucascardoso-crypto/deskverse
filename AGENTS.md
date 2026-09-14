@@ -54,7 +54,7 @@ Abacate Pay é o provedor oficial de billing: checkout, assinaturas, retorno, we
 - O contrato do produto é `Harness = AgentPolicy + TaskPolicy + ModelAdapter`.
 - `AgentRuntime` abstrai Eve. `InferenceGateway` abstrai o Vercel AI Gateway. O Deskverse decide inteligência e política; runtime executa e gateway transporta.
 - A métrica principal é `cost_per_successful_task`: custo total atribuível às tentativas dividido pelo número de tarefas concluídas corretamente.
-- Todo trace registra senioridade e raciocínio solicitados, aplicados e eventualmente rebaixados pelo adapter. OpenAI e Anthropic nunca usam `max`; outras famílias dependem do `ModelCapabilityProfile` e do benchmark.
+- Todo trace registra senioridade e raciocínio solicitados, aplicados e eventualmente rebaixados pelo adapter. GPT-5.6 Luna é a única exceção OpenAI autorizada a usar `max`, sempre com `ModelCapabilityProfile`, provider efetivo e benchmark que demonstrem suporte; GPT-5.6 Sol, os demais modelos OpenAI e Anthropic nunca usam `max`. Outras famílias dependem do profile e do benchmark.
 - Filas são separadas em líder, especialidade compartilhada e classe física (`LLM`, `CPU`, `GPU`, `BROWSER`, `RENDER`), com prioridade, FIFO por faixa, aging, justiça, limite de concorrência, backpressure, lease/heartbeat, retry técnico idempotente, deduplicação quando aplicável, dead-letter e cancelamento em cascata.
 - `WAITING_USER` e `WAITING_APPROVAL` persistem checkpoint e liberam a execução física. Falha técnica e falha semântica têm tratamentos distintos.
 

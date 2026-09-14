@@ -63,7 +63,7 @@
     "economicsMetric": "cost_per_successful_task"
   },
   "reasoningPolicy": {
-    "openai": { "maxAllowed": false },
+    "openai": { "maxAllowed": "luna_only_profile_and_benchmark" },
     "anthropic": { "maxAllowed": false },
     "museSpark": { "maxAllowed": "profile_and_benchmark" },
     "kimi": { "maxAllowed": "profile_and_benchmark" },

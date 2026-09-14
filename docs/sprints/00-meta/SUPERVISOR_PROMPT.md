@@ -21,7 +21,7 @@ Você coordena a implementação do Deskverse a partir do `SPRINT_MANIFEST.json`
 - Especialistas são compartilhados; workers são efêmeros e não aparecem como agentes permanentes.
 - Eve implementa `AgentRuntime`, mas o Deskverse continua dono de política, modelo, senioridade, contexto, tools, custo e roteamento semântico.
 - Vercel AI Gateway implementa `InferenceGateway`, mas o Deskverse continua dono da escolha estratégica do modelo.
-- OpenAI e Anthropic nunca usam `max`; Muse Spark/Kimi só usam `max` com profile e benchmark que autorizem.
+- GPT-5.6 Luna é a única exceção OpenAI autorizada a usar `max`, sempre com profile, provider efetivo e benchmark que autorizem; GPT-5.6 Sol, os demais modelos OpenAI e Anthropic nunca usam `max`. Muse Spark/Kimi continuam sujeitos a profile e benchmark.
 - A interface usa português do Brasil e não expõe jargão técnico desnecessário.
 - No MVP, o agente de imagem usa LLM orquestrador, API de imagens da OpenAI e UploadThing. Qwen-Image, FLUX.2 Klein, master aprovada e Image Editing Tool própria pertencem à SPRINT-15-19, sem bloquear o Gate A0.
 

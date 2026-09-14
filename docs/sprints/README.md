@@ -16,7 +16,7 @@ Infraestrutura: consultar [GUIA_DE_INFRAESTRUTURA.md](../GUIA_DE_INFRAESTRUTURA.
 - **Estado/permissão fora do LLM:** state machines, scopes, budgets e approvals são determinísticos.
 - **Interface em português do Brasil:** nomes visíveis ao usuário devem ser curtos e naturais; inglês fica restrito a marcas, siglas e identificadores técnicos no código.
 - **Filas previsíveis:** líderes, especialistas e workers usam filas duráveis com prioridade, justiça entre workspaces, limites de concorrência, retries idempotentes, aging e cancelamento em cascata.
-- **OpenAI/Anthropic nunca usam reasoning `max`;** outros modelos usam `max` apenas quando suportado e permitido pelo profile.
+- **GPT-5.6 Luna é a única exceção OpenAI para reasoning `max`;** GPT-5.6 Sol, os demais modelos OpenAI e Anthropic não usam `max`; outras famílias só usam `max` quando suportadas e permitidas pelo profile.
 
 As filas são uma política do Deskverse, não uma consequência da implementação do runtime: há uma fila por sessão de líder, uma fila compartilhada por `workspace + especialidade` e filas físicas por classe de execução. A posição exibida na interface nunca é uma promessa fixa; prioridade, aging, justiça e capacidade podem alterar a ordem. Espera humana salva checkpoint e libera a execução física.
 

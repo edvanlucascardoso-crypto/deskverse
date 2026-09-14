@@ -25,7 +25,7 @@ Permitir ajustes por especialidade (ex.: Mídias Sociais usa Pesquisa Júnior e 
 ## Regras
 
 - Senioridade controla reasoning/budget/contexto/iterações, não permissões.
-- OpenAI e Anthropic nunca recebem `max`.
+- GPT-5.6 Luna é a única exceção OpenAI que pode receber `max`, sempre sob o profile, provider efetivo e benchmark autorizados; GPT-5.6 Sol, os demais modelos OpenAI e Anthropic nunca recebem `max`.
 - Outros modelos podem receber `max` apenas se suportado e permitido pelo profile.
 - Usuário pode fixar um modelo em modo avançado, mas recebe aviso de possível impacto em custo/qualidade e ainda passa pelo Vercel AI Gateway.
 

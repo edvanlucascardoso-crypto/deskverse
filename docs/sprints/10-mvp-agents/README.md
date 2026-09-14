@@ -32,7 +32,7 @@ O modelo é um **default**, não vendor lock-in. O benchmark da SPRINT-09-08 pod
 | Redator | Qwen 3.5 Plus | Muse Spark 1.3 | custo baixo e boa capacidade geral/multimodal |
 | Designer | Qwen 3.5 Plus | Kimi K3 | visão + ferramentas baratas; Kimi para tarefas visuais longas/complexas |
 
-DeepSeek V4.1 Flash e GPT-5.6 Luna podem executar subtarefas/microtarefas do pool quando o benchmark permitir, sem mudar a identidade lógica do agente.
+DeepSeek V4.1 Flash e GPT-5.6 Luna podem executar subtarefas/microtarefas do pool quando o benchmark permitir, sem mudar a identidade lógica do agente. O Luna pode usar `max` somente sob a exceção de policy registrada na Fase 09; isso se refere ao LLM de inferência, não aos modelos de imagem da SPRINT-15-19.
 
 ## Senioridade
 
