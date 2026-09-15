@@ -6,25 +6,27 @@ As cinco sprints da fase foram executadas em ordem: 05-01, 05-02, 05-03, 05-04 e
 
 ## Evidências
 
-- `yarn test`: 4 arquivos, 9 testes aprovados; a máquina de estados cobre checkpoint de usuário, aprovação, rejeição, retry e bloqueia a entrega até uma aprovação humana registrada.
+- `yarn test`: 5 arquivos, 11 testes aprovados; a máquina de estados cobre ponto salvo do usuário, aprovação, rejeição, nova tentativa e bloqueia a entrega até uma aprovação humana registrada.
 - `yarn lint`: aprovado.
 - `yarn typecheck`: aprovado.
-- `yarn build`: compilação Next 16/Turbopack concluída.
+- `yarn next build`: compilação Next 16/Turbopack concluída com variáveis temporárias de build; `yarn build` não avançou do `prisma migrate deploy` por falha TLS ao acessar o Neon neste ambiente.
+- `yarn playwright test tests/e2e/workspace.spec.ts --project=chromium --project=mobile-chromium --workers=1 --grep "allows the office request"`: Chromium e mobile aprovados, incluindo a abertura da notificação e o retorno ao pedido.
 - Smoke HTTP local: `/`, `/login`, `/workspace?demo=1` e `/api/health` retornaram `200`.
 - O reducer mantém eventos anteriores e a persistência local conserva o último snapshot quando uma leitura/escrita falha.
 
 ## Roteiro de demonstração
 
 1. Abrir o ícone de fluxo do escritório na navbar.
-2. Executar Fluxo feliz e confirmar a etapa Entrega e o evento concluído.
-3. Executar Pedir resposta e confirmar `Aguardando você`/`WAITING_USER`; usar Responder e retomar.
-4. Executar Aprovação humana; aprovar ou pedir revisão e, no erro, retomar checkpoint.
-5. Executar Falha técnica; confirmar erro recuperável e ação Retomar checkpoint.
-6. Fechar e reabrir o drawer para confirmar restauração do checkpoint local.
+2. Executar Caminho completo e confirmar a etapa Entrega e o evento concluído.
+3. Executar Pedir uma informação e confirmar `Aguardando sua resposta`/`WAITING_USER`; responder e continuar.
+4. Executar Pedir aprovação; aprovar ou pedir ajustes e, no erro, continuar de onde parou.
+5. Executar Simular um erro; confirmar o erro recuperável e a ação Continuar de onde parou.
+6. Abrir Notificações, selecionar um evento do pedido e confirmar que o pedido correto é reaberto.
+7. Fechar e reabrir o drawer para confirmar restauração do ponto salvo local.
 
 ## Limite da evidência visual
 
-Não foi possível concluir a demonstração automatizada em navegador porque não havia browser/IAB disponível no CUA (`No browser is available`). O requisito permanece explícito para a próxima execução em ambiente com navegador.
+A demonstração automatizada via CUA continua pendente porque a sessão não disponibilizou browser/IAB (`No browser is available`), mas o fluxo foi validado em Chromium desktop e mobile pelo Playwright.
 
 ## Próximo passo
 

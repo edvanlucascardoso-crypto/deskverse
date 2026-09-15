@@ -49,6 +49,7 @@ export type Activity = {
   impact: string;
   agentId: string;
   relatedLabel: string;
+  officeRunId?: string;
 };
 
 export type ConversationKind = "global" | "private" | "meeting";

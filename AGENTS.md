@@ -120,6 +120,15 @@ O Gate A0 é: plano de mídias sociais → texto → design quando disponível �
 - Todos os agentes devem usar o sistema de notificações em tempo real para pedidos de permissão, espera, falha, conclusão e eventos que exigem atenção humana ou de outro agente.
 - WhatsApp e Instagram usam um núcleo de mensagens neutro ao provedor; contas são autenticadas por workspace e atribuídas com permissões por especialidade. A inbox unificada cobre mensagens, DMs e comentários. Takeover humano exige sinal confiável de coexistência e a escalação preserva agente, superior, humano, motivo e auditoria.
 
+## Linguagem da aplicação
+
+- A interface usa português do Brasil natural, direto e próximo da fala comum. Escreva para uma pessoa que não conhece a arquitetura interna do produto.
+- Evite traduções literais de jargões de produto ou de convenções estrangeiras quando houver uma expressão clara em português. Por exemplo, prefira “Caminho completo”, “Em andamento”, “Pedir uma informação”, “Pedir aprovação”, “Erro recuperável” e “Continuar de onde parou” a traduções pouco naturais ou termos técnicos sem explicação.
+- Marcas, nomes próprios e termos técnicos que realmente não tenham equivalente adequado permanecem no original, como Apple, Deskverse, UploadThing, workspace, API ou PostgreSQL. O uso deve ser consistente e não transformar a interface em uma mistura desnecessária de idiomas.
+- Estados internos, enums, nomes de ferramentas e contratos de código podem permanecer em inglês quando isso evitar ambiguidade; a camada visível ao usuário deve apresentar uma descrição simples em português.
+- Botões, títulos, mensagens de erro, notificações e estados de espera devem dizer claramente o que aconteceu e qual ação a pessoa pode tomar. Não use rótulos abstratos como “Fluxo feliz”, “retry” ou “checkpoint” sem contexto.
+- Quando um termo técnico for indispensável, explique-o na própria interface ou em um texto de apoio curto. Use a mesma palavra para o mesmo conceito em todas as telas.
+
 ## Capacidades específicas
 
 - O agente de imagem tem dois níveis: Apenas criação de imagens e Criação e edição.

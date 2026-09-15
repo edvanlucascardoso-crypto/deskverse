@@ -21,12 +21,14 @@ import type { WorkspaceRole } from "@/lib/permissions/rbac";
 import { platformWorkspaceRepository } from "@/features/workspace/api-workspace-repository";
 import { localWorkspaceRepository } from "@/features/workspace/local-workspace-repository";
 import type { WorkspaceSummary } from "@/features/workspace/platform-workspace-repository";
+import { officeEventToActivity, officeEventToCanvasActivity } from "@/features/office/office-notifications";
 import { useOfficeStore } from "@/features/office/use-office-store";
 import type { WorkspaceSnapshot } from "@/features/workspace/workspace-domain";
 import { useWorkspaceSnapshot } from "@/features/workspace/use-workspace-snapshot";
 
 type WorkspaceListResponse = { message?: string; workspaces?: Array<{ id: string; role: WorkspaceRole }> };
 type WorkspacePageProps = { demoMode?: boolean; initialWorkspace?: WorkspaceSummary | null; initialWorkspaceError?: string | null };
+type ActivityInput = Omit<Activity, "id" | "time"> & Partial<Pick<Activity, "id" | "time">>;
 
 function snapshotFromSummary(workspace: WorkspaceSummary): WorkspaceSnapshot {
   return {
@@ -90,9 +92,13 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   const orderRef = useRef(defaultOrder);
   const orderMutation = useRef(0);
   const animationTimers = useRef<number[]>([]);
+  const officeNotificationScope = useRef<string | null>(null);
+  const officeNotificationEventIds = useRef(new Set<string>());
+  const officeNotificationsHydrated = useRef(false);
   const [notice, setNotice] = useState("Canvas sincronizado agora");
   const reduced = useReducedMotion();
   const office = useOfficeStore(workspaceScopeId, orderScope.userId);
+  const selectOfficeRun = office.selectRun;
 
   const changeWorkspace = useCallback((workspaceId: string, role?: WorkspaceRole) => {
     setActiveWorkspaceId(workspaceId);
@@ -152,8 +158,8 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
     return matchesView;
   }), [allAgents, currentActivity, view, visibleOrder]);
   const selectedAgent = allAgents.find((agent) => agent.id === selected) ?? null;
-  const addActivity = useCallback((activity: Omit<Activity, "id" | "time">) => {
-    setActivityFeed((current) => [{ ...activity, id: `activity-${Date.now()}`, time: "agora" }, ...current].slice(0, 8));
+  const addActivity = useCallback((activity: ActivityInput) => {
+    setActivityFeed((current) => [{ ...activity, id: activity.id ?? `activity-${Date.now()}`, time: activity.time ?? "agora" }, ...current].slice(0, 8));
   }, []);
   const reorderAgents = useCallback((sourceId: string, targetId: string) => {
     const source = allAgents.find((agent) => agent.id === sourceId);
@@ -209,6 +215,37 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   }, []);
 
   useEffect(() => () => animationTimers.current.forEach((timer) => window.clearTimeout(timer)), []);
+
+  useEffect(() => {
+    const scope = `${workspaceScopeId}:${orderScope.userId}`;
+    if (officeNotificationScope.current !== scope) {
+      officeNotificationScope.current = scope;
+      officeNotificationEventIds.current = new Set();
+      officeNotificationsHydrated.current = false;
+    }
+    if (office.loading) return;
+    if (!officeNotificationsHydrated.current) {
+      office.runs.flatMap((run) => run.events).forEach((event) => officeNotificationEventIds.current.add(event.id));
+      officeNotificationsHydrated.current = true;
+      return;
+    }
+
+    const newEvents = office.runs
+      .flatMap((run) => run.events.map((event) => ({ event, run })))
+      .filter(({ event }) => !officeNotificationEventIds.current.has(event.id))
+      .sort((first, second) => new Date(first.event.occurredAt).getTime() - new Date(second.event.occurredAt).getTime());
+
+    if (!newEvents.length) return;
+    newEvents.forEach(({ event, run }) => {
+      officeNotificationEventIds.current.add(event.id);
+      addActivity(officeEventToActivity(event, run));
+    });
+    const latest = newEvents[newEvents.length - 1].event;
+    setLiveActivity((current) => ({ ...current, social: officeEventToCanvasActivity(latest) }));
+    setNotice(latest.message);
+    setNotificationPulse(true);
+    scheduleAnimationReset(() => setNotificationPulse(false), 900);
+  }, [addActivity, office.loading, office.runs, orderScope.userId, scheduleAnimationReset, workspaceScopeId]);
 
   const communicate = useCallback((fromId: string, toId: string) => {
     if (fromId === toId) return;
@@ -268,13 +305,23 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   }, [addActivity, scheduleAnimationReset]);
 
   const openActivity = useCallback((activity: Activity) => {
+    if (activity.officeRunId) {
+      selectOfficeRun(activity.officeRunId);
+      setSelected(null);
+      setMenuOpen(false);
+      setNotificationsOpen(false);
+      setConversationOpen(false);
+      setOfficeOpen(true);
+      setNotice(`${activity.relatedLabel} aberto no acompanhamento do pedido`);
+      return;
+    }
     setFocused(activity.agentId);
     setSelected(activity.agentId);
     setMenuOpen(false);
     setNotificationsOpen(false);
     setConversationOpen(false);
     setNotice(`${activity.relatedLabel} aberto no contexto de ${activity.origin}`);
-  }, []);
+  }, [selectOfficeRun]);
 
   const openActivityById = useCallback((activityId: string) => {
     const activity = activityFeed.find((item) => item.id === activityId);

@@ -562,8 +562,17 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .office-next-step .eyebrow { margin-bottom: 0; }
 .office-next-step strong { font-size: 13px; line-height: 1.35; }
 .office-next-step span { color: var(--muted-foreground); font-size: 10px; }
+.office-manual-flow { margin-top: 18px; padding: 15px; border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border)); border-radius: var(--radius-md-value); background: color-mix(in srgb, var(--primary) 4%, var(--card)); }
+.office-manual-flow .platform-section-heading { align-items: center; }
+.office-manual-flow h2 { font-size: 15px; }
+.office-manual-intro { margin: 8px 0 12px; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
 .office-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .office-actions .primary-button, .office-actions .secondary-button { min-height: 40px; font-size: 11px; }
+.office-answer-field { display: grid; width: 100%; gap: 8px; }
+.office-answer-field label { color: var(--foreground); font-size: 11px; font-weight: 500; }
+.office-answer-field input { width: 100%; min-height: 40px; padding: 9px 11px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm-value); color: var(--foreground); background: var(--input); font: inherit; font-size: 12px; }
+.office-answer-field input:focus { border-color: var(--primary); outline: 2px solid color-mix(in srgb, var(--primary) 35%, transparent); outline-offset: 1px; }
+.office-answer-field .primary-button { width: fit-content; }
 .office-scenarios, .office-events { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
 .office-scenario { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; padding: 11px; border: 1px solid var(--border); border-radius: var(--radius-md-value); color: var(--foreground); background: var(--card); text-align: left; }
 .office-scenario:hover { border-color: color-mix(in srgb, var(--primary) 44%, var(--border)); background: var(--accent); }

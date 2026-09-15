@@ -56,4 +56,30 @@ test.describe("workspace canvas", () => {
     await expect(page.getByText("Próximo passo", { exact: true })).toBeVisible();
     await expect(page.getByRole("region", { name: /Canvas em grade de agentes/i })).toBeVisible();
   });
+
+  test("allows the office request to advance one step at a time and notifies the workspace", async ({ page }) => {
+    await page.getByRole("button", { name: "Acompanhar pedidos" }).click();
+    await expect(page.getByRole("heading", { name: "Uma etapa por vez" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Iniciar trabalho" }).click();
+    await expect(page.getByText("Em andamento", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Pedir aprovação", exact: true }).click();
+    await expect(page.getByText("Aguardando sua aprovação", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Aprovar entrega" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Aprovar entrega" }).click();
+    await expect(page.getByRole("button", { name: "Confirmar entrega" })).toBeVisible();
+    await page.getByRole("button", { name: "Confirmar entrega" }).click();
+    await expect(page.getByText("Concluído", { exact: true })).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("heading", { name: "Do pedido à entrega" })).not.toBeVisible();
+    await expect(page.locator("main")).not.toHaveAttribute("aria-hidden", "true");
+    await page.getByRole("button", { name: "Abrir notificações" }).click();
+    const notification = page.getByRole("button", { name: /A entrega foi registrada com sucesso/ });
+    await expect(notification).toBeVisible();
+    await notification.click();
+    await expect(page.getByRole("heading", { name: "Do pedido à entrega" })).toBeVisible();
+  });
 });

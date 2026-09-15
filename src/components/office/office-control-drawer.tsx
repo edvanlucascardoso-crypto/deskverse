@@ -1,9 +1,10 @@
 import { AlertTriangle, Check, CheckCircle2, CircleDot, Clock3, ListChecks, Play, Plus, RefreshCw, Send, ShieldCheck, UserRound } from "lucide-react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useState } from "react";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { officeScenarios } from "@/features/office/office-simulator";
-import { officePhaseLabels, officeStateLabel, type OfficeAction, type OfficeSnapshot } from "@/features/office/office-domain";
+import { officeCheckpointLabel, officePhaseLabels, officeStateLabel, type OfficeAction, type OfficeSnapshot } from "@/features/office/office-domain";
 
 type OfficeControlDrawerProps = {
   open: boolean;
@@ -28,28 +29,29 @@ function timeAgo(value: string) {
 
 export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId, loading, error, onDispatch, onSelectRun, onCreateRun, onRunScenario, onRetry }: OfficeControlDrawerProps) {
   const state = snapshot?.state ?? "loading";
+  const [userAnswer, setUserAnswer] = useState("");
 
   return <Drawer open={open} onOpenChange={setOpen}>
     <DrawerContent scrollable className="office-drawer">
       <DrawerHeader>
-        <DrawerDescription><CircleDot size={14} /> Fluxo do escritório</DrawerDescription>
+        <DrawerDescription><CircleDot size={14} /> Acompanhar um pedido</DrawerDescription>
         <DrawerTitle>Do pedido à entrega</DrawerTitle>
       </DrawerHeader>
 
-      {loading && <div className="platform-state loading">Carregando execuções…</div>}
+      {loading && <div className="platform-state loading">Carregando pedidos…</div>}
       {error && <div className="platform-state error" role="alert"><AlertTriangle size={16} />{error}<button className="text-button" type="button" onClick={onRetry}>Tentar carregar novamente</button></div>}
 
       {!loading && <section className="office-runs" aria-labelledby="office-runs-title">
         <div className="office-section-heading">
           <div>
-            <p className="eyebrow">SIMULAÇÃO LOCAL</p>
-            <h2 id="office-runs-title"><ListChecks size={17} /> {runs.length} {runs.length === 1 ? "execução" : "execuções"}</h2>
+            <p className="eyebrow">TESTE LOCAL</p>
+            <h2 id="office-runs-title"><ListChecks size={17} /> {runs.length} {runs.length === 1 ? "pedido" : "pedidos"}</h2>
           </div>
-          <button className="secondary-button compact-button" type="button" onClick={onCreateRun}><Plus size={15} /> Nova execução</button>
+          <button className="secondary-button compact-button" type="button" onClick={() => { setUserAnswer(""); onCreateRun(); }}><Plus size={15} /> Novo pedido</button>
         </div>
-        <p className="office-simulation-note">Os dados ficam apenas neste dispositivo. Cada cenário abaixo cria uma execução separada, como acontecerá com as execuções reais.</p>
-        <div className="office-run-list" role="list" aria-label="Execuções do escritório">
-          {runs.map((run) => <button className={`office-run-list-item${run.runId === activeRunId ? " active" : ""}`} key={run.runId} type="button" aria-pressed={run.runId === activeRunId} onClick={() => onSelectRun(run.runId)}>
+        <p className="office-simulation-note">Os dados ficam apenas neste dispositivo. Cada demonstração cria um pedido separado.</p>
+        <div className="office-run-list" role="list" aria-label="Pedidos do escritório">
+          {runs.map((run) => <button className={`office-run-list-item${run.runId === activeRunId ? " active" : ""}`} key={run.runId} type="button" aria-pressed={run.runId === activeRunId} onClick={() => { setUserAnswer(""); onSelectRun(run.runId); }}>
             <span className={`office-run-list-status ${run.state}`}><span className="status-dot" /></span>
             <span className="office-run-list-copy"><strong>{run.title}</strong><small>{officeStateLabel(run.state)} · {timeAgo(run.updatedAt)}</small></span>
             {run.runId === activeRunId && <Check size={16} aria-hidden="true" />}
@@ -59,44 +61,55 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId
 
       {snapshot && <>
         <div className="office-run-heading">
-          <div><p className="eyebrow">EXECUÇÃO · {snapshot.runId}</p><h2>{snapshot.title}</h2><p>{snapshot.brief}</p></div>
+          <div><p className="eyebrow">PEDIDO</p><h2>{snapshot.title}</h2><p>{snapshot.brief}</p></div>
           <span className={`office-state-pill ${state}`}><span className="status-dot" />{officeStateLabel(state)}</span>
         </div>
 
-        <div className="office-stepper" aria-label="Etapas do fluxo">
+        <div className="office-stepper" aria-label="Etapas do pedido">
           {phases.map((phase) => <div key={phase} className={snapshot.phase === phase ? "active" : phases.indexOf(phase) < phases.indexOf(snapshot.phase) ? "done" : ""}><span>{phases.indexOf(phase) + 1}</span><small>{officePhaseLabels[phase]}</small></div>)}
         </div>
 
         <div className="office-next-step"><p className="eyebrow">PRÓXIMO PASSO</p><strong>{snapshot.nextStep}</strong><span>Origem: {snapshot.source} · Responsável: {snapshot.responsible}</span></div>
 
-        <div className="office-actions" aria-label="Ações da execução">
-          {state === "empty" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "START" })}><Play size={16} /> Iniciar execução</button>}
-          {state === "working" && <>
-            <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REQUEST_USER" })}><UserRound size={16} /> Pedir resposta</button>
-            <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REQUEST_APPROVAL" })}><ShieldCheck size={16} /> Pedir aprovação</button>
-            <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "COMPLETE" })}><Send size={16} /> Registrar entrega</button>
-            <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "FAIL" })}><AlertTriangle size={16} /> Simular falha</button>
-          </>}
-          {state === "WAITING_USER" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "ANSWER_USER", answer: "Público recorrente e leads quentes" })}><UserRound size={16} /> Responder e retomar</button>}
-          {state === "WAITING_APPROVAL" && <>
-            <button className="primary-button" type="button" onClick={() => onDispatch({ type: "APPROVE" })}><ShieldCheck size={16} /> Aprovar pacote</button>
-            <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REJECT" })}><AlertTriangle size={16} /> Pedir revisão</button>
-          </>}
-          {state === "error" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "RETRY" })}><RefreshCw size={16} /> Retomar checkpoint</button>}
-          {state === "success" && <button className="secondary-button" type="button" onClick={onCreateRun}><Plus size={16} /> Preparar nova execução</button>}
-        </div>
+        <section className="office-manual-flow" aria-labelledby="office-manual-flow-title">
+          <div className="platform-section-heading">
+            <div><p className="eyebrow">CONTROLE MANUAL</p><h2 id="office-manual-flow-title">Uma etapa por vez</h2></div>
+          </div>
+          <p className="office-manual-intro">Use estas ações para acompanhar cada pausa, decisão e retomada. O próximo passo aparece sempre destacado acima.</p>
+          <div className="office-actions" aria-label="Ações do pedido">
+            {state === "empty" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "START" })}><Play size={16} /> Iniciar trabalho</button>}
+            {state === "working" && snapshot.checkpoint === "approval-approved" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "COMPLETE" })}><Send size={16} /> Confirmar entrega</button>}
+            {state === "working" && snapshot.checkpoint !== "approval-approved" && <>
+              <button className="secondary-button" type="button" onClick={() => { setUserAnswer(""); onDispatch({ type: "REQUEST_USER" }); }}><UserRound size={16} /> Pedir uma informação</button>
+              <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REQUEST_APPROVAL" })}><ShieldCheck size={16} /> Pedir aprovação</button>
+              <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "FAIL" })}><AlertTriangle size={16} /> Simular erro</button>
+            </>}
+            {state === "WAITING_USER" && <div className="office-answer-field">
+              <label htmlFor="office-answer">Qual público deve receber prioridade?</label>
+              <input id="office-answer" value={userAnswer} onChange={(event) => setUserAnswer(event.target.value)} placeholder="Ex.: leads quentes e clientes atuais" />
+              <button className="primary-button" type="button" disabled={!userAnswer.trim()} onClick={() => { onDispatch({ type: "ANSWER_USER", answer: userAnswer }); setUserAnswer(""); }}><UserRound size={16} /> Enviar resposta</button>
+            </div>}
+            {state === "WAITING_APPROVAL" && <>
+              <button className="primary-button" type="button" onClick={() => onDispatch({ type: "APPROVE" })}><ShieldCheck size={16} /> Aprovar entrega</button>
+              <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REJECT" })}><AlertTriangle size={16} /> Pedir ajustes</button>
+            </>}
+            {state === "error" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "RETRY" })}><RefreshCw size={16} /> Continuar de onde parou</button>}
+            {state === "success" && <button className="secondary-button" type="button" onClick={() => { setUserAnswer(""); onCreateRun(); }}><Plus size={16} /> Preparar novo pedido</button>}
+          </div>
+        </section>
 
         <section className="office-scenarios">
-          <div className="platform-section-heading"><div><p className="eyebrow">CENÁRIOS DE SIMULAÇÃO</p><h2>Fluxos rastreáveis</h2></div></div>
-          {Object.entries(officeScenarios).map(([key, scenario]) => <button className="office-scenario" key={key} type="button" onClick={() => onRunScenario(scenario.actions)}><span><strong>{scenario.label}</strong><small>{scenario.description}</small></span><Play size={15} /></button>)}
+          <div className="platform-section-heading"><div><p className="eyebrow">ATALHOS DE TESTE</p><h2>Demonstrações rápidas</h2></div></div>
+          <p className="office-simulation-note">Estes atalhos percorrem várias etapas de uma vez. Para testar com calma, use o controle manual acima.</p>
+          {Object.entries(officeScenarios).map(([key, scenario]) => <button className="office-scenario" key={key} type="button" onClick={() => { setUserAnswer(""); onRunScenario(scenario.actions); }}><span><strong>{scenario.label}</strong><small>{scenario.description}</small></span><Play size={15} /></button>)}
         </section>
 
         <section className="office-events">
-          <div className="platform-section-heading"><div><p className="eyebrow">HISTÓRICO DA EXECUÇÃO</p><h2>{snapshot.events.length} eventos</h2></div><span className="checkpoint-tag"><Clock3 size={13} /> checkpoint {snapshot.checkpoint ?? "aberto"}</span></div>
-          {snapshot.events.length ? snapshot.events.map((event) => <article className="office-event" key={event.id}><div className="office-event-icon"><CheckCircle2 size={15} /></div><div><header><strong>{event.message}</strong><time>{timeAgo(event.occurredAt)}</time></header><p>{event.impact}</p><small><b>{event.source}</b> · {event.responsible} · Próximo: {event.nextStep}</small></div></article>) : <div className="platform-state empty">Ainda não há eventos. O checkpoint será criado quando a execução começar.</div>}
+          <div className="platform-section-heading"><div><p className="eyebrow">HISTÓRICO DO PEDIDO</p><h2>{snapshot.events.length} {snapshot.events.length === 1 ? "evento" : "eventos"}</h2></div><span className="checkpoint-tag"><Clock3 size={13} /> ponto salvo: {officeCheckpointLabel(snapshot.checkpoint)}</span></div>
+          {snapshot.events.length ? snapshot.events.map((event) => <article className="office-event" key={event.id}><div className="office-event-icon"><CheckCircle2 size={15} /></div><div><header><strong>{event.message}</strong><time>{timeAgo(event.occurredAt)}</time></header><p>{event.impact}</p><small><b>{event.source}</b> · {event.responsible} · Próximo: {event.nextStep}</small></div></article>) : <div className="platform-state empty">Ainda não há eventos. O pedido começa quando você iniciar o trabalho.</div>}
         </section>
 
-        <footer className="office-delivery"><div><p className="eyebrow">ENTREGA</p><strong>{snapshot.delivery.label}</strong></div><span className={snapshot.delivery.status === "ready" ? "service-ready" : "service-pending"}>{snapshot.delivery.status === "ready" ? <><CheckCircle2 size={15} /> Pronta</> : "Protegida até concluir"}</span></footer>
+        <footer className="office-delivery"><div><p className="eyebrow">ENTREGA</p><strong>{snapshot.delivery.label}</strong></div><span className={snapshot.delivery.status === "ready" ? "service-ready" : "service-pending"}>{snapshot.delivery.status === "ready" ? <><CheckCircle2 size={15} /> Pronta</> : "Protegida até a aprovação"}</span></footer>
       </>}
     </DrawerContent>
   </Drawer>;
