@@ -1,4 +1,4 @@
-import type { OfficeAction } from "./office-domain";
+import type { OfficeAction } from "@/types/office";
 
 export const officeScenarios = {
   happy: { label: "Caminho completo", description: "Passa pela aprovação e registra a entrega", actions: [{ type: "START" }, { type: "REQUEST_APPROVAL" }, { type: "APPROVE" }, { type: "COMPLETE" }] as OfficeAction[] },

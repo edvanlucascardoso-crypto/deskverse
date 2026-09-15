@@ -1,6 +1,4 @@
-import { z } from "zod";
-
-export const workspaceIdSchema = z.string().min(2).max(80).regex(/^[a-zA-Z0-9_-]+$/, "Identificador de espaço inválido.");
+import { workspaceIdSchema } from "@/zod/schemas/workspace";
 
 export function parseWorkspaceId(value: string) {
   const result = workspaceIdSchema.safeParse(value);

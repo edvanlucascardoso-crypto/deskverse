@@ -3,20 +3,23 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { NewOfficeRunDrawer } from "@/components/office/new-office-run-drawer";
+import type { CreateOfficeRunInput, OfficeAction, OfficeSnapshot } from "@/types/office";
 import { officeScenarios } from "@/features/office/office-simulator";
-import { officeCheckpointLabel, officePhaseLabels, officeStateLabel, type OfficeAction, type OfficeSnapshot } from "@/features/office/office-domain";
+import { officeApprovalStateLabel, officeCheckpointLabel, officePhaseLabels, officeStateLabel } from "@/features/office/office-domain";
 
 type OfficeControlDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   snapshot: OfficeSnapshot | null;
+  focusedApprovalId?: string | null;
   runs: OfficeSnapshot[];
   activeRunId: string | null;
   loading: boolean;
   error: string | null;
   onDispatch: (action: OfficeAction) => void;
   onSelectRun: (runId: string) => void;
-  onCreateRun: () => void;
+  onCreateRun: (input: CreateOfficeRunInput) => void;
   onRunScenario: (actions: OfficeAction[]) => void;
   onRetry: () => void;
 };
@@ -27,9 +30,15 @@ function timeAgo(value: string) {
   try { return formatDistanceToNowStrict(new Date(value), { addSuffix: true, locale: ptBR }); } catch { return "agora"; }
 }
 
-export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId, loading, error, onDispatch, onSelectRun, onCreateRun, onRunScenario, onRetry }: OfficeControlDrawerProps) {
+export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId = null, runs, activeRunId, loading, error, onDispatch, onSelectRun, onCreateRun, onRunScenario, onRetry }: OfficeControlDrawerProps) {
   const state = snapshot?.state ?? "loading";
   const [userAnswer, setUserAnswer] = useState("");
+  const [newRunOpen, setNewRunOpen] = useState(false);
+
+  const createRun = (input: CreateOfficeRunInput) => {
+    setUserAnswer("");
+    onCreateRun(input);
+  };
 
   return <Drawer open={open} onOpenChange={setOpen}>
     <DrawerContent scrollable className="office-drawer">
@@ -47,7 +56,7 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId
             <p className="eyebrow">TESTE LOCAL</p>
             <h2 id="office-runs-title"><ListChecks size={17} /> {runs.length} {runs.length === 1 ? "pedido" : "pedidos"}</h2>
           </div>
-          <button className="secondary-button compact-button" type="button" onClick={() => { setUserAnswer(""); onCreateRun(); }}><Plus size={15} /> Novo pedido</button>
+          <button className="secondary-button compact-button" type="button" onClick={() => { setUserAnswer(""); setNewRunOpen(true); }}><Plus size={15} /> Novo pedido</button>
         </div>
         <p className="office-simulation-note">Os dados ficam apenas neste dispositivo. Cada demonstração cria um pedido separado.</p>
         <div className="office-run-list" role="list" aria-label="Pedidos do escritório">
@@ -71,6 +80,19 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId
 
         <div className="office-next-step"><p className="eyebrow">PRÓXIMO PASSO</p><strong>{snapshot.nextStep}</strong><span>Origem: {snapshot.source} · Responsável: {snapshot.responsible}</span></div>
 
+        {snapshot.approvals.length > 0 && <section className="office-approvals" aria-labelledby="office-approvals-title">
+          <div className="platform-section-heading"><div><p className="eyebrow">DECISÕES</p><h2 id="office-approvals-title"><ShieldCheck size={17} /> Aprovações</h2></div><span className="checkpoint-tag">{snapshot.approvals.filter((approval) => approval.state === "pending").length} pendentes</span></div>
+          <p className="office-simulation-note">Cada item mostra exatamente o material, a versão e o motivo da decisão. Aprovar um item não aprova os demais.</p>
+          <div className="office-approval-list">
+            {snapshot.approvals.map((approval) => <article className={`office-approval-card ${approval.state}${approval.id === focusedApprovalId ? " focused" : ""}`} key={approval.id} aria-current={approval.id === focusedApprovalId ? "step" : undefined}>
+              <header><div><strong>{approval.title}</strong><small>{officeApprovalStateLabel(approval.state)} · solicitada por {approval.requestedBy}</small></div><span className={`office-approval-status ${approval.state}`}><span className="status-dot" />{officeApprovalStateLabel(approval.state)}</span></header>
+              <p>{approval.summary}</p>
+              <small className="office-approval-reason">Motivo: {approval.reason}</small>
+              {approval.artifacts.length > 0 && <div className="office-approval-artifacts" aria-label={`Materiais da aprovação ${approval.title}`}>{approval.artifacts.map((artifact) => <span key={artifact.id}>{artifact.label} · {artifact.version}</span>)}</div>}
+            </article>)}
+          </div>
+        </section>}
+
         <section className="office-manual-flow" aria-labelledby="office-manual-flow-title">
           <div className="platform-section-heading">
             <div><p className="eyebrow">CONTROLE MANUAL</p><h2 id="office-manual-flow-title">Uma etapa por vez</h2></div>
@@ -89,12 +111,11 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId
               <input id="office-answer" value={userAnswer} onChange={(event) => setUserAnswer(event.target.value)} placeholder="Ex.: leads quentes e clientes atuais" />
               <button className="primary-button" type="button" disabled={!userAnswer.trim()} onClick={() => { onDispatch({ type: "ANSWER_USER", answer: userAnswer }); setUserAnswer(""); }}><UserRound size={16} /> Enviar resposta</button>
             </div>}
-            {state === "WAITING_APPROVAL" && <>
-              <button className="primary-button" type="button" onClick={() => onDispatch({ type: "APPROVE" })}><ShieldCheck size={16} /> Aprovar entrega</button>
-              <button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REJECT" })}><AlertTriangle size={16} /> Pedir ajustes</button>
-            </>}
+            {state === "WAITING_APPROVAL" && <div className="office-approval-action-list">
+              {(snapshot.approvals.filter((approval) => approval.state === "pending").length ? snapshot.approvals.filter((approval) => approval.state === "pending") : [{ id: undefined, title: "entrega" }]).map((approval) => <div className="office-approval-action" key={approval.id ?? "legacy-approval"}><strong>Decidir: {approval.title}</strong><div><button className="primary-button" type="button" onClick={() => onDispatch({ type: "APPROVE", approvalId: approval.id })}><ShieldCheck size={16} /> Aprovar item</button><button className="secondary-button" type="button" onClick={() => onDispatch({ type: "REJECT", approvalId: approval.id })}><AlertTriangle size={16} /> Pedir ajustes</button></div></div>)}
+            </div>}
             {state === "error" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "RETRY" })}><RefreshCw size={16} /> Continuar de onde parou</button>}
-            {state === "success" && <button className="secondary-button" type="button" onClick={() => { setUserAnswer(""); onCreateRun(); }}><Plus size={16} /> Preparar novo pedido</button>}
+            {state === "success" && <button className="secondary-button" type="button" onClick={() => { setUserAnswer(""); setNewRunOpen(true); }}><Plus size={16} /> Preparar novo pedido</button>}
           </div>
         </section>
 
@@ -112,5 +133,6 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, runs, activeRunId
         <footer className="office-delivery"><div><p className="eyebrow">ENTREGA</p><strong>{snapshot.delivery.label}</strong></div><span className={snapshot.delivery.status === "ready" ? "service-ready" : "service-pending"}>{snapshot.delivery.status === "ready" ? <><CheckCircle2 size={15} /> Pronta</> : "Protegida até a aprovação"}</span></footer>
       </>}
     </DrawerContent>
+    <NewOfficeRunDrawer open={newRunOpen} setOpen={setNewRunOpen} onCreate={createRun} />
   </Drawer>;
 }

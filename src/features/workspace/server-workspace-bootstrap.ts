@@ -1,6 +1,7 @@
 import "server-only";
 
-import { ensureDefaultWorkspace, listUserWorkspacesCached, type WorkspaceSummary } from "./platform-workspace-repository";
+import { ensureDefaultWorkspace, listUserWorkspacesCached } from "./platform-workspace-repository";
+import type { WorkspaceSummary } from "@/types/workspace";
 
 export type ServerWorkspaceBootstrap = {
   initialWorkspace: WorkspaceSummary | null;

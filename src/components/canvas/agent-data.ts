@@ -50,6 +50,9 @@ export type Activity = {
   agentId: string;
   relatedLabel: string;
   officeRunId?: string;
+  officeApprovalId?: string;
+  officeConversationId?: string;
+  officeArtifactId?: string;
 };
 
 export type ConversationKind = "global" | "private" | "meeting";

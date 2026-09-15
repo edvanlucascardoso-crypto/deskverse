@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { localOfficeRepository } from "./local-office-repository";
-import { createOfficeSnapshot, reduceOfficeSnapshot, type OfficeAction, type OfficeWorkspaceState } from "./office-domain";
+import type { CreateOfficeRunInput, OfficeAction, OfficeWorkspaceState } from "@/types/office";
+import { createOfficeSnapshot, reduceOfficeSnapshot } from "./office-domain";
 
 function newLocalRunId() {
   return `office-local-run-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -44,8 +45,8 @@ export function useOfficeStore(workspaceId: string, userId: string) {
     setError(null);
   }, []);
 
-  const createRun = useCallback(() => {
-    const run = createOfficeSnapshot(new Date(), newLocalRunId());
+  const createRun = useCallback((input: CreateOfficeRunInput) => {
+    const run = createOfficeSnapshot(new Date(), newLocalRunId(), input);
     setOfficeState((current) => ({ activeRunId: run.runId, runs: [run, ...current.runs] }));
     setError(null);
   }, []);

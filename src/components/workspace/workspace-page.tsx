@@ -20,10 +20,9 @@ import { authClient } from "@/lib/auth-client";
 import type { WorkspaceRole } from "@/lib/permissions/rbac";
 import { platformWorkspaceRepository } from "@/features/workspace/api-workspace-repository";
 import { localWorkspaceRepository } from "@/features/workspace/local-workspace-repository";
-import type { WorkspaceSummary } from "@/features/workspace/platform-workspace-repository";
+import type { WorkspaceSummary, WorkspaceSnapshot } from "@/types/workspace";
 import { officeEventToActivity, officeEventToCanvasActivity } from "@/features/office/office-notifications";
 import { useOfficeStore } from "@/features/office/use-office-store";
-import type { WorkspaceSnapshot } from "@/features/workspace/workspace-domain";
 import { useWorkspaceSnapshot } from "@/features/workspace/use-workspace-snapshot";
 
 type WorkspaceListResponse = { message?: string; workspaces?: Array<{ id: string; role: WorkspaceRole }> };
@@ -67,6 +66,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [platformOpen, setPlatformOpen] = useState(false);
   const [officeOpen, setOfficeOpen] = useState(false);
+  const [officeApprovalId, setOfficeApprovalId] = useState<string | null>(null);
   const [conversationOpen, setConversationOpen] = useState(false);
   const [conversationMode, setConversationMode] = useState<ConversationKind>("global");
   const [conversationTargetId, setConversationTargetId] = useState<string | null>("social");
@@ -312,6 +312,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
       setNotificationsOpen(false);
       setConversationOpen(false);
       setOfficeOpen(true);
+      setOfficeApprovalId(activity.officeApprovalId ?? null);
       setNotice(`${activity.relatedLabel} aberto no acompanhamento do pedido`);
       return;
     }
@@ -409,7 +410,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
 
   return <main className={"app-shell " + theme} data-drawer-background>
     <section className="content" id="canvas">
-      <CanvasNavbar workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} query={query} onQueryChange={setQuery} agents={allAgents} onSelectAgent={(id) => { setSelected(id); setFocused(id); }} onOpenMenu={() => { setNotificationsOpen(false); setMenuOpen(true); }} onOpenNotifications={() => { setMenuOpen(false); setNotificationsOpen(true); }} onOpenConversations={() => { setConversationMode("global"); setConversationState("success"); setConversationOpen(true); }} onOpenOfficeControls={() => setOfficeOpen(true)} onAddLeader={() => setCreatorOpen(true)} onOpenAnimationTests={() => setAnimationDrawerOpen(true)} notificationActive={notificationPulse} />
+      <CanvasNavbar workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} query={query} onQueryChange={setQuery} agents={allAgents} onSelectAgent={(id) => { setSelected(id); setFocused(id); }} onOpenMenu={() => { setNotificationsOpen(false); setMenuOpen(true); }} onOpenNotifications={() => { setMenuOpen(false); setNotificationsOpen(true); }} onOpenConversations={() => { setConversationMode("global"); setConversationState("success"); setConversationOpen(true); }} onOpenOfficeControls={() => { setOfficeApprovalId(null); setOfficeOpen(true); }} onAddLeader={() => setCreatorOpen(true)} onOpenAnimationTests={() => setAnimationDrawerOpen(true)} notificationActive={notificationPulse} />
       <CanvasDndProvider><WorkspaceCanvas canvasState={effectiveCanvasState} errorMessage={effectiveCanvasError} entries={entries} selected={selected} focused={focused} zoom={zoom} communication={communication} isReordering={isReordering} animationEvent={animationEvent} reduced={reduced} onSelect={(id) => { setSelected(id); setFocused(id); }} onDragStart={beginAgentDrag} onPreviewReorder={reorderAgents} onOrderCommit={commitAgentOrder} onOrderCancel={cancelAgentOrder} onCanvasKeyDown={onCanvasKeyDown} onRecover={recoverWorkspace} /></CanvasDndProvider>
     </section>
     <AnimatePresence>{selectedAgent && <AgentContextPanel agent={selectedAgent} activity={currentActivity(selectedAgent.id)} reduced={reduced} onClose={() => setSelected(null)} onOpenPrivateChat={() => openPrivateChat(selectedAgent.id)} onStartMeeting={() => startMeeting(selectedAgent.id)} />}</AnimatePresence>
@@ -419,6 +420,6 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
     <CanvasMenuSheet open={menuOpen} setOpen={setMenuOpen} view={view} setView={setView} canvasState={canvasState} setCanvasState={setCanvasState} theme={theme} setTheme={setTheme} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} onOpenPlatform={() => setPlatformOpen(true)} />
     <CanvasNotificationsDrawer open={notificationsOpen} setOpen={setNotificationsOpen} activities={activityFeed} notice={notice} onOpenActivity={openActivity} />
     <PlatformDrawer open={platformOpen} setOpen={setPlatformOpen} activeWorkspaceId={workspaceScopeId} onWorkspaceChange={changeWorkspace} role={activeRole} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} />
-    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} />
+    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} focusedApprovalId={officeApprovalId} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} />
   </main>;
 }

@@ -31,4 +31,20 @@ describe("office flow state machine", () => {
     expect(completed.state).toBe("success");
     expect(completed.delivery.status).toBe("ready");
   });
+
+  it("keeps multiple approvals independent until all required items are decided", () => {
+    const started = reduceOfficeSnapshot(createOfficeSnapshot(now), { type: "START" }, now);
+    const waiting = reduceOfficeSnapshot(started, { type: "REQUEST_APPROVAL" }, now);
+    const firstApproval = waiting.approvals[0];
+    const secondApproval = { ...firstApproval, id: `${waiting.runId}-approval-2`, title: "Arte da publicação", order: 1, artifacts: [{ id: "asset-2", label: "Arte da publicação", version: "v1", type: "imagem" }] };
+    const withTwoApprovals = { ...waiting, approvals: [...waiting.approvals, secondApproval] };
+    const afterFirstDecision = reduceOfficeSnapshot(withTwoApprovals, { type: "APPROVE", approvalId: firstApproval.id }, now);
+    const afterSecondDecision = reduceOfficeSnapshot(afterFirstDecision, { type: "APPROVE", approvalId: secondApproval.id }, now);
+
+    expect(afterFirstDecision.state).toBe("WAITING_APPROVAL");
+    expect(afterFirstDecision.approvals.find((approval) => approval.id === firstApproval.id)?.state).toBe("approved");
+    expect(afterFirstDecision.approvals.find((approval) => approval.id === secondApproval.id)?.state).toBe("pending");
+    expect(afterSecondDecision.state).toBe("working");
+    expect(afterSecondDecision.checkpoint).toBe("approval-approved");
+  });
 });

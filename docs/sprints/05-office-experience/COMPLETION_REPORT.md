@@ -6,13 +6,14 @@ As cinco sprints da fase foram executadas em ordem: 05-01, 05-02, 05-03, 05-04 e
 
 ## Evidências
 
-- `yarn test`: 5 arquivos, 11 testes aprovados; a máquina de estados cobre ponto salvo do usuário, aprovação, rejeição, nova tentativa e bloqueia a entrega até uma aprovação humana registrada.
+- `yarn test`: 8 arquivos, 19 testes aprovados; a máquina de estados cobre ponto salvo do usuário, aprovação, rejeição, nova tentativa, aprovações independentes e bloqueia a entrega até todas as aprovações obrigatórias serem registradas.
 - `yarn lint`: aprovado.
 - `yarn typecheck`: aprovado.
 - `yarn next build`: compilação Next 16/Turbopack concluída com variáveis temporárias de build; `yarn build` não avançou do `prisma migrate deploy` por falha TLS ao acessar o Neon neste ambiente.
-- `yarn playwright test tests/e2e/workspace.spec.ts --project=chromium --project=mobile-chromium --workers=1 --grep "allows the office request"`: Chromium e mobile aprovados, incluindo a abertura da notificação e o retorno ao pedido.
+- `yarn playwright test tests/e2e/workspace.spec.ts --workers=1`: 12 testes aprovados em Chromium desktop e mobile, incluindo o formulário de novo pedido, sua validação, a abertura da notificação e o retorno ao pedido.
 - Smoke HTTP local: `/`, `/login`, `/workspace?demo=1` e `/api/health` retornaram `200`.
 - O reducer mantém eventos anteriores e a persistência local conserva o último snapshot quando uma leitura/escrita falha.
+- A tool local de eventos valida o contexto de aprovação, aceita correlações opcionais e não emite novamente o mesmo evento quando recebe um retry com a mesma chave de idempotência.
 
 ## Roteiro de demonstração
 
@@ -22,7 +23,8 @@ As cinco sprints da fase foram executadas em ordem: 05-01, 05-02, 05-03, 05-04 e
 4. Executar Pedir aprovação; aprovar ou pedir ajustes e, no erro, continuar de onde parou.
 5. Executar Simular um erro; confirmar o erro recuperável e a ação Continuar de onde parou.
 6. Abrir Notificações, selecionar um evento do pedido e confirmar que o pedido correto é reaberto.
-7. Fechar e reabrir o drawer para confirmar restauração do ponto salvo local.
+7. Usar Novo pedido, preencher objetivo, critério de entrega e contexto adicional; confirmar que o pedido criado fica selecionado no mesmo drawer.
+8. Fechar e reabrir o drawer para confirmar restauração do ponto salvo local.
 
 ## Limite da evidência visual
 
@@ -30,4 +32,4 @@ A demonstração automatizada via CUA continua pendente porque a sessão não di
 
 ## Próximo passo
 
-Persistir runs/aprovações/eventos no Neon e conectar notificações e runtime real sem remover o simulador local dos testes de desenvolvimento.
+Persistir runs/aprovações/eventos no Neon, conectar o sink da tool às notificações e ao runtime real, e manter o simulador local para testes de desenvolvimento.

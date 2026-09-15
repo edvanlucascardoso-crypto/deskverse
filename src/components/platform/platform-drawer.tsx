@@ -3,10 +3,10 @@
 import { Building2, Check, ChevronRight, CircleUserRound, Plus, ShieldCheck, UsersRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { can, denyReason, type WorkspaceRole } from "@/lib/permissions/rbac";
-import { addWorkspaceMemberInputSchema, createWorkspaceInputSchema, type AddWorkspaceMemberInput, type CreateWorkspaceInput } from "@/features/workspace/workspace-contracts";
+import { addWorkspaceMemberResolver, createWorkspaceResolver } from "@/zod/resolvers/workspace";
+import type { AddWorkspaceMemberInput, CreateWorkspaceInput } from "@/types/workspace";
 
 type WorkspaceOption = { id: string; name: string; organizationName: string; memberCount: number; role: WorkspaceRole; updatedAt?: string };
 type Member = { id: string; userId: string; name: string; email: string; role: WorkspaceRole };
@@ -29,8 +29,8 @@ export function PlatformDrawer({ open, setOpen, activeWorkspaceId, onWorkspaceCh
   const [feedback, setFeedback] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [showMemberForm, setShowMemberForm] = useState(false);
-  const createForm = useForm<CreateWorkspaceInput>({ resolver: zodResolver(createWorkspaceInputSchema), defaultValues: { name: "" } });
-  const memberForm = useForm<AddWorkspaceMemberInput>({ resolver: zodResolver(addWorkspaceMemberInputSchema), defaultValues: { email: "", role: "MEMBER" } });
+  const createForm = useForm<CreateWorkspaceInput>({ resolver: createWorkspaceResolver, defaultValues: { name: "" } });
+  const memberForm = useForm<AddWorkspaceMemberInput>({ resolver: addWorkspaceMemberResolver, defaultValues: { email: "", role: "MEMBER" } });
   const currentWorkspace = useMemo(() => workspaces.find((workspace) => workspace.id === activeWorkspaceId) ?? workspaces[0], [activeWorkspaceId, workspaces]);
   const role = currentWorkspace?.role ?? fallbackRole;
   const canManageMembers = can(role, "member:manage");

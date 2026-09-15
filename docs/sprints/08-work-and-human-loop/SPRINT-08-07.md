@@ -16,12 +16,14 @@ Entregar aprovar, solicitar mudança, rejeitar, pausar e retomar como uma fatia 
 3. Exibir origem, responsável, última atualização e próximo passo quando esses dados existirem.
 4. Manter regras próximas da feature, com tipos locais e fixtures pequenas, sem criar uma abstração transversal prematura.
 5. Registrar em integration-requirements dependências, decisões ou mocks que precisem de integração posterior.
+6. Resolver aprovações por `approvalId`, com material, versão, motivo, solicitante e decisão próprios; uma execução com várias aprovações só retoma a ação protegida depois de todas as obrigatórias serem confirmadas.
 
 ## Regras essenciais
 
 - A aprovação pausa o trabalho antes da ação protegida e registra a versão revisada.
 - A pessoa pode aprovar, solicitar mudança ou rejeitar com motivo.
 - Retomar continua do ponto correto e não repete ações já confirmadas.
+- Uma aprovação não aprova itens irmãos: cada item pode ser aprovado, receber pedido de ajustes ou ser rejeitado independentemente, com histórico próprio e idempotência.
 
 ## Incluído
 

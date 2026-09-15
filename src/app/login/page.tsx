@@ -1,27 +1,19 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, CheckCircle2, KeyRound, UserRound } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
-
-const authFormSchema = z.object({
-  name: z.string().trim().max(80, "Use no máximo 80 caracteres.").optional(),
-  email: z.string().trim().email("Informe um e-mail válido."),
-  password: z.string().min(8, "Use pelo menos 8 caracteres.").max(128, "Use no máximo 128 caracteres."),
-});
-
-type AuthForm = z.infer<typeof authFormSchema>;
+import { authFormResolver } from "@/zod/resolvers/auth";
+import type { AuthForm } from "@/types/auth";
 type AuthMode = "signin" | "signup";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<AuthMode>("signin");
   const router = useRouter();
   const [feedback, setFeedback] = useState<{ kind: "error" | "success"; message: string } | null>(null);
-  const form = useForm<AuthForm>({ resolver: zodResolver(authFormSchema), defaultValues: { name: "", email: "", password: "" } });
+  const form = useForm<AuthForm>({ resolver: authFormResolver, defaultValues: { name: "", email: "", password: "" } });
 
   const getReturnTo = () => {
     const candidate = new URLSearchParams(window.location.search).get("returnTo");

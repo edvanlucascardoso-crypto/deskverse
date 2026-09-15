@@ -1,5 +1,6 @@
-export type WorkspaceRole = "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
-export type WorkspacePermission = "workspace:read" | "workspace:create" | "workspace:update" | "member:read" | "member:manage" | "activity:write" | "approval:decide";
+import type { WorkspacePermission, WorkspaceRole } from "@/types/permissions";
+
+export type { WorkspacePermission, WorkspaceRole } from "@/types/permissions";
 
 const permissionMap: Record<WorkspaceRole, readonly WorkspacePermission[]> = {
   OWNER: ["workspace:read", "workspace:create", "workspace:update", "member:read", "member:manage", "activity:write", "approval:decide"],

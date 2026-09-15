@@ -16,6 +16,4 @@ export const workspacePreferenceInputSchema = z.object({
   layout: z.record(z.string(), z.unknown()).optional(),
 });
 
-export type CreateWorkspaceInput = z.infer<typeof createWorkspaceInputSchema>;
-export type AddWorkspaceMemberInput = z.infer<typeof addWorkspaceMemberInputSchema>;
-export type WorkspacePreferenceInput = z.infer<typeof workspacePreferenceInputSchema>;
+export const workspaceIdSchema = z.string().min(2).max(80).regex(/^[a-zA-Z0-9_-]+$/, "Identificador de espaço inválido.");

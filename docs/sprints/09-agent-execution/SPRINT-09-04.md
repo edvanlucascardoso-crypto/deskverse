@@ -98,6 +98,14 @@ Persistir DAG/run, checkpoints, espera humana, retry, cancelamento, resultado e 
 
 Eventos em tempo real: início, delegação, progresso, comunicação, fila, espera, aprovação, nova tentativa, conclusão, falha e cancelamento. Eventos de comunicação têm ordenação por fluxo: a projeção de handoff libera o próximo turno somente depois de o anterior concluir ou entrar em espera; execução paralela não autoriza todos os agentes a conversarem visualmente ao mesmo tempo.
 
+### Contrato de evento do escritório
+
+- O runtime publica eventos pela tool `createOfficeEventTool`, que valida `runId`, origem, responsável, mensagem, impacto e próximo passo antes de entregar ao sink de persistência/transporte.
+- `approval.requested` e `run.waiting_approval` precisam carregar `approvalId` e o contexto completo da aprovação: título, resumo, motivo, solicitante, materiais e versão. `approval.decided` também identifica o item resolvido.
+- O evento aceita `idempotencyKey` para retries; a integração durável deve repetir essa garantia no armazenamento, além da proteção local usada na demonstração.
+- `conversationId` é opcional. Um evento operacional não abre uma conversa automaticamente; a conversa só é criada quando uma pergunta, refinamento, colaboração ou revisão exigir interação.
+- O renderer do canvas e a Central de Notificações consomem a projeção do mesmo evento confirmado. O drawer usa `approvalId` para abrir o item exato e múltiplas aprovações não são tratadas como uma aprovação genérica.
+
 ## Canvas
 
 O runtime apenas emite eventos; o renderer decide animação. Conexões entre líder e especialista são **temporárias/contextuais**, evitando um grafo permanente de linhas. O renderer consome uma conversa por vez por fluxo, preservando a sequência de emissor e destinatário em vez de compor linhas concorrentes.

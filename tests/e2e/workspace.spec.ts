@@ -66,9 +66,9 @@ test.describe("workspace canvas", () => {
 
     await page.getByRole("button", { name: "Pedir aprovação", exact: true }).click();
     await expect(page.getByText("Aguardando sua aprovação", { exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Aprovar entrega" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Aprovar item" })).toBeVisible();
 
-    await page.getByRole("button", { name: "Aprovar entrega" }).click();
+    await page.getByRole("button", { name: "Aprovar item" }).click();
     await expect(page.getByRole("button", { name: "Confirmar entrega" })).toBeVisible();
     await page.getByRole("button", { name: "Confirmar entrega" }).click();
     await expect(page.getByText("Concluído", { exact: true })).toBeVisible();
@@ -81,5 +81,24 @@ test.describe("workspace canvas", () => {
     await expect(notification).toBeVisible();
     await notification.click();
     await expect(page.getByRole("heading", { name: "Do pedido à entrega" })).toBeVisible();
+  });
+
+  test("creates an office request with the validated form", async ({ page }) => {
+    await page.getByRole("button", { name: "Acompanhar pedidos" }).click();
+    await page.getByRole("button", { name: "Novo pedido" }).click();
+    await expect(page.getByRole("heading", { name: "O que precisa ser feito?" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Criar pedido" }).click();
+    await expect(page.getByText("Dê um nome com pelo menos 3 caracteres.")).toBeVisible();
+    await expect(page.getByText("Explique o que precisa ser feito.")).toBeVisible();
+
+    await page.getByLabel("Nome do pedido").fill("Campanha de primavera");
+    await page.getByLabel("Objetivo").fill("Preparar uma publicação para apresentar a coleção de primavera.");
+    await page.getByLabel("Como saberemos que está pronto?").fill("Texto revisado e arte pronta para aprovação");
+    await page.getByLabel("Contexto adicional opcional").fill("Priorizar clientes atuais.");
+    await page.getByRole("button", { name: "Criar pedido" }).click();
+
+    await expect(page.getByRole("heading", { name: "Campanha de primavera" })).toBeVisible();
+    await expect(page.getByText("Preparar uma publicação para apresentar a coleção de primavera.")).toBeVisible();
   });
 });

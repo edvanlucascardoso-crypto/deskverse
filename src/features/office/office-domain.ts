@@ -1,48 +1,4 @@
-export type OfficeRunState = "empty" | "loading" | "working" | "WAITING_USER" | "WAITING_APPROVAL" | "success" | "error";
-export type OfficePhase = "entrada" | "trabalho" | "decisao" | "entrega";
-
-export type OfficeEvent = {
-  id: string;
-  occurredAt: string;
-  type: "run.started" | "run.waiting_user" | "run.waiting_approval" | "run.resumed" | "run.completed" | "run.failed" | "run.reset";
-  source: string;
-  responsible: string;
-  message: string;
-  impact: string;
-  nextStep: string;
-};
-
-export type OfficeSnapshot = {
-  runId: string;
-  title: string;
-  brief: string;
-  state: OfficeRunState;
-  phase: OfficePhase;
-  source: string;
-  responsible: string;
-  updatedAt: string;
-  nextStep: string;
-  checkpoint: string | null;
-  delivery: { label: string; status: "pending" | "ready" };
-  events: OfficeEvent[];
-};
-
-export type OfficeWorkspaceState = {
-  activeRunId: string | null;
-  runs: OfficeSnapshot[];
-};
-
-export type OfficeAction =
-  | { type: "START" }
-  | { type: "REQUEST_USER" }
-  | { type: "ANSWER_USER"; answer?: string }
-  | { type: "REQUEST_APPROVAL" }
-  | { type: "APPROVE" }
-  | { type: "REJECT" }
-  | { type: "COMPLETE" }
-  | { type: "FAIL"; message?: string }
-  | { type: "RETRY" }
-  | { type: "CLEAR" };
+import type { CreateOfficeRunInput, OfficeAction, OfficeApproval, OfficeApprovalState, OfficeEvent, OfficePhase, OfficeRunState, OfficeSnapshot } from "@/types/office";
 
 const phaseLabels: Record<OfficePhase, string> = { entrada: "Entrada", trabalho: "Trabalho", decisao: "Decisão", entrega: "Entrega" };
 export const officePhaseLabels = phaseLabels;
@@ -62,24 +18,54 @@ export function officeCheckpointLabel(checkpoint: string | null) {
   return checkpoint ? checkpointLabels[checkpoint] ?? checkpoint : "aberto";
 }
 
-function eventFor(snapshot: OfficeSnapshot, input: Omit<OfficeEvent, "id" | "occurredAt">, now: Date) {
-  return { ...input, id: `${snapshot.runId}-${now.getTime()}-${snapshot.events.length}`, occurredAt: now.toISOString() };
+function eventFor(snapshot: OfficeSnapshot, input: Omit<OfficeEvent, "id" | "occurredAt" | "runId">, now: Date) {
+  return { ...input, runId: snapshot.runId, id: `${snapshot.runId}-${now.getTime()}-${snapshot.events.length}`, occurredAt: now.toISOString() };
 }
 
-export function createOfficeSnapshot(now = new Date(), runId = `office-local-run-${now.getTime()}`): OfficeSnapshot {
+export function createOfficeSnapshot(now = new Date(), runId = `office-local-run-${now.getTime()}`, input?: CreateOfficeRunInput): OfficeSnapshot {
   return {
     runId,
-    title: "Campanha de lançamento",
-    brief: "Preparar a primeira publicação da semana com texto, revisão e entrega rastreável.",
+    title: input?.title.trim() || "Campanha de lançamento",
+    brief: input?.objective.trim() || "Preparar a primeira publicação da semana com texto, revisão e entrega rastreável.",
     state: "empty",
     phase: "entrada",
     source: "Solicitação do workspace",
     responsible: "Marina Social",
     updatedAt: now.toISOString(),
+    notes: input?.notes?.trim() || "",
     nextStep: "Começar o trabalho para abrir o pedido",
     checkpoint: null,
-    delivery: { label: "Pacote de publicação", status: "pending" },
+    delivery: { label: input?.delivery.trim() || "Pacote de publicação", status: "pending" },
+    approvals: [],
     events: [],
+  };
+}
+
+function newApproval(snapshot: OfficeSnapshot): OfficeApproval {
+  const id = `${snapshot.runId}-approval-${snapshot.approvals.length + 1}`;
+  return {
+    id,
+    title: "Pacote de publicação",
+    summary: "Confira o material preparado antes que qualquer envio seja feito.",
+    reason: "A entrega altera um material que só deve avançar com sua decisão.",
+    requestedBy: "Marina Social",
+    required: true,
+    order: snapshot.approvals.length,
+    artifacts: [{ id: `${snapshot.runId}-delivery-${snapshot.approvals.length + 1}`, label: snapshot.delivery.label, version: "v1", type: "pacote" }],
+    state: "pending",
+  };
+}
+
+function pendingApprovals(approvals: OfficeApproval[]) {
+  return approvals.filter((approval) => approval.state === "pending" && approval.required);
+}
+
+function decideApproval(snapshot: OfficeSnapshot, approvalId: string | undefined, state: OfficeApprovalState, decision: string | undefined, now: Date) {
+  const target = approvalId ? snapshot.approvals.find((approval) => approval.id === approvalId) : snapshot.approvals.find((approval) => approval.state === "pending");
+  if (!target) return { approvals: snapshot.approvals, target: null };
+  return {
+    target,
+    approvals: snapshot.approvals.map((approval) => approval.id === target.id ? { ...approval, state, decision, decidedAt: now.toISOString() } : approval),
   };
 }
 
@@ -97,13 +83,25 @@ export function reduceOfficeSnapshot(snapshot: OfficeSnapshot, action: OfficeAct
       return { ...base, state: "working", phase: "trabalho", nextStep: "Finalizar o plano e preparar o texto", checkpoint: action.answer?.trim() || "audience-confirmed", events: [eventFor(base, { type: "run.resumed", source: "Você", responsible: "Marina Social", message: "Sua resposta foi registrada e o trabalho continuou.", impact: "Trabalho liberado", nextStep: "Finalizar o plano" }, now), ...snapshot.events] };
     case "REQUEST_APPROVAL":
       if (snapshot.state !== "working") return snapshot;
-      return { ...base, state: "WAITING_APPROVAL", phase: "decisao", nextStep: "Revisar e aprovar o material antes da entrega", checkpoint: "human-approval", events: [eventFor(base, { type: "run.waiting_approval", source: "Marina Social", responsible: "Você", message: "O material está pronto para sua aprovação.", impact: "Nenhum envio será feito antes da decisão", nextStep: "Aprovar ou pedir ajustes" }, now), ...snapshot.events] };
+      {
+        const approval = newApproval(snapshot);
+        return { ...base, state: "WAITING_APPROVAL", phase: "decisao", nextStep: "Revisar cada item pendente antes da entrega", checkpoint: "human-approval", approvals: [...snapshot.approvals, approval], events: [eventFor(base, { type: "run.waiting_approval", source: "Marina Social", responsible: "Você", message: "O material está pronto para sua aprovação.", impact: "Nenhum envio será feito antes da decisão", nextStep: "Revisar cada item pendente", approvalId: approval.id, approval, artifact: approval.artifacts[0] }, now), ...snapshot.events] };
+      }
     case "APPROVE":
       if (snapshot.state !== "WAITING_APPROVAL") return snapshot;
-      return { ...base, state: "working", phase: "entrega", nextStep: "Confirmar a entrega no workspace", checkpoint: "approval-approved", events: [eventFor(base, { type: "run.resumed", source: "Você", responsible: "Marina Social", message: "Sua aprovação foi registrada.", impact: "A entrega foi liberada", nextStep: "Confirmar a entrega" }, now), ...snapshot.events] };
+      {
+        const decision = decideApproval(snapshot, action.approvalId, "approved", "Aprovado", now);
+        if (!decision.target) return snapshot;
+        const hasPending = pendingApprovals(decision.approvals).length > 0;
+        return { ...base, state: hasPending ? "WAITING_APPROVAL" : "working", phase: hasPending ? "decisao" : "entrega", nextStep: hasPending ? "Revisar os demais itens pendentes" : "Confirmar a entrega no workspace", checkpoint: hasPending ? "human-approval" : "approval-approved", approvals: decision.approvals, events: [eventFor(base, { type: "approval.decided", source: "Você", responsible: "Marina Social", message: hasPending ? "Uma aprovação foi registrada; ainda há itens pendentes." : "Sua aprovação foi registrada.", impact: hasPending ? "O trabalho continua pausado até as outras decisões" : "A entrega foi liberada", nextStep: hasPending ? "Revisar os demais itens pendentes" : "Confirmar a entrega", approvalId: decision.target.id, conversationId: decision.target.conversationId }, now), ...snapshot.events] };
+      }
     case "REJECT":
       if (snapshot.state !== "WAITING_APPROVAL") return snapshot;
-      return { ...base, state: "error", phase: "decisao", nextStep: "Revisar o material e pedir uma nova versão", checkpoint: "approval-rejected", events: [eventFor(base, { type: "run.failed", source: "Você", responsible: "Marina Social", message: "Você pediu ajustes antes da entrega.", impact: "Nenhum envio foi feito", nextStep: "Revisar o material" }, now), ...snapshot.events] };
+      {
+        const decision = decideApproval(snapshot, action.approvalId, "changes_requested", action.decision ?? "Ajustes solicitados", now);
+        if (!decision.target) return snapshot;
+        return { ...base, state: "error", phase: "decisao", nextStep: "Revisar o material e pedir uma nova versão", checkpoint: "approval-rejected", approvals: decision.approvals, events: [eventFor(base, { type: "approval.decided", source: "Você", responsible: "Marina Social", message: "Você pediu ajustes antes da entrega.", impact: "Nenhum envio foi feito", nextStep: "Revisar o material", approvalId: decision.target.id, conversationId: decision.target.conversationId }, now), ...snapshot.events] };
+      }
     case "COMPLETE":
       if (snapshot.state !== "working" || snapshot.checkpoint !== "approval-approved") return snapshot;
       return { ...base, state: "success", phase: "entrega", nextStep: "Acompanhar o próximo pedido no canvas", checkpoint: "delivery-ready", delivery: { ...snapshot.delivery, status: "ready" }, events: [eventFor(base, { type: "run.completed", source: "Deskverse", responsible: "Marina Social", message: "A entrega foi registrada com sucesso.", impact: "Pacote disponível para consulta", nextStep: "Acompanhar o próximo pedido" }, now), ...snapshot.events] };
@@ -120,4 +118,8 @@ export function reduceOfficeSnapshot(snapshot: OfficeSnapshot, action: OfficeAct
 
 export function officeStateLabel(state: OfficeRunState) {
   return state === "empty" ? "Não iniciado" : state === "loading" ? "Carregando" : state === "working" ? "Em andamento" : state === "WAITING_USER" ? "Aguardando sua resposta" : state === "WAITING_APPROVAL" ? "Aguardando sua aprovação" : state === "success" ? "Concluído" : "Erro recuperável";
+}
+
+export function officeApprovalStateLabel(state: OfficeApprovalState) {
+  return state === "pending" ? "Aguardando decisão" : state === "approved" ? "Aprovada" : state === "changes_requested" ? "Ajustes solicitados" : state === "rejected" ? "Rejeitada" : state === "cancelled" ? "Cancelada" : "Expirada";
 }

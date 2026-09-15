@@ -129,6 +129,14 @@ O Gate A0 é: plano de mídias sociais → texto → design quando disponível �
 - Botões, títulos, mensagens de erro, notificações e estados de espera devem dizer claramente o que aconteceu e qual ação a pessoa pode tomar. Não use rótulos abstratos como “Fluxo feliz”, “retry” ou “checkpoint” sem contexto.
 - Quando um termo técnico for indispensável, explique-o na própria interface ou em um texto de apoio curto. Use a mesma palavra para o mesmo conceito em todas as telas.
 
+## Organização de schemas, resolvers e tipos
+
+- Schemas compartilhados do Zod ficam em `src/zod/schemas`, separados por domínio. Rotas e componentes não devem criar schemas inline quando o contrato puder ser reutilizado.
+- Resolvers usados pelo React Hook Form ficam em `src/zod/resolvers`, separados dos schemas. Componentes de formulário devem consumir os resolvers exportados desse diretório.
+- Tipos compartilhados ficam em `src/types` e todos os arquivos de tipos usam a extensão `.d.ts`. Tipos de domínio, entradas de formulário e contratos entre camadas devem ser exportados de lá quando puderem ser reutilizados.
+- Sempre tente ao máximo separar funções, tipos e componentes em arquivos reutilizáveis, pequenos e orientados por domínio. Extraia lógica compartilhada antes de duplicá-la e mantenha APIs próximas da responsabilidade que elas realmente compartilham.
+- Antes de usar Zod, React Hook Form, resolvers ou qualquer biblioteca nova, verifique a documentação local e evite APIs marcadas como `deprecated`. Quando houver dúvida sobre a API ou sua vigência, pesquise primeiro a documentação oficial na web e registre a decisão quando ela afetar a sprint.
+
 ## Capacidades específicas
 
 - O agente de imagem tem dois níveis: Apenas criação de imagens e Criação e edição.

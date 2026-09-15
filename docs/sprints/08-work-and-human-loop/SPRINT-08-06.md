@@ -32,6 +32,7 @@ O carregamento incremental precisa preservar a posição de leitura, indicar um 
 7. Manter regras próximas da feature, com tipos locais e fixtures pequenas, sem criar uma abstração transversal prematura.
 8. Registrar em integration-requirements dependências, decisões ou mocks que precisem de integração posterior.
 9. Implementar a consulta inicial e o carregamento progressivo do histórico por scroll, com cursor, `hasMore`, loading incremental, retry e alternativa acessível para carregar mais.
+10. Consumir o contrato de eventos do escritório com correlação de execução, aprovação, conversa e artefato; manter a mesma projeção entre notificação, drawer e card do agente.
 
 ## Regras essenciais
 
@@ -40,6 +41,8 @@ O carregamento incremental precisa preservar a posição de leitura, indicar um 
 - Falha de entrega local fica visível e pode ser tentada novamente.
 - Eventos repetidos, retries e reconexões são idempotentes e não criam notificações ou feedback visual duplicados.
 - Pedidos de permissão têm prioridade, expiração ou estado de resolução e nunca são confundidos com uma autorização já concedida.
+- Um pedido de aprovação identifica exatamente o item, material, versão, motivo e próximo passo; aprovações múltiplas aparecem como pendências independentes.
+- Eventos operacionais não criam conversas automaticamente. A notificação roteia o evento e só aponta para uma conversa quando o evento tiver `conversationId`.
 - A paginação do histórico usa cursor estável e carrega mais itens somente quando a pessoa avança no scroll; itens já carregados e sua posição de leitura são preservados.
 
 ## Incluído

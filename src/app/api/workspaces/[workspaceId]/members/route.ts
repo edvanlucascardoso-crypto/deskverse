@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireServerUser } from "@/lib/auth-session";
 import { addWorkspaceMember, listWorkspaceMembers } from "@/features/workspace/platform-workspace-repository";
-import { addWorkspaceMemberInputSchema } from "@/features/workspace/workspace-contracts";
+import { addWorkspaceMemberInputSchema } from "@/zod/schemas/workspace";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const user = await requireServerUser();

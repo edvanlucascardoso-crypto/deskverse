@@ -5,18 +5,7 @@ import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { can, type WorkspaceRole } from "@/lib/permissions/rbac";
 import { parseWorkspaceId } from "@/lib/platform/workspace-scope";
-import type { AddWorkspaceMemberInput, CreateWorkspaceInput, WorkspacePreferenceInput } from "./workspace-contracts";
-
-export type WorkspaceSummary = {
-  id: string;
-  organizationId: string;
-  organizationName: string;
-  name: string;
-  slug: string;
-  role: WorkspaceRole;
-  memberCount: number;
-  updatedAt: string;
-};
+import type { AddWorkspaceMemberInput, CreateWorkspaceInput, WorkspacePreferenceInput, WorkspaceSummary } from "@/types/workspace";
 
 export const workspaceListCacheTag = (userId: string) => `workspace-list:${userId}`;
 export const workspaceCacheTag = (workspaceId: string) => `workspace:${workspaceId}`;

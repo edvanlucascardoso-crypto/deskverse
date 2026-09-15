@@ -19,6 +19,8 @@ Compor os três agentes no primeiro fluxo demonstrável do produto, preservando 
 - Sem Designer, o fluxo degrada para Mídias Sociais → Redator e não transforma a etapa opcional em falha fatal.
 - Cada trabalho produzido no fluxo é enviado pelo agente responsável ao UploadThing por tool e fica vinculado ao projeto, tarefa, versão, origem e status para consulta na tela de arquivos.
 - A colaboração do Gate A0 usa o chat global e chats privados quando necessário; cada etapa publica notificações em tempo real, atualiza o card responsável e registra memória pgvector somente quando o fato for elegível e autorizado.
+- Cada etapa emite eventos pelo contrato do escritório, com `runId`, responsável, próximo passo e correlação opcional com aprovação, conversa e artefato; eventos operacionais não abrem conversas por padrão.
+- A aprovação do Gate A0 identifica o material e a versão exatos. Se houver mais de uma aprovação obrigatória, a entrega permanece pausada até todas as decisões serem confirmadas.
 
 ## Gate A0
 

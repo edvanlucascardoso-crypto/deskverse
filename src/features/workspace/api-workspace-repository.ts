@@ -1,6 +1,6 @@
 "use client";
 
-import type { WorkspaceLoadResult, WorkspaceRepository } from "./workspace-domain";
+import type { WorkspaceLoadResult, WorkspaceRepository } from "@/types/workspace";
 
 export const platformWorkspaceRepository: WorkspaceRepository = {
   async load(workspaceId) {

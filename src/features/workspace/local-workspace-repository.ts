@@ -1,4 +1,4 @@
-import type { WorkspaceLoadResult, WorkspaceRepository, WorkspaceSnapshot } from "./workspace-domain";
+import type { WorkspaceLoadResult, WorkspaceRepository, WorkspaceSnapshot } from "@/types/workspace";
 
 type LocalWorkspaceFixture = WorkspaceSnapshot | "empty" | "error";
 

@@ -14,8 +14,8 @@ Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
 
 A fase é executada na ordem indicada. Cada sprint entrega comportamento observável, usa dados mínimos necessários e registra integrações pendentes para o Supervisor.
 
-Atividade entre agentes deve ser percebida no grid por animações fluidas, suaves e rápidas, sem deslocamentos aleatórios ou espera artificial.
+Atividade entre agentes deve ser percebida no grid por animações fluidas, suaves e rápidas, sem deslocamentos aleatórios ou espera artificial. O contrato mínimo de eventos do escritório já pode ser usado pela integração dos agentes, mas o sink durável e o transporte em tempo real continuam nas fases posteriores.
 
 ## Limites
 
-A experiência continua baseada em DOM, canvas full-screen com grade espacial de tiles e estados explícitos. Não entram engine 3D, modelos legados, runtime de jogo ou uma camada de contratos compartilhados.
+A experiência continua baseada em DOM, canvas full-screen com grade espacial de tiles e estados explícitos. Não entram engine 3D, modelos legados, runtime de jogo ou a integração operacional completa do runtime nesta fase; o contrato mínimo de eventos, aprovações e idempotência existe para evitar uma integração silenciosa.

@@ -18,6 +18,7 @@ Entregar o preview web local como uma fatia utilizável do MVP, com responsabili
 - Garantir que o check detecte tarefas órfãs e aprovação pulada.
 - Demonstrar a tela de arquivos com os trabalhos confirmados do fluxo na Data Table paginada com busca e na lista de cards mobile.
 - Demonstrar chat global, chat privado, notificação em tempo real, feedback nos cards e recuperação de uma preferência ou decisão salva em pgvector.
+- Demonstrar eventos do escritório com `runId`, aprovação, conversa e artefato correlacionados; eventos operacionais não abrem conversas automaticamente e múltiplas aprovações permanecem independentes até a confirmação completa.
 - Manter a demonstração local sem Stem, ponte, Blender, jogo ou engine 3D.
 
 ## Trabalho
