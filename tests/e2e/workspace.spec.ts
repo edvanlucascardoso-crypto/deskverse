@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("workspace canvas", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/?demo=1", { waitUntil: "domcontentloaded" });
+    await page.goto("/?demo=1", { waitUntil: "networkidle" });
     await expect(page.locator(".agent-tile").first()).toBeVisible();
   });
 

@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { Prisma } from "@prisma/client";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { can, type WorkspaceRole } from "@/lib/permissions/rbac";
 import { parseWorkspaceId } from "@/lib/platform/workspace-scope";
@@ -16,6 +17,9 @@ export type WorkspaceSummary = {
   memberCount: number;
   updatedAt: string;
 };
+
+export const workspaceListCacheTag = (userId: string) => `workspace-list:${userId}`;
+export const workspaceCacheTag = (workspaceId: string) => `workspace:${workspaceId}`;
 
 const safePart = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 42) || "user";
 const slugify = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) || "workspace";
@@ -63,6 +67,13 @@ export async function listUserWorkspaces(userId: string) {
     orderBy: { createdAt: "asc" },
   });
   return memberships.map((membership) => summaryFromMember(membership as typeof membership & { role: WorkspaceRole }));
+}
+
+export async function listUserWorkspacesCached(userId: string) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(workspaceListCacheTag(userId));
+  return listUserWorkspaces(userId);
 }
 
 export async function ensureDefaultWorkspace(user: { id: string; name: string; email: string }) {
@@ -120,7 +131,10 @@ export async function createWorkspace(userId: string, input: CreateWorkspaceInpu
   });
   const access = await getWorkspaceAccess(workspace.id, userId);
   if (!access) throw new Error("Não foi possível confirmar o acesso ao workspace criado.");
-  return summaryFromMember(access as typeof access & { role: WorkspaceRole });
+  const summary = summaryFromMember(access as typeof access & { role: WorkspaceRole });
+  revalidateTag(workspaceListCacheTag(userId), "max");
+  revalidateTag(workspaceCacheTag(workspace.id), "max");
+  return summary;
 }
 
 export async function getWorkspaceAccess(workspaceId: string, userId: string) {
@@ -129,6 +143,13 @@ export async function getWorkspaceAccess(workspaceId: string, userId: string) {
     where: { workspaceId_userId: { workspaceId: parsedWorkspaceId, userId } },
     include: { workspace: { include: { organization: true, _count: { select: { members: true } } } } },
   });
+}
+
+export async function getWorkspaceAccessCached(workspaceId: string, userId: string) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag(workspaceCacheTag(workspaceId));
+  return getWorkspaceAccess(workspaceId, userId);
 }
 
 export async function listWorkspaceMembers(workspaceId: string, userId: string) {
@@ -173,6 +194,9 @@ export async function addWorkspaceMember(workspaceId: string, actorId: string, i
       nextStep: "A pessoa pode acessar o workspace após autenticar",
     },
   });
+  revalidateTag(workspaceListCacheTag(actorId), "max");
+  revalidateTag(workspaceListCacheTag(user.id), "max");
+  revalidateTag(workspaceCacheTag(access.workspaceId), "max");
   return { ok: true as const, member: { id: member.id, userId: member.userId, name: member.user.name, email: member.user.email, image: member.user.image, role: member.role } };
 }
 
@@ -193,5 +217,6 @@ export async function saveWorkspacePreference(workspaceId: string, userId: strin
   await prisma.auditEvent.create({
     data: { id: crypto.randomUUID(), workspaceId: access.workspaceId, actorId: userId, action: "workspace.preference.updated", source: "canvas", after: data as Prisma.InputJsonValue, nextStep: "Aplicar a próxima abertura do canvas" },
   });
+  revalidateTag(workspaceCacheTag(access.workspaceId), "max");
   return { ok: true as const, preference };
 }

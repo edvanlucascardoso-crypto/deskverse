@@ -212,3 +212,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Next 16: SSR, Cache Components e revalidação
+
+- O Deskverse usa `cacheComponents: true` em `next.config.ts`. O App Router deve renderizar no servidor o bootstrap necessário para a primeira pintura; não substituir dados essenciais por um `fetch` client-side disparado apenas depois da hidratação.
+- `use cache` é opt-in e só pode ser usado em funções/componentes `async`. Ele gera uma entrada por build, função, argumentos serializáveis e valores capturados; sempre declarar `cacheLife` explicitamente quando o tempo de atualização importar.
+- Dentro de um escopo `use cache`, não ler `cookies()`, `headers()` ou `searchParams`. Ler dados de sessão fora do escopo e passar identificadores serializáveis, como `userId` e `workspaceId`, para manter o cache isolado por usuário.
+- `cacheLife` controla `stale` no Router Cache do cliente, `revalidate` para regeneração em background no servidor e `expire` para a próxima requisição bloqueante. Use perfis curtos (`seconds`/`minutes`) para estado operacional e perfis maiores apenas para conteúdo estável.
+- Dados cacheados devem receber `cacheTag`. Após mutações em Server Actions, usar `updateTag` quando a pessoa precisa ver a própria alteração imediatamente; em Route Handlers/webhooks, usar `revalidateTag(tag, "max")` para stale-while-revalidate. Preferir tags a `revalidatePath` quando a invalidação puder ser específica.
+- Não cachear sessão, autorização ou dados altamente voláteis dentro de uma chave global. Toda consulta autenticada deve carregar o escopo do usuário/workspace na chave e invalidar as tags afetadas após escrita.
+- O Playwright é o padrão de verificação visual e E2E: `playwright.config.ts` cobre Chromium desktop e mobile, sobe `yarn next dev` quando necessário, e guarda screenshot/trace em falha. Mudanças visuais devem ser demonstradas com `yarn test:e2e` e verificadas em viewport estreita.
+- Referências oficiais: [diretiva `use cache`](https://nextjs.org/docs/app/api-reference/directives/use-cache), [`cacheLife`](https://nextjs.org/docs/app/api-reference/functions/cacheLife), [revalidação](https://nextjs.org/docs/app/getting-started/revalidating) e [Next.js 16](https://nextjs.org/blog/next-16).

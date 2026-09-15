@@ -9,7 +9,7 @@ import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
 
 const authFormSchema = z.object({
-  name: z.string().trim().min(2, "Informe seu nome.").max(80, "Use no máximo 80 caracteres."),
+  name: z.string().trim().max(80, "Use no máximo 80 caracteres.").optional(),
   email: z.string().trim().email("Informe um e-mail válido."),
   password: z.string().min(8, "Use pelo menos 8 caracteres.").max(128, "Use no máximo 128 caracteres."),
 });
@@ -32,16 +32,25 @@ export default function LoginPage() {
 
   const submit = form.handleSubmit(async (values) => {
     setFeedback(null);
-    const returnTo = getReturnTo();
-    const result = mode === "signin"
-      ? await authClient.signIn.email({ email: values.email, password: values.password, callbackURL: returnTo })
-      : await authClient.signUp.email({ name: values.name, email: values.email, password: values.password, callbackURL: returnTo });
-    if (result.error) {
-      setFeedback({ kind: "error", message: result.error.message || "Não foi possível concluir a autenticação." });
+    const name = values.name?.trim() ?? "";
+    if (mode === "signup" && name.length < 2) {
+      form.setError("name", { type: "manual", message: "Informe seu nome." });
       return;
     }
-    setFeedback({ kind: "success", message: mode === "signin" ? "Sessão iniciada. Abrindo seu workspace…" : "Conta criada. Abrindo seu workspace…" });
-    router.push(returnTo);
+    try {
+      const returnTo = getReturnTo();
+      const result = mode === "signin"
+        ? await authClient.signIn.email({ email: values.email, password: values.password, callbackURL: returnTo })
+        : await authClient.signUp.email({ name, email: values.email, password: values.password, callbackURL: returnTo });
+      if (result.error) {
+        setFeedback({ kind: "error", message: result.error.message || "Não foi possível concluir a autenticação." });
+        return;
+      }
+      setFeedback({ kind: "success", message: mode === "signin" ? "Sessão iniciada. Abrindo seu workspace…" : "Conta criada. Abrindo seu workspace…" });
+      router.push(returnTo);
+    } catch {
+      setFeedback({ kind: "error", message: "Não foi possível conectar à autenticação. Tente novamente." });
+    }
   });
 
   const demo = () => router.push("/workspace?demo=1");

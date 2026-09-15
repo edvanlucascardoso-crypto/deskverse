@@ -20,22 +20,42 @@ import { authClient } from "@/lib/auth-client";
 import type { WorkspaceRole } from "@/lib/permissions/rbac";
 import { platformWorkspaceRepository } from "@/features/workspace/api-workspace-repository";
 import { localWorkspaceRepository } from "@/features/workspace/local-workspace-repository";
+import type { WorkspaceSummary } from "@/features/workspace/platform-workspace-repository";
 import { useOfficeStore } from "@/features/office/use-office-store";
+import type { WorkspaceSnapshot } from "@/features/workspace/workspace-domain";
 import { useWorkspaceSnapshot } from "@/features/workspace/use-workspace-snapshot";
 
 type WorkspaceListResponse = { message?: string; workspaces?: Array<{ id: string; role: WorkspaceRole }> };
+type WorkspacePageProps = { demoMode?: boolean; initialWorkspace?: WorkspaceSummary | null; initialWorkspaceError?: string | null };
 
-export default function WorkspacePage({ demoMode = false }: { demoMode?: boolean }) {
+function snapshotFromSummary(workspace: WorkspaceSummary): WorkspaceSnapshot {
+  return {
+    state: "success",
+    context: {
+      workspaceId: workspace.id,
+      organizationId: workspace.organizationId,
+      name: workspace.name,
+      source: "Prisma / PostgreSQL",
+      owner: "Você",
+      updatedAt: workspace.updatedAt,
+      nextStep: `${workspace.memberCount} pessoas podem acompanhar este espaço`,
+    },
+    agentOrder: [],
+  };
+}
+
+export default function WorkspacePage({ demoMode = false, initialWorkspace = null, initialWorkspaceError = null }: WorkspacePageProps) {
   const session = authClient.useSession();
   const authenticatedUserId = session.data?.user?.id ?? null;
   const userId = authenticatedUserId ?? "demo-user";
-  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
-  const [activeRole, setActiveRole] = useState<WorkspaceRole>("OWNER");
-  const [workspaceBootstrapError, setWorkspaceBootstrapError] = useState<string | null>(null);
-  const workspaceRepository = useMemo(() => authenticatedUserId && !demoMode ? platformWorkspaceRepository : localWorkspaceRepository, [authenticatedUserId, demoMode]);
+  const initialSnapshot = useMemo(() => initialWorkspace ? snapshotFromSummary(initialWorkspace) : null, [initialWorkspace]);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(initialWorkspace?.id ?? null);
+  const [activeRole, setActiveRole] = useState<WorkspaceRole>(initialWorkspace?.role ?? "OWNER");
+  const [workspaceBootstrapError, setWorkspaceBootstrapError] = useState<string | null>(initialWorkspaceError);
+  const workspaceRepository = useMemo(() => demoMode ? localWorkspaceRepository : platformWorkspaceRepository, [demoMode]);
   const workspaceScopeId = activeWorkspaceId ?? "workspace-demo";
   const orderScope = useMemo(() => ({ workspaceId: workspaceScopeId, userId }), [userId, workspaceScopeId]);
-  const workspace = useWorkspaceSnapshot(activeWorkspaceId, workspaceRepository);
+  const workspace = useWorkspaceSnapshot(activeWorkspaceId, workspaceRepository, initialSnapshot);
   const refreshWorkspace = workspace.refresh;
   const [canvasState, setCanvasState] = useState<CanvasState>("success");
   const [query, setQuery] = useState("");
@@ -100,13 +120,14 @@ export default function WorkspacePage({ demoMode = false }: { demoMode?: boolean
   }, [authenticatedUserId, changeWorkspace]);
 
   useEffect(() => {
-    if (demoMode || !authenticatedUserId) {
+    if (demoMode) {
       const timer = window.setTimeout(() => changeWorkspace("workspace-demo"), 0);
       return () => window.clearTimeout(timer);
     }
+    if (session.isPending || !authenticatedUserId || initialWorkspace?.id) return;
     const timer = window.setTimeout(() => { void loadUserWorkspace(); }, 0);
     return () => window.clearTimeout(timer);
-  }, [authenticatedUserId, changeWorkspace, demoMode, loadUserWorkspace]);
+  }, [authenticatedUserId, changeWorkspace, demoMode, initialWorkspace?.id, loadUserWorkspace, session.isPending]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -336,7 +357,7 @@ export default function WorkspacePage({ demoMode = false }: { demoMode?: boolean
     if (authenticatedUserId && (!activeWorkspaceId || workspaceBootstrapError)) void loadUserWorkspace();
     else void refreshWorkspace();
   }, [activeWorkspaceId, authenticatedUserId, loadUserWorkspace, refreshWorkspace, workspaceBootstrapError]);
-  const effectiveCanvasState: CanvasState = (!demoMode && session.isPending) || workspace.loading || (!demoMode && Boolean(authenticatedUserId) && !activeWorkspaceId && !workspaceBootstrapError) ? "loading" : workspace.error || workspaceBootstrapError ? "error" : canvasState;
+  const effectiveCanvasState: CanvasState = (!demoMode && session.isPending && !initialWorkspace) || workspace.loading || (!demoMode && Boolean(authenticatedUserId) && !activeWorkspaceId && !workspaceBootstrapError) ? "loading" : workspace.error || workspaceBootstrapError ? "error" : canvasState;
   const effectiveCanvasError = workspaceBootstrapError ?? workspace.error;
 
   return <main className={"app-shell " + theme} data-drawer-background>

@@ -3,9 +3,6 @@ import { requireServerUser } from "@/lib/auth-session";
 import { addWorkspaceMember, listWorkspaceMembers } from "@/features/workspace/platform-workspace-repository";
 import { addWorkspaceMemberInputSchema } from "@/features/workspace/workspace-contracts";
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
-
 export async function GET(_request: Request, { params }: { params: Promise<{ workspaceId: string }> }) {
   const user = await requireServerUser();
   if (!user) return NextResponse.json({ message: "Autenticação necessária." }, { status: 401 });

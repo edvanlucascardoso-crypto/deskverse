@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { requireServerUser } from "@/lib/auth-session";
-import { ensureDefaultWorkspace, createWorkspace, listUserWorkspaces } from "@/features/workspace/platform-workspace-repository";
+import { ensureDefaultWorkspace, createWorkspace, listUserWorkspacesCached } from "@/features/workspace/platform-workspace-repository";
 import { createWorkspaceInputSchema } from "@/features/workspace/workspace-contracts";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const user = await requireServerUser();
   if (!user) return NextResponse.json({ message: "Autenticação necessária." }, { status: 401 });
   try {
     await ensureDefaultWorkspace(user);
-    return NextResponse.json({ workspaces: await listUserWorkspaces(user.id) });
+    return NextResponse.json({ workspaces: await listUserWorkspacesCached(user.id) });
   } catch {
     return NextResponse.json({ message: "Não foi possível carregar os workspaces agora." }, { status: 503 });
   }
