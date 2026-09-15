@@ -2,9 +2,12 @@ import "server-only";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { normalizePostgresConnectionString } from "@/lib/database-url";
 
 const globalForPrisma = globalThis as unknown as { deskversePrisma?: PrismaClient };
-const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "postgresql://deskverse:deskverse@localhost:5432/deskverse";
+const connectionString = normalizePostgresConnectionString(
+  process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "postgresql://deskverse:deskverse@localhost:5432/deskverse",
+);
 
 function createPrismaClient() {
   const adapter = new PrismaPg({
