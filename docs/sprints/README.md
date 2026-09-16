@@ -2,7 +2,7 @@
 
 O Deskverse é um workspace em canvas para montar e operar uma **equipe de agentes de IA como uma organização**, com líderes, especialistas compartilhados, senioridade configurável e controle humano.
 
-Infraestrutura: consultar [GUIA_DE_INFRAESTRUTURA.md](../GUIA_DE_INFRAESTRUTURA.md). Serviços MCP/API/workers externos são hospedados no Railway e ficam agrupados com a sprint funcional que os requer; não são uma segunda arquitetura dentro do app.
+Infraestrutura: consultar [GUIA_DE_INFRAESTRUTURA.md](../GUIA_DE_INFRAESTRUTURA.md). Serviços MCP/API/workers externos ficam agrupados com a sprint funcional que os requer e usam o provedor definido pela fase, sem criar uma segunda arquitetura dentro do app. A referência atual é Railway para APIs, MCPs, filas, Redis e CPU; RunPod Serverless para GPU/RENDER.
 
 ## Princípios de produto/arquitetura
 
@@ -47,4 +47,4 @@ Líder de Mídias Sociais -> Especialista de Texto -> Especialista de Design opc
 
 As sprints são a fonte operacional única. PRDs soltos foram absorvidos nas sprints correspondentes; novas decisões devem atualizar a sprint/fase responsável em vez de criar documento paralelo.
 
-Os números das fases organizam o roadmap, mas o manifesto usa dependências topológicas. A única exceção atual é a ferramenta visual: `SPRINT-11-01` e `SPRINT-11-02` devem concluir antes de `SPRINT-10-03`, pois o Designer depende desse contrato e dessa execução headless.
+Os números das fases organizam o roadmap, mas o manifesto usa dependências topológicas. O grupo técnico da `SPRINT-15-02` fica subordinado à fase de Agentes Futuros, pode começar pelo Spike de forma atemporal e não bloqueia o Gate A0. PRDs de uma capability futura ficam anexados à sprint responsável e não substituem o manifesto.

@@ -2,7 +2,7 @@
 
 ## Serviços reutilizados
 
-Esta fase usa Neon, Redis Northflank e UploadThing preparados nas Fases 06 e 07. UploadThing é o storage do MVP; Pydio Cells hospedado no Northflank é uma migração posterior de gerenciamento de arquivos. Não há um provedor obrigatório novo para o loop humano.
+Esta fase usa Neon, Redis no Railway e UploadThing preparados nas Fases 06 e 07. UploadThing é o storage do MVP; um serviço headless privado no Railway é uma migração posterior de gerenciamento de arquivos. Não há um provedor obrigatório novo para o loop humano.
 
 A base local do escritório já define o contrato de evento, aprovação e idempotência, mas ainda não escolhe nem adiciona um provedor de transporte. O sink de eventos será ligado ao Neon/Prisma e ao transporte em tempo real apenas nas sprints de integração correspondentes.
 
@@ -30,7 +30,7 @@ DATABASE_URL=
 
 Somente tools autorizadas dos agentes enviam arquivos. O usuário consulta, mas não faz upload, edição ou exclusão pela tela de arquivos.
 
-A tela deve depender de `AssetRepository`/`AssetStorage`, não de detalhes do UploadThing. Na migração pós-MVP, o Pydio Cells será executado em serviço privado no Northflank; referências, versões, autorização, lineage e metadados continuam no Neon. Não iniciar a migração dentro da SPRINT-08-02 nem exigir Pydio para o Gate A0.
+A tela deve depender de `AssetRepository`/`AssetStorage`, não de detalhes do UploadThing. Na migração pós-MVP, o serviço headless de arquivos será executado no Railway; referências, versões, autorização, lineage e metadados continuam no Neon. Não iniciar a migração dentro da SPRINT-08-02 nem exigir o serviço de arquivos para o Gate A0.
 
 ## Notificações em tempo real
 

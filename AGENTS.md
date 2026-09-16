@@ -79,7 +79,7 @@ Antes de escolher ou iniciar uma sprint, leia:
 
 O manifesto define ordem, dependências, ambiente e prioridade. Sprints ativas ficam em docs/sprints/<fase>/. Sprints concluídas ficam em docs/sprints/completed/<fase>/.
 
-A próxima prioridade é SPRINT-07-01 — Onboarding e contexto inicial. A fundação 06-01 a 06-07 precedeu a Sprint 05-01 por override explícito do manifesto.
+A próxima prioridade é SPRINT-07-02 — Upload e armazenamento de arquivos. A SPRINT-07-01 foi concluída com requisitos de integração; a fundação 06-01 a 06-07 precedeu a Sprint 05-01 por override explícito do manifesto.
 
 ## Checkpoints executivos
 
@@ -141,7 +141,7 @@ O Gate A0 é: plano de mídias sociais → texto → design quando disponível �
 
 - O agente de imagem tem dois níveis: Apenas criação de imagens e Criação e edição.
 - No MVP, a arte social media usa um LLM orquestrador e a API de imagens da OpenAI, com UploadThing para os arquivos produzidos. A plataforma própria de imagem — Qwen-Image, FLUX.2 Klein e Image Editing Tool — é posterior e não bloqueia os três primeiros agentes.
-- A tool própria de imagem, quando iniciada na SPRINT-15-19, trabalha com composição JSON, layers, transformações, alpha, blend modes, máscaras, ajustes, comandos undo/redo, API para agentes e exportação PNG; seus workers rodam no Northflank e seus assets de mídia usam Cloudflare R2.
+- A tool própria de imagem, quando iniciada na SPRINT-15-19, trabalha com composição JSON, layers, transformações, alpha, blend modes, máscaras, ajustes, comandos undo/redo, API para agentes e exportação PNG; serviços/API e Redis compartilhado rodam no Railway, workers com GPU rodam no RunPod Serverless e seus assets de mídia usam Cloudflare R2.
 - O agente de motion design usa Remotion e uma tool/MCP interna baseada no clone do Figma para criar vetores. Essa tool é interna aos agentes e não ganha uma tela pública sem decisão explícita.
 - O agente de edição de vídeo possui níveis Básico, Intermediário e Avançado. As capacidades de cada nível são definidas na sprint de implementação.
 - Social Media, Design e Edição de Vídeo oferecem estilos diferentes por select na interface de criação/configuração. As famílias de estilo são definidas durante a implementação de cada agente.

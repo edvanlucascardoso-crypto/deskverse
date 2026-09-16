@@ -34,7 +34,7 @@ Cada agente de implementação recebe uma única sprint. Integrações entre spr
 
 `Mídias Sociais → Redator → Designer opcional → aprovação humana → entrega`.
 
-No MVP, o Designer usa a API de imagens da OpenAI e o UploadThing. Qwen-Image, FLUX.2 Klein e a Image Editing Tool própria entram na plataforma de mídia posterior, hospedada no Northflank e documentada na SPRINT-15-19. Sem capacidade do Designer, o fluxo conclui honestamente por `Mídias Sociais → Redator`.
+No MVP, o Designer usa a API de imagens da OpenAI e o UploadThing. Qwen-Image, FLUX.2 Klein e a Image Editing Tool própria entram na plataforma de mídia posterior, com serviços no Railway, workers GPU no RunPod Serverless e assets no Cloudflare R2, documentada na SPRINT-15-19. Sem capacidade do Designer, o fluxo conclui honestamente por `Mídias Sociais → Redator`.
 
 ## Canais e escalação
 

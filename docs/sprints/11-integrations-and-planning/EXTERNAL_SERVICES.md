@@ -16,7 +16,7 @@
 
 As credenciais de Instagram e WhatsApp pertencem ao workspace, devem ser criptografadas, revogáveis e referenciadas por ID. Não colocar tokens de canal no `.env` global nem no prompt do agente.
 
-O serviço de canais reutilizável está descrito em [SPRINT-11-04-SVC-01](11-04-whatsapp/services/SPRINT-11-04-SVC-01-mcp-channels.md). A decisão canônica atual é `deskverse-mcp-channels` privado no Railway, por ambiente, com webhook dedicado. Colocar workers e Redis no Northflank não altera automaticamente essa decisão; uma migração exige atualização da SVC e teste de rede/segredos.
+O serviço de canais reutilizável está descrito em [SPRINT-11-04-SVC-01](11-04-whatsapp/services/SPRINT-11-04-SVC-01-mcp-channels.md). A decisão canônica atual é `deskverse-mcp-channels` privado no Railway, por ambiente, com webhook dedicado. Jobs GPU de outros domínios usam RunPod Serverless; isso não altera o transporte de canais.
 
 Variáveis de serviço sugeridas:
 

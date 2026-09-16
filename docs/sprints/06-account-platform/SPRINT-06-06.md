@@ -15,7 +15,7 @@ Configurar a fundação operacional do MVP antes das melhorias visuais posterior
 2. Provisionar Neon por ambiente, migrations versionadas, conexão pooled da aplicação e isolamento por `workspace_id`.
 3. Provisionar Redis atrás de `QueueBackend`, sem antecipar workers de produção; validar idempotency key, lease e heartbeat por contrato/teste.
 4. Configurar storage abstrato para UploadThing no MVP, preservando interface de asset para futura troca por R2/S3.
-5. Registrar contratos `AgentRuntime`, `InferenceGateway`, `WorkerExecutionProvider` e MCP remoto, sem acoplar regra de negócio ao fornecedor. Northflank é reservado aos serviços próprios de mídia posteriores.
+5. Registrar contratos `AgentRuntime`, `InferenceGateway`, `WorkerExecutionProvider` e MCP remoto, sem acoplar regra de negócio ao fornecedor. Railway hospeda serviços próprios e RunPod Serverless é reservado aos jobs GPU/RENDER posteriores.
 6. Criar inventário de segredos, rotação, redaction de logs, healthcheck e ownership operacional.
 7. Atualizar o guia de infraestrutura com os valores reais escolhidos, sem expor segredos.
 

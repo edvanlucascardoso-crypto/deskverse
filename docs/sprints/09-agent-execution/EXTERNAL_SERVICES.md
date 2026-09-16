@@ -11,7 +11,7 @@ Esta fase liga a execução real aos contratos internos. A regra de negócio con
 | 09-01 | Neon + Redis | Registry, capabilities e filas lógicas |
 | 09-02 | Vercel AI Gateway | Inferência, provider routing e failover técnico |
 | 09-03 | Secret manager/credenciais | Scopes, audience, OAuth 2.1 + PKCE e delegação |
-| 09-04 | Eve + Redis Northflank + workers Northflank | Runtime durável, especialistas e filas físicas |
+| 09-04 | Eve + Redis Railway + workers Railway/RunPod Serverless | Runtime durável, especialistas e filas físicas |
 | 09-05 | Neon + Redis | Budget, retry e proteção contra loops |
 | 09-06 | Secret manager/MCP | Credenciais por workspace e recurso |
 | 09-07 | Neon/pgvector | Memória única dos agentes |
@@ -29,9 +29,9 @@ AI_GATEWAY_API_KEY=
 
 OpenAI, Anthropic, Gemini, Kimi, Muse, DeepSeek e Qwen continuam atrás do gateway. O catálogo em runtime é autoridade para modelos, preços e capacidades; a tabela da sprint não deve alimentar billing.
 
-## Eve e Northflank
+## Eve, Railway e RunPod Serverless
 
-Provisionar o runtime Eve conforme seu contrato e registrar endpoint/projeto/credencial em secret group separado por ambiente. Os workers efêmeros devem rodar no Northflank, com classes `LLM`, `CPU`, `BROWSER`, `GPU` e `RENDER` quando habilitadas.
+Provisionar o runtime Eve conforme seu contrato e registrar endpoint/projeto/credencial em secret group separado por ambiente. APIs, scheduler e workers efêmeros `LLM`, `CPU` e `BROWSER` rodam no Railway; jobs `GPU` e `RENDER` são despachados para endpoints RunPod Serverless quando habilitados.
 
 ```env
 EVE_API_URL=
@@ -39,7 +39,7 @@ EVE_API_KEY=
 REDIS_URL=
 ```
 
-O Redis deve permanecer atrás de `QueueBackend`. Workers usam conexão privada no Northflank; a Vercel não acessa worker diretamente. `WAITING_USER` e `WAITING_APPROVAL` persistem checkpoint e liberam o worker.
+O Redis deve permanecer atrás de `QueueBackend`. Workers CPU usam conexão privada no Railway; o scheduler chama o endpoint RunPod Serverless por HTTPS assinado para jobs GPU/RENDER. A Vercel não acessa worker diretamente. `WAITING_USER` e `WAITING_APPROVAL` persistem checkpoint e liberam o worker.
 
 ## Conexões e memória
 

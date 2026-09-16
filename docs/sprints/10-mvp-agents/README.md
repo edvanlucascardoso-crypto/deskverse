@@ -54,4 +54,4 @@ Demonstrar delegação por especialidade, aprovação humana, artefato rastreáv
 
 ## Mídia no MVP
 
-Mídias Sociais, Redator e Designer usam serviços externos prontos: UploadThing para arquivos e API de imagens da OpenAI para geração/edição visual. A plataforma própria com Qwen-Image, FLUX.2 Klein, Image Editing Tool, Cloudflare R2 e workers no Northflank é posterior ao Gate A0 e está registrada na SPRINT-15-19.
+Mídias Sociais, Redator e Designer usam serviços externos prontos: UploadThing para arquivos e API de imagens da OpenAI para geração/edição visual. A plataforma própria com Qwen-Image, FLUX.2 Klein, Image Editing Tool, Cloudflare R2, serviços Railway e workers GPU no RunPod Serverless é posterior ao Gate A0 e está registrada na SPRINT-15-19.

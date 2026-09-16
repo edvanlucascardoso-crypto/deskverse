@@ -38,7 +38,7 @@
 
 ## Integrações pendentes
 
-- Substituir o adaptador local pelo Queue Gateway HTTPS autenticado sobre Redis no Northflank, mantendo a política no Deskverse.
+- Substituir o adaptador local pelo Queue Gateway HTTPS autenticado sobre Redis no Railway, mantendo a política no Deskverse.
 - Persistir estados, leases, tentativas, erros, checkpoints e histórico no Neon; esta sprint não altera o schema nem cria migration porque a persistência durável pertence à integração do backend de fila.
 - Conectar workers CPU e o scheduler real às etapas do pipeline de documentos.
 - Definir adapters reais de OCR, normalização e embeddings atrás do `InferenceGateway` nas sprints correspondentes; nenhum fornecedor foi acoplado aqui.

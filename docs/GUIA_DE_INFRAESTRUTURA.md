@@ -6,14 +6,14 @@
 |---|---|---|
 | Aplicação web e API | Vercel | Não executar render, navegador ou GPU na função web. |
 | Banco relacional e vetores | Neon PostgreSQL | Fonte transacional; uma base por ambiente. |
-| Cache e filas físicas | Redis gerenciado | Transporte de fila; a política continua no Deskverse. |
+| Cache e filas físicas | Railway Redis | Transporte de fila; a política continua no Deskverse. |
 | Arquivos do MVP | UploadThing | Artefatos dos três primeiros agentes; binários não passam pelo LLM. |
-| Gerenciamento de arquivos posterior | Pydio Cells no Northflank | Migração headless após o MVP; Deskverse continua dono de metadados e autorização. |
+| Gerenciamento de arquivos posterior | Serviço privado no Railway + storage aprovado | Migração headless após o MVP; Deskverse continua dono de metadados e autorização. |
 | Mídia própria posterior | Cloudflare R2 | Asset Service headless, URLs assinadas e multipart. |
 | Inferência | Vercel AI Gateway | `InferenceGateway`; sem APIs diretas no MVP. |
 | Execução durável | Eve | `AgentRuntime`; política e custo pertencem ao Deskverse. |
-| Serviços próprios de mídia | Northflank | Containers privados, versionados e isolados por ambiente. |
-| GPU elástica posterior | Northflank | Sempre atrás de `WorkerExecutionProvider`; não fica ligada sem demanda. |
+| Serviços próprios de mídia | Railway | APIs, MCPs, scheduler e workers sem GPU em containers privados, versionados e isolados por ambiente. |
+| GPU elástica posterior | RunPod Serverless | Endpoints assíncronos sempre atrás de `WorkerExecutionProvider`; não ficam ligados sem demanda. |
 | Observabilidade | OpenTelemetry + logs/erros | Correlacionar `workspaceId`, `runId`, `taskId`, `traceId`. |
 
 Fases 01–04 são protótipo local. Não declarar estes componentes como implementados antes das sprints correspondentes.
@@ -23,16 +23,16 @@ Fases 01–04 são protótipo local. Não declarar estes componentes como implem
 ```text
 Browser -> Vercel (app/API) -> Neon
                          -> UploadThing / API de imagens da OpenAI (MVP)
-                         -> Pydio Cells no Northflank (pós-MVP, após migração)
+                         -> Serviço de arquivos privado no Railway (pós-MVP, após migração)
                          -> Eve / Vercel AI Gateway
-                         -> Redis scheduler -> Northflank workers -> R2 (mídia pesada quando aplicável)
+                         -> Railway Redis/scheduler -> Railway CPU ou RunPod Serverless GPU/RENDER -> R2
 ```
 
 O app não chama worker diretamente: persiste tarefa, o scheduler resolve especialidade/classe e o worker retira por lease/heartbeat. Espera de usuário ou aprovação salva checkpoint e libera worker.
 
 ## Ambientes
 
-Criar `development`, `staging` e `production`, cada um com Neon, Redis, UploadThing e Vercel. Depois do MVP, cada ambiente que adotar Pydio terá um serviço Pydio Cells no Northflank e storage persistente próprio. Não reutilizar banco, filas, bucket, OAuth ou chaves de produção em preview.
+Criar `development`, `staging` e `production`, cada um com Neon, Railway Redis, UploadThing e Vercel. Depois do MVP, cada ambiente que adotar o gerenciamento headless terá um serviço privado no Railway e storage persistente aprovado. Endpoints RunPod Serverless, quando necessários, também devem ser separados por ambiente ou por credenciais/allowlist equivalente. Não reutilizar banco, filas, bucket, OAuth ou chaves de produção em preview.
 
 ## Neon PostgreSQL
 
@@ -50,7 +50,7 @@ Redis sustenta `LLM`, `CPU`, `GPU`, `BROWSER` e `RENDER`, além de rate limit, d
 
 A política não fica no backend: prioridade, FIFO por faixa, aging, justiça entre workspaces/líderes, backpressure, retry técnico, dead-letter e cancelamento em cascata são regras do Deskverse. Falha semântica retorna ao líder, não repete cegamente.
 
-## Northflank: serviços, workers e Pydio posteriores
+## Railway: serviços, workers CPU e integrações posteriores
 
 Cada serviço é privado, sem painel público, com container reproduzível, healthcheck e variáveis por ambiente:
 
@@ -61,25 +61,25 @@ Cada serviço é privado, sem painel público, com container reproduzível, heal
 | `deskverse-worker-browser` | BROWSER | navegação isolada e autorizada |
 | `deskverse-mcp-channels` | MCP/API | WhatsApp, Instagram e ações externas auditáveis |
 | `deskverse-mcp-media` | MCP/API | composição, edição e metadados de mídia |
-| `deskverse-pydio` | Files/API | gerenciamento headless de arquivos após a migração do MVP |
+| `deskverse-file-service` | Files/API | gerenciamento headless de arquivos após a migração do MVP |
 
 Workers consomem a fila autenticados, renovam heartbeat, validam payload e devolvem referência de resultado. MCPs usam schemas pequenos, `workspaceId`, escopo de credencial, idempotency key, timeout, auditoria e resposta estruturada.
 
 ## GPU e render
 
-No MVP, a geração/edição visual é executada pela API de imagens da OpenAI. Depois, a GPU não fica ligada sem demanda: o scheduler envia `GPU`/`RENDER` ao `WorkerExecutionProvider` no Northflank.
+No MVP, a geração/edição visual é executada pela API de imagens da OpenAI. Depois, a GPU não fica ligada sem demanda: o scheduler envia `GPU`/`RENDER` ao `WorkerExecutionProvider`, que despacha o job para um endpoint RunPod Serverless. API, filas, preparação CPU e coordenação permanecem no Railway.
 
 O worker recebe URLs assinadas de entrada e devolve referências/URLs de saída. Não recebe banco direto desnecessário, credenciais amplas ou chaves de canais. Na plataforma própria posterior, Qwen-Image e FLUX.2 Klein geram e a ferramenta própria edita/recompõe. Em vídeo: preview antes de render final, com cancelamento e idempotência.
 
 ## MCPs, APIs e canais
 
-Ações complexas ou com credencial de terceiro viram MCP/API externo. Serviços próprios de mídia e render rodam no Northflank; o app chama a tool por interface interna e o serviço valida autorização, aprovação exigida e idempotência.
+Ações complexas ou com credencial de terceiro viram MCP/API externo. Serviços próprios de mídia e render têm API/MCP no Railway e, quando exigirem GPU, executam o job em RunPod Serverless; o app chama a tool por interface interna e o serviço valida autorização, aprovação exigida e idempotência.
 
 Envio, publicação, mudança financeira e outro efeito irreversível exigem approval persistida. Webhooks entram por endpoint próprio, assinatura verificada, evento idempotente e reconciliação assíncrona.
 
 ## Segredos, observabilidade e operação
 
-- Vercel/Northflank guardam variáveis; cada processo recebe apenas o necessário.
+- Vercel/Railway/RunPod guardam variáveis; cada processo recebe apenas o necessário e os workers recebem somente referências opacas de assets.
 - Credenciais de canal são por workspace, criptografadas, revogáveis e de escopo curto.
 - Separar chaves de leitura/escrita/administração e usar conta própria para migrations.
 - Propagar `traceId`, `workspaceId`, `leaderRunId`, `taskId` e `idempotencyKey`.
@@ -93,8 +93,8 @@ Envio, publicação, mudança financeira e outro efeito irreversível exigem app
 3. Redis/scheduler e contratos de task/run.
 4. Eve + Vercel AI Gateway pelas interfaces internas.
 5. API de imagens da OpenAI para o Designer do MVP.
-6. Pydio Cells no Northflank, somente após a migração aprovada do storage do MVP.
-7. Asset Service R2 e workers Northflank somente na plataforma própria de mídia.
+6. Serviço headless de arquivos no Railway, somente após a migração aprovada do storage do MVP.
+7. Asset Service R2 e endpoints RunPod Serverless somente na plataforma própria de mídia ou em sprints que os requeiram.
 8. Observabilidade, segurança e gates de release.
 
 Agentes futuros não bloqueiam o MVP. Cada agente posterior mantém, na sua pasta, as sprints de MCP/API/worker que ele requer.

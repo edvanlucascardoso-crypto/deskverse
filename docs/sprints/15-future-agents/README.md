@@ -4,11 +4,13 @@ Adicionar funções sobre a mesma fundação da Fase 09. Todo agente futuro decl
 
 Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
 
+Catálogo de integrações open source pesquisadas: [OPEN_SOURCE_RECOMMENDATIONS.md](OPEN_SOURCE_RECOMMENDATIONS.md).
+
 ## Regra de prioridade
 
 Esta fase é um **catálogo pós-MVP**, não uma sequência bloqueante. O MVP é exclusivamente Mídias Sociais, Redator e Designer (Fase 10), mais seus gates técnicos já declarados. Nenhuma sprint 15-xx pode ser requisito, gate ou dependência implícita do MVP, da Fase 11 ou de release.
 
-Cada agente futuro entra de forma independente após a fundação necessária estar concluída. Onde houver serviço próprio, a pasta `agents/<sprint>-<nome>/` agrupa a sprint funcional canônica e as sprints de MCP/API/worker no Northflank. Serviços compartilhados são reutilizados; não criar uma cópia por agente.
+Cada agente futuro entra sem bloquear o MVP nem criar uma dependência implícita sobre os demais. Dependências explícitas continuam válidas e devem ser respeitadas; no caso de `SPRINT-15-02`, o Spike é independente de `SPRINT-15-01` e os pré-requisitos produtivos estão nas sprints filhas. Cada agente tem uma pasta própria diretamente em `docs/sprints/<sprint>-<nome>/`, que agrupa a sprint funcional, PRDs, integração e serviços. APIs, MCPs, scheduler, Redis e workers CPU usam Railway; jobs que exigem GPU usam RunPod Serverless. Serviços compartilhados são reutilizados; não criar uma cópia por agente.
 
 ## Defaults de modelo por função
 
@@ -49,6 +51,32 @@ Especialistas como Pesquisa, Texto, Design, Análise de Dados, Revisão e Navega
 ## Ordem de prioridade pós-MVP
 
 1. Priorizar pelo valor validado e pela fundação disponível; a lista não cria dependência entre agentes.
-2. Vídeo e VFX têm grupo de serviço próprio em `agents/15-12-edicao-de-video/` e `agents/15-13-efeitos-visuais/`.
+2. Vídeo e VFX têm grupo de serviço próprio em `docs/sprints/15-12-edicao-de-video/` e `docs/sprints/15-13-efeitos-visuais/`.
 3. SDR, Fechamento, Pós-vendas e Atendimento reutilizam o MCP de canais da Fase 11; não criam outro conector de WhatsApp.
 4. A SPRINT-15-19 substitui gradualmente a API de imagens externa do MVP por Qwen-Image, FLUX.2 Klein e a Image Editing Tool própria, sem interromper os três primeiros agentes.
+
+## Diretórios dos agentes
+
+Cada linha é uma pasta única com README, sprint funcional, PRD, requisitos de integração e, quando necessário, serviços associados.
+
+| Agente | Pasta |
+|---|---|
+| Crescimento | [15-01-crescimento](../15-01-crescimento/) |
+| Motion Design | [15-02-motion-design](../15-02-motion-design/) |
+| Desenvolvimento Web | [15-03-desenvolvimento-web](../15-03-desenvolvimento-web/) |
+| Tráfego | [15-04-trafego](../15-04-trafego/) |
+| Contabilidade Brasileira | [15-05-contabilidade-brasileira](../15-05-contabilidade-brasileira/) |
+| Gestão | [15-06-gestao](../15-06-gestao/) |
+| Pré-vendas | [15-07-pre-vendas](../15-07-pre-vendas/) |
+| Fechamento Comercial | [15-08-fechamento-comercial](../15-08-fechamento-comercial/) |
+| Pós-vendas | [15-09-pos-vendas](../15-09-pos-vendas/) |
+| Atendimento | [15-10-atendimento](../15-10-atendimento/) |
+| Gestão de Projetos | [15-11-gestao-de-projetos](../15-11-gestao-de-projetos/) |
+| Edição de Vídeo | [15-12-edicao-de-video](../15-12-edicao-de-video/) |
+| Efeitos Visuais | [15-13-efeitos-visuais](../15-13-efeitos-visuais/) |
+| Controle Financeiro | [15-14-controle-financeiro](../15-14-controle-financeiro/) |
+| Dados e BI | [15-15-dados-e-bi](../15-15-dados-e-bi/) |
+| Inteligência de Mercado | [15-16-inteligencia-de-mercado](../15-16-inteligencia-de-mercado/) |
+| Observador Humano | [15-17-observador-humano](../15-17-observador-humano/) |
+| Liderança Multi-grupo | [15-18-lideranca-multi-grupo](../15-18-lideranca-multi-grupo/) |
+| Plataforma de Imagem | [15-19-plataforma-de-imagem](../15-19-plataforma-de-imagem/) |

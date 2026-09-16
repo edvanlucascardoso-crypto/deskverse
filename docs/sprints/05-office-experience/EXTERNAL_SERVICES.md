@@ -21,7 +21,7 @@ O manifesto, porém, exige que a fundação da Fase 06 seja executada antes da S
 Reutilizar, sem duplicar credenciais:
 
 - `DATABASE_URL` do Neon para dados persistidos;
-- `REDIS_URL` do Redis no Northflank somente quando houver fila real;
+- `REDIS_URL` do Redis no Railway somente quando houver fila real;
 - `BETTER_AUTH_SECRET` e `BETTER_AUTH_URL` para o shell autenticado;
 - `UPLOADTHING_TOKEN` somente para fluxos que já tenham artefatos confirmados.
 

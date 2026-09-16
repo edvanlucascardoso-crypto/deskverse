@@ -10,7 +10,7 @@
 
 ## Próxima integração
 
-1. Implementar o gateway autenticado entre a aplicação e o Redis privado no Northflank.
+1. Implementar o gateway autenticado entre a aplicação e o Redis privado no Railway.
 2. Persistir o registro durável de cada job antes de publicar ou liberar a próxima etapa.
 3. Garantir que o worker receba apenas payload mínimo, `workspaceId`, referência do documento, checksum e chave de idempotência.
 4. Reconciliar lease, heartbeat, retry, dead-letter e cancelamento em cascata entre Redis e Neon sem permitir travessia de workspace.
@@ -18,4 +18,4 @@
 
 ## Fora do escopo
 
-Não foram conectados Redis, workers Northflank, OCR, embeddings, UploadThing, publicação externa, cobrança ou novos modelos Prisma. Não há bloqueio de decisão de produto registrado para promover a próxima sprint; há apenas dependências de infraestrutura e adapters reais.
+Não foram conectados Redis, workers Railway, OCR, embeddings, UploadThing, publicação externa, cobrança ou novos modelos Prisma. Não há bloqueio de decisão de produto registrado para promover a próxima sprint; há apenas dependências de infraestrutura e adapters reais.

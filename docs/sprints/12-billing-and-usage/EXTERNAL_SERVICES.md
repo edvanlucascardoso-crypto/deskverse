@@ -32,7 +32,7 @@ Manter todas as credenciais somente no servidor. O checkout deve ser criado pelo
 - Endpoint público apenas na API da Vercel, com validação de assinatura.
 - Persistir evento recebido e chave de idempotência antes de aplicar a transição.
 - Aceitar retries, duplicados e eventos fora de ordem sem conceder acesso indevido.
-- Rodar reconciliação assíncrona pelo scheduler/worker Northflank.
+- Rodar reconciliação assíncrona pelo scheduler/worker CPU no Railway. RunPod Serverless não é necessário para reconciliação financeira.
 - Registrar divergência, estado anterior, novo estado e próximo passo.
 
 ## Validação

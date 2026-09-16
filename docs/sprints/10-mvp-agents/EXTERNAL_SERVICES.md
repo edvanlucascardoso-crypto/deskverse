@@ -2,10 +2,10 @@
 
 ## Serviços do MVP
 
-Os três primeiros agentes reutilizam a Fase 09 e exigem somente serviços já definidos. UploadThing é o storage de arquivos do MVP; a migração posterior de gerenciamento de arquivos para Pydio Cells no Northflank não altera o Gate A0:
+Os três primeiros agentes reutilizam a Fase 09 e exigem somente serviços já definidos. UploadThing é o storage de arquivos do MVP; a migração posterior de gerenciamento de arquivos para um serviço privado no Railway não altera o Gate A0:
 
 - Vercel AI Gateway para toda inferência;
-- Northflank para workers efêmeros/scheduler;
+- Railway para scheduler e workers CPU; RunPod Serverless somente para jobs GPU/RENDER posteriores;
 - Neon com pgvector para estado, auditoria e memória;
 - UploadThing para artefatos confirmados no MVP;
 - API de imagens da OpenAI somente para o Designer, atrás de adapter privado.
@@ -14,8 +14,8 @@ Os três primeiros agentes reutilizam a Fase 09 e exigem somente serviços já d
 
 | Sprint | Serviço necessário |
 |---|---|
-| 10-01 | Gateway, Neon, Redis Northflank e UploadThing |
-| 10-02 | Gateway, Neon, Redis Northflank e UploadThing |
+| 10-01 | Gateway, Neon, Redis Railway e UploadThing |
+| 10-02 | Gateway, Neon, Redis Railway e UploadThing |
 | 10-03 | Gateway, OpenAI Images, UploadThing e Neon |
 | 10-04 | Serviços das três funções e aprovação humana |
 | 10-05 | Registry, filas e workers da Fase 09 |

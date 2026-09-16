@@ -11,7 +11,7 @@ O escopo desta sprint foi transferido para a SPRINT-15-19 para não bloquear o M
 
 ## Stack visual
 
-Quando retomada na SPRINT-15-19: Qwen-Image, FLUX.2 Klein, Image Editing Tool própria, Asset Service sobre Cloudflare R2 e workers no Northflank.
+Quando retomada na SPRINT-15-19: Qwen-Image, FLUX.2 Klein, Image Editing Tool própria, Asset Service sobre Cloudflare R2, serviços de controle no Railway e workers GPU no RunPod Serverless.
 
 ## Scene/Command Engine
 

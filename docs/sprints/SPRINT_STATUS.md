@@ -13,9 +13,10 @@ SPRINT_MANIFEST.json define a ordem, as dependências e o ambiente. Este arquivo
 - Fase 04 — Pessoas e atividade: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Cards locais de identidade e presença, todos os estados de trabalho, chat global, chat privado, reunião local, comunicação espacial sequencial e linha do tempo acionável foram entregues; fonte autenticada de presença, atividade persistida e transporte em tempo real permanecem como integração futura.
 - Fase 05 — Experiência do Escritório: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Store local, atividade incremental, simulador, checkpoints, aprovação humana, recuperação e loop até entrega foram entregues; runtime real e evidência visual CUA aguardam ambiente integrado.
 - Fase 06 — Conta e Plataforma: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Limites de aplicação, schema multi-tenant, migration pgvector, Better Auth, workspaces, membros, RBAC, contratos operacionais, healthcheck e shell protegido foram entregues; deploy da migration, serviços externos e evidência visual CUA aguardam ambiente integrado.
-- Fase 07 — IN_PROGRESS. A SPRINT-07-01 está `COMPLETE_WITH_INTEGRATION_REQUIREMENTS`; as sprints seguintes permanecem planejadas. Fases 08–16 seguem PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e seus agentes são independentes entre si; nunca bloqueiam a entrega dos agentes já estabelecidos da Fase 10.
+- Fase 07 — IN_PROGRESS. A SPRINT-07-01 está `COMPLETE_WITH_INTEGRATION_REQUIREMENTS`; as sprints seguintes permanecem planejadas. Fases 08–16 seguem PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e suas sprints não criam bloqueio implícito entre agentes nem bloqueiam a Fase 10; `SPRINT-15-02-SPIKE-01` é independente de `SPRINT-15-01`.
 - Antes de iniciar a criação dos agentes da Fase 10, a SPRINT-08-02 deve entregar a tela de arquivos dos projetos com UploadThing, Data Table paginada com busca no desktop e lista de cards no mobile.
 - Próxima sprint obrigatória: SPRINT-07-02 — Upload e armazenamento de arquivos. A SPRINT-07-01 entregou o contrato local de filas, jobs assíncronos, observação e pipeline de conhecimento; as integrações pendentes permanecem visíveis no relatório da sprint.
+- O PRD e o grupo técnico da SPRINT-15-02 ficam na Fase 15 como trabalho pós-MVP. O Spike pode ser atemporal; nenhuma etapa de Motion MCP é requisito do Gate A0 ou da criação dos agentes da Fase 10.
 
 O roadmap é validado por dependências, não apenas pelo número da fase. O Designer do MVP não depende de pipeline próprio de imagem: usa a API de imagens da OpenAI e UploadThing. A plataforma própria de imagem fica na SPRINT-15-19, posterior ao MVP.
 
@@ -42,7 +43,7 @@ Essa ordem preserva o Gate A0, agora com Social Media como `LeaderAgent` e Copy/
 - GPT-5.6 Luna é a única exceção OpenAI para `max`, condicionada a profile, provider efetivo e benchmark; GPT-5.6 Sol, os demais modelos OpenAI e Anthropic permanecem sem `max`.
 - A revisão de neutralidade de fornecedor elevou Muse Spark 1.3 (`max`, quando suportado pelo caminho efetivo) a escalonador padrão dos agentes generalistas; DeepSeek V4.1 Flash deixou de ser restrito a microtarefas. GPT-5.6 Sol permanece apenas como último recurso quando não houver paridade comprovada ou o risco exigir.
 - O Designer do MVP usa um orquestrador com API de imagens da OpenAI e UploadThing. Qwen-Image, FLUX.2 Klein e Image Editing Tool própria entram na plataforma de mídia posterior, com master aprovada e recomposição determinística.
-- Neon é o banco transacional; Northflank hospeda serviços e workers próprios posteriores; Redis, storage e GPU ficam atrás de interfaces do Deskverse conforme `docs/GUIA_DE_INFRAESTRUTURA.md`.
+- Neon é o banco transacional; Railway hospeda serviços, scheduler, Redis e workers CPU; RunPod Serverless hospeda jobs com GPU/RENDER; storage e execução ficam atrás de interfaces do Deskverse conforme `docs/GUIA_DE_INFRAESTRUTURA.md`.
 - PRDs soltos de acesso, imagem e vídeo foram absorvidos nas sprints responsáveis e removidos para manter uma fonte operacional única.
 
 ## Colaboração

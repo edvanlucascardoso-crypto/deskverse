@@ -6,7 +6,10 @@
     "docs/sprints/SPRINT_STATUS.md",
     "docs/sprints/00-meta/SPRINT_MANIFEST.json",
     "docs/sprints/<phase>/README.md",
-    "docs/sprints/<phase>/SPRINT-<id>.md"
+    "docs/sprints/<sprint>-<agent>/README.md",
+    "docs/sprints/<sprint>-<agent>/SPRINT-<id>.md",
+    "docs/sprints/<sprint>-<agent>/PRD-*.md",
+    "docs/sprints/<sprint>-<agent>/INTEGRATION_REQUIREMENTS.md"
   ],
   "nextPriority": "SPRINT-07-02",
   "phaseOrder": [
@@ -38,8 +41,37 @@
   "serviceSprints": [
     { "id": "SPRINT-10-03-SVC-01", "path": "10-mvp-agents/10-03-designer/services/SPRINT-10-03-SVC-01-mcp-media.md", "ownerSprint": "SPRINT-10-03", "runtime": "external_api", "blocksMvp": false },
     { "id": "SPRINT-11-04-SVC-01", "path": "11-integrations-and-planning/11-04-whatsapp/services/SPRINT-11-04-SVC-01-mcp-channels.md", "ownerSprint": "SPRINT-11-04", "runtime": "Railway", "blocksMvp": false },
-    { "id": "SPRINT-15-12-SVC-01", "path": "15-future-agents/agents/15-12-edicao-de-video/services/SPRINT-15-12-SVC-01-video-engine.md", "ownerSprint": "SPRINT-15-12", "runtime": "Northflank", "blocksMvp": false },
-    { "id": "SPRINT-15-13-SVC-01", "path": "15-future-agents/agents/15-13-efeitos-visuais/services/SPRINT-15-13-SVC-01-vfx-extension.md", "ownerSprint": "SPRINT-15-13", "runtime": "Northflank", "blocksMvp": false }
+    { "id": "SPRINT-15-12-SVC-01", "path": "15-12-edicao-de-video/services/SPRINT-15-12-SVC-01-video-engine.md", "ownerSprint": "SPRINT-15-12", "runtime": "Railway+RunPodServerless", "blocksMvp": false },
+    { "id": "SPRINT-15-13-SVC-01", "path": "15-13-efeitos-visuais/services/SPRINT-15-13-SVC-01-vfx-extension.md", "ownerSprint": "SPRINT-15-13", "runtime": "Railway+RunPodServerless", "blocksMvp": false },
+    { "id": "SPRINT-15-02-SVC-01", "path": "15-02-motion-design/services/SPRINT-15-02-SVC-01-motion-mcp.md", "ownerSprint": "SPRINT-15-02", "runtime": "Railway+RunPodServerless", "dependsOn": ["SPRINT-15-02-SPIKE-01", "SPRINT-15-02-02", "SPRINT-07-02", "SPRINT-08-02", "SPRINT-09-03", "SPRINT-09-04", "SPRINT-09-05", "SPRINT-09-06", "SPRINT-14-01", "SPRINT-14-02", "SPRINT-14-03", "SPRINT-14-04", "SPRINT-14-05", "SPRINT-14-06", "SPRINT-14-07", "SPRINT-14-08"], "blocksMvp": false }
+  ],
+  "agentDirectories": [
+    { "id": "SPRINT-15-01", "path": "15-01-crescimento", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-02", "path": "15-02-motion-design", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-03", "path": "15-03-desenvolvimento-web", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-04", "path": "15-04-trafego", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-05", "path": "15-05-contabilidade-brasileira", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-06", "path": "15-06-gestao", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-07", "path": "15-07-pre-vendas", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-08", "path": "15-08-fechamento-comercial", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-09", "path": "15-09-pos-vendas", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-10", "path": "15-10-atendimento", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-11", "path": "15-11-gestao-de-projetos", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-12", "path": "15-12-edicao-de-video", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-13", "path": "15-13-efeitos-visuais", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-14", "path": "15-14-controle-financeiro", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-15", "path": "15-15-dados-e-bi", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-16", "path": "15-16-inteligencia-de-mercado", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-17", "path": "15-17-observador-humano", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-18", "path": "15-18-lideranca-multi-grupo", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-19", "path": "15-19-plataforma-de-imagem", "status": "planned", "blocksMvp": false }
+  ],
+  "roadmapExtensions": [
+    { "id": "SPRINT-15-02-SPIKE-01", "path": "15-02-motion-design/SPRINT-15-02-SPIKE-01.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "atemporal": true, "blocksMvp": false },
+    { "id": "SPRINT-15-02-01", "path": "15-02-motion-design/SPRINT-15-02-01.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "dependsOn": ["SPRINT-15-02-SPIKE-01", "SPRINT-07-02", "SPRINT-08-01"], "atemporal": false, "blocksMvp": false },
+    { "id": "SPRINT-15-02-02", "path": "15-02-motion-design/SPRINT-15-02-02.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "dependsOn": ["SPRINT-15-02-01", "SPRINT-09-03", "SPRINT-09-06", "SPRINT-09-07"], "atemporal": false, "blocksMvp": false },
+    { "id": "SPRINT-15-02-03", "path": "15-02-motion-design/SPRINT-15-02-03.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "dependsOn": ["SPRINT-15-02-02", "SPRINT-15-02-SVC-01", "SPRINT-07-02", "SPRINT-08-02", "SPRINT-08-06", "SPRINT-09-04", "SPRINT-09-05", "SPRINT-14-01", "SPRINT-14-02", "SPRINT-14-03", "SPRINT-14-04", "SPRINT-14-05", "SPRINT-14-06", "SPRINT-14-07", "SPRINT-14-08"], "atemporal": false, "blocksMvp": false },
+    { "id": "SPRINT-15-02-04", "path": "15-02-motion-design/SPRINT-15-02-04.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "dependsOn": ["SPRINT-15-02-03", "SPRINT-08-07", "SPRINT-08-08", "SPRINT-09-07", "SPRINT-09-08"], "atemporal": false, "blocksMvp": false }
   ],
   "gates": [
     {

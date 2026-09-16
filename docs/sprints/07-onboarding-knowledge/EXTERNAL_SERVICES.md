@@ -5,16 +5,16 @@
 A fase consome a fundação da Fase 06 e não cria um novo fornecedor obrigatório de IA. Os componentes reais são:
 
 - Neon PostgreSQL com pgvector para documentos, versões, chunks e embeddings;
-- Redis no Northflank para fila e jobs assíncronos;
-- workers CPU no Northflank para validação, normalização, OCR quando aplicável e indexação;
-- UploadThing para o arquivo original no MVP; Pydio Cells no Northflank é o destino de gerenciamento de arquivos após a migração;
+- Redis no Railway para fila e jobs assíncronos;
+- workers CPU no Railway para validação, normalização, OCR quando aplicável e indexação;
+- UploadThing para o arquivo original no MVP; serviço headless privado no Railway é o destino de gerenciamento de arquivos após a migração;
 - provider de embeddings e OCR atrás de adapters, sem escolha direta no domínio.
 
 ## Mapa por sprint
 
 | Sprint | Serviço necessário | Observação |
 |---|---|---|
-| 07-01 | Redis Northflank + worker CPU | Fila, lease, heartbeat, retry e dead-letter |
+| 07-01 | Redis Railway + worker CPU | Fila, lease, heartbeat, retry e dead-letter |
 | 07-02 | UploadThing + Neon | Conteúdo no storage; referência e metadados no banco |
 | 07-03 | Neon | Progresso e retomada do onboarding |
 | 07-04 | UploadThing + worker CPU | Extração, Markdown canônico e OCR adapter |

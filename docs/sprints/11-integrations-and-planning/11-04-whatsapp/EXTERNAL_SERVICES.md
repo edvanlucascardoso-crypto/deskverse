@@ -15,4 +15,4 @@ As credenciais do provedor ficam no MCP. O Deskverse envia somente payloads auto
 
 ## Limites
 
-Não criar uma cópia do conector por agente nem mover o MCP para Northflank silenciosamente. Uma migração exige atualização do SVC, testes de webhook, coexistência, replay idempotente e rollback. O ciclo UploadThing no MVP → Pydio Cells no Northflank pós-MVP é uma decisão de arquivos e não altera o transporte de canais.
+Não criar uma cópia do conector por agente nem mover o MCP para outro provedor silenciosamente. Uma migração exige atualização do SVC, testes de webhook, coexistência, replay idempotente e rollback. O ciclo UploadThing no MVP → serviço headless de arquivos no Railway pós-MVP é uma decisão de arquivos e não altera o transporte de canais.

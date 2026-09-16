@@ -7,7 +7,7 @@ Consolidar a operação de produção sem criar um segundo runtime. A topologia 
 ```text
 Vercel → app/API pública e proteção de borda
 Neon → dados duráveis e pgvector
-Northflank → Redis, scheduler e workers
+Railway → Redis, scheduler e workers CPU; RunPod Serverless → workers GPU/RENDER
 UploadThing → artefatos
 OpenTelemetry → traces/métricas para collector escolhido
 ```
@@ -17,10 +17,10 @@ OpenTelemetry → traces/métricas para collector escolhido
 | Sprint | Serviço/configuração |
 |---|---|
 | 14-01 | Neon, Redis e storage com isolamento por workspace |
-| 14-02 | Secret Groups, Vercel/Northflank e rotação |
+| 14-02 | Segredos do Vercel/Railway/RunPod e rotação |
 | 14-03 | Neon, UploadThing e política de retenção |
 | 14-04 | OpenTelemetry + logs/erros/métricas |
-| 14-05 | Vercel, Neon, Northflank e rollback |
+| 14-05 | Vercel, Neon, Railway, RunPod e rollback |
 | 14-06 | Ambiente de staging, browser runner e dados de teste |
 | 14-07 | Alertas, suporte e evidências de go/no-go |
 | 14-08 | Limpeza de dependências, rotas e serviços sem uso |
@@ -28,8 +28,8 @@ OpenTelemetry → traces/métricas para collector escolhido
 ## Segredos e ambientes
 
 - Criar `development`, `staging` e `production` isolados.
-- Vercel guarda segredos do app; Northflank Secret Groups guardam os dos serviços.
-- Northflank não deve receber credenciais amplas do banco ou dos canais.
+- Vercel guarda segredos do app; Railway e RunPod guardam somente os segredos necessários a cada serviço/endpoint.
+- Railway e RunPod não devem receber credenciais amplas do banco ou dos canais.
 - Rotacionar secrets sem imprimir valor antigo ou novo em log.
 - Fazer healthcheck, readiness, restore e rollback ensaiados.
 

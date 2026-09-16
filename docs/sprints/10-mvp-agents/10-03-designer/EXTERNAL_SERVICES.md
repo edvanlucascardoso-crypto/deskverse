@@ -16,4 +16,4 @@ UPLOADTHING_TOKEN=
 
 ## Limites
 
-UploadThing é o storage do MVP. A migração posterior de gerenciamento de arquivos para Pydio Cells hospedado no Northflank pertence ao contrato `AssetStorage`; ela deve preservar versão, checksum, lineage, `workspaceId` e referência do asset. Não provisionar Pydio, R2 ou workers próprios de mídia para iniciar esta sprint.
+UploadThing é o storage do MVP. A migração posterior de gerenciamento de arquivos para um serviço headless privado no Railway pertence ao contrato `AssetStorage`; ela deve preservar versão, checksum, lineage, `workspaceId` e referência do asset. Não provisionar serviço de arquivos, R2 ou workers próprios de mídia para iniciar esta sprint.
