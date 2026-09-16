@@ -34,7 +34,7 @@ Cada agente de implementação recebe uma única sprint. Integrações entre spr
 
 `tarefa independente` ou `colaboração explícita entre profissionais` → aprovação humana quando necessária → entrega.
 
-No MVP, qualquer agente pode executar uma tarefa própria. Quando a tarefa pedir colaboração, os participantes e o motivo devem ser explícitos e rastreáveis; a presença de Mídias Sociais, Redator e Designer não cria um pipeline obrigatório. A base de referências de imagens e documentos deve existir antes da criação do primeiro agente. Áudio, vídeo e música podem ser armazenados com metadados, mas sua interpretação semântica é futura. O Designer usa a API de imagens da OpenAI e o UploadThing; a plataforma própria de mídia entra depois, na SPRINT-15-19. A SPRINT-15-20 adiciona o Masterizador de Áudio para diagnóstico técnico e processamento não destrutivo de referências de áudio.
+No MVP, qualquer agente pode executar uma tarefa própria. Quando a tarefa pedir colaboração, os participantes e o motivo devem ser explícitos e rastreáveis; a presença de Mídias Sociais, Redator e Designer não cria um pipeline obrigatório. A Biblioteca de Assets da SPRINT-08-00 deve existir antes da criação do primeiro agente: o usuário cadastra áudio, vídeo, imagem, documento e outros formatos no storage vigente, descreve como e quando usar cada item e o disponibiliza aos agentes autorizados do workspace. Áudio, vídeo e música podem ser armazenados com metadados, mas sua interpretação semântica é futura. O Designer usa a API de imagens da OpenAI e o UploadThing; a plataforma própria de mídia entra depois, na SPRINT-15-19. A SPRINT-15-20 adiciona o Masterizador de Áudio para diagnóstico técnico e processamento não destrutivo de referências de áudio.
 
 ## Canais e escalação
 
@@ -52,7 +52,7 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/05-office-experience` | Experiência do Escritório | completa com integrações | 5 |
 | `docs/sprints/06-account-platform` | Plataforma da conta | completa com integrações | 7 |
 | `docs/sprints/07-onboarding-knowledge` | Onboarding e conhecimento | em execução | 7 |
-| `docs/sprints/08-work-and-human-loop` | Trabalho e loop humano | planejada | 8 |
+| `docs/sprints/08-work-and-human-loop` | Trabalho e loop humano | planejada | 9 |
 | `docs/sprints/09-agent-execution` | Execução de agentes | planejada | 8 |
 | `docs/sprints/10-mvp-agents` | Agentes do MVP | planejada | 7 |
 | `docs/sprints/11-integrations-and-planning` | Integrações e planejamento | planejada | 7 |
@@ -62,4 +62,4 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/15-future-agents` | Agentes futuros | planejada | 20 |
 | `docs/sprints/16-collaboration` | Colaboração | planejada | 1 |
 
-São 102 prompts ativos, além da sprint histórica de conceitos visuais. A ordem dos agentes do MVP é de construção e não de execução. A reorientação do modelo, a proposta de sprint de referências e a inclusão do Masterizador de Áudio estão registradas em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](docs/history/2026-09-16-modelo-de-agentes-e-referencias.md) e [docs/history/2026-09-16-masterizador-de-audio.md](docs/history/2026-09-16-masterizador-de-audio.md).
+São 103 prompts ativos, além da sprint histórica de conceitos visuais. A ordem dos agentes do MVP é de construção e não de execução. A reorientação do modelo, a Biblioteca de Assets e a inclusão do Masterizador de Áudio estão registradas em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](docs/history/2026-09-16-modelo-de-agentes-e-referencias.md), [docs/history/2026-09-16-biblioteca-de-assets.md](docs/history/2026-09-16-biblioteca-de-assets.md) e [docs/history/2026-09-16-masterizador-de-audio.md](docs/history/2026-09-16-masterizador-de-audio.md).

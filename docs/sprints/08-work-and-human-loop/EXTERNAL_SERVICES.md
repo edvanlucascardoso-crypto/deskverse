@@ -10,6 +10,7 @@ A base local do escritório já define o contrato de evento, aprovação e idemp
 
 | Sprint | Serviço necessário | Observação |
 |---|---|---|
+| 08-00 | UploadThing + Neon | Biblioteca do workspace; bytes no storage vigente e descrição/versão/permissão no banco |
 | 08-01 | Neon | Projetos, planos, tarefas e histórico somente leitura |
 | 08-02 | UploadThing + Neon | Tela de arquivos; conteúdo no storage e metadados no banco |
 | 08-03 | Neon | Entregas, revisão e versões |
@@ -28,7 +29,7 @@ UPLOADTHING_TOKEN=
 DATABASE_URL=
 ```
 
-Somente tools autorizadas dos agentes enviam arquivos. O usuário consulta, mas não faz upload, edição ou exclusão pela tela de arquivos.
+Na SPRINT-08-00, o usuário pode enviar assets para a biblioteca e editar sua descrição conforme as permissões do workspace. Na SPRINT-08-02, a tela de arquivos de projetos continua sendo somente consulta: uploads e alterações de entregas partem das tools dos agentes.
 
 A tela deve depender de `AssetRepository`/`AssetStorage`, não de detalhes do UploadThing. Na migração pós-MVP, o serviço headless de arquivos será executado no Railway; referências, versões, autorização, lineage e metadados continuam no Neon. Não iniciar a migração dentro da SPRINT-08-02 nem exigir o serviço de arquivos para o Gate A0.
 

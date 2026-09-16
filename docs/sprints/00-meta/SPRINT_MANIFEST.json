@@ -22,7 +22,7 @@
     { "id": "05", "path": "05-office-experience", "status": "complete_with_integration_requirements", "sprintCount": 5 },
     { "id": "06", "path": "06-account-platform", "status": "complete_with_integration_requirements", "sprintCount": 7 },
     { "id": "07", "path": "07-onboarding-knowledge", "status": "in_progress", "sprintCount": 7 },
-    { "id": "08", "path": "08-work-and-human-loop", "status": "planned", "sprintCount": 8 },
+    { "id": "08", "path": "08-work-and-human-loop", "status": "planned", "sprintCount": 9 },
     { "id": "09", "path": "09-agent-execution", "status": "planned", "sprintCount": 8 },
     { "id": "10", "path": "10-mvp-agents", "status": "planned", "sprintCount": 7 },
     { "id": "11", "path": "11-integrations-and-planning", "status": "planned", "sprintCount": 7 },
@@ -37,6 +37,11 @@
       "sequence": ["SPRINT-06-01", "SPRINT-06-02", "SPRINT-06-03", "SPRINT-06-04", "SPRINT-06-05", "SPRINT-06-06", "SPRINT-06-07"],
       "mustPrecede": "SPRINT-05-01",
       "reason": "A fundação de plataforma do MVP (limites, Neon, autenticação, workspace, permissões, serviços) precede melhorias visuais não essenciais da Fase 05."
+    },
+    {
+      "sequence": ["SPRINT-08-00", "SPRINT-08-01", "SPRINT-08-02"],
+      "mustPrecede": "SPRINT-10-01",
+      "reason": "A biblioteca de assets do workspace e o painel de arquivos precisam existir antes da criação dos agentes para que referências, descrições, permissões e versões sejam reutilizáveis desde o primeiro pedido."
     }
   ],
   "serviceSprints": [
@@ -80,7 +85,7 @@
     {
       "id": "A0",
       "name": "primeiro fluxo de agente",
-      "requires": ["SPRINT-08-02", "SPRINT-09-08", "SPRINT-10-01"],
+      "requires": ["SPRINT-08-00", "SPRINT-08-02", "SPRINT-09-08", "SPRINT-10-01"],
       "sequence": ["pedido contextualizado", "agente responsável escolhido", "execução SOLO ou COLLABORATION explícita", "humano aprova quando necessário", "entrega confirmada"],
       "fallback": "Concluir com o agente responsável quando a tarefa não exigir colaboração; não criar etapas artificiais de marketing."
     }

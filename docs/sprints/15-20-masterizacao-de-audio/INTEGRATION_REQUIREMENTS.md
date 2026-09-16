@@ -2,7 +2,7 @@
 
 ## Assets e referências
 
-- Consumir `assetRef` autorizado do fluxo comum de UploadThing/storage; nunca receber URL livre do usuário como autoridade.
+- Consumir `assetRef` autorizado da Biblioteca de Assets ou do pedido, usando o fluxo comum de UploadThing/storage; nunca receber URL livre do usuário como autoridade.
 - Preservar original, checksum, MIME detectado, duração, canais, sample rate, bit depth, codec, versão e origem.
 - Criar `AudioAnalysis`, `AudioProcessingPlan`, `AudioProcessingRun` e `AssetVersion` ou equivalentes no domínio existente, com migration Prisma versionada.
 - Registrar vínculo entre pedido, tarefa, agente, referência, diagnóstico, plano, preview, render, aprovação e entrega.

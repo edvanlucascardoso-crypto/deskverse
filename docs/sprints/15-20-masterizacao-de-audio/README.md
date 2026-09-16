@@ -20,7 +20,7 @@ A primeira prova de conceito deve priorizar `@libraz/libsonare` em JavaScript/Ty
 
 ## Dependências
 
-- SPRINT-07-02 e SPRINT-08-02 para referência anexada, storage, versões, permissões e acesso controlado.
+- SPRINT-07-02, SPRINT-08-00 e SPRINT-08-02 para referência anexada, biblioteca, storage, versões, permissões e acesso controlado.
 - SPRINT-09-03 a SPRINT-09-08 para tools, filas, cancelamento, idempotência, workers e observabilidade.
 - SPRINT-14-01 a SPRINT-14-08 para segurança, limites, supply chain, release e operação.
 

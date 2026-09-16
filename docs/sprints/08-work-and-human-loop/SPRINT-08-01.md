@@ -2,7 +2,7 @@
 
 **Fase:** 08 — Trabalho e Loop Humano
 **Status inicial:** PLANNED
-**Dependências:** nenhuma
+**Dependências:** SPRINT-08-00
 **Superfície principal:** tela dedicada de projetos, objetivo, plano e DAG de tarefas
 
 ## Objetivo
