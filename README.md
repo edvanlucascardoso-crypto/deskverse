@@ -1,6 +1,6 @@
 # Deskverse Sprint Pack
 
-Fonte operacional do Deskverse, consolidada em 12/09/2026. O produto atual é um workspace web em canvas DOM para montar e operar uma equipe de agentes de IA como uma organização.
+Fonte operacional do Deskverse, consolidada em 12/09/2026. O produto atual é um workspace web em canvas DOM para acompanhar profissionais independentes de IA que recebem tarefas próprias e podem colaborar quando isso fizer sentido para o resultado.
 
 ## Estado atual
 
@@ -32,9 +32,9 @@ Cada agente de implementação recebe uma única sprint. Integrações entre spr
 
 ## Ordem do MVP de agentes
 
-`Mídias Sociais → Redator → Designer opcional → aprovação humana → entrega`.
+`tarefa independente` ou `colaboração explícita entre profissionais` → aprovação humana quando necessária → entrega.
 
-No MVP, o Designer usa a API de imagens da OpenAI e o UploadThing. Qwen-Image, FLUX.2 Klein e a Image Editing Tool própria entram na plataforma de mídia posterior, com serviços no Railway, workers GPU no RunPod Serverless e assets no Cloudflare R2, documentada na SPRINT-15-19. Sem capacidade do Designer, o fluxo conclui honestamente por `Mídias Sociais → Redator`.
+No MVP, qualquer agente pode executar uma tarefa própria. Quando a tarefa pedir colaboração, os participantes e o motivo devem ser explícitos e rastreáveis; a presença de Mídias Sociais, Redator e Designer não cria um pipeline obrigatório. A base de referências de imagens e documentos deve existir antes da criação do primeiro agente. Áudio, vídeo e música podem ser armazenados com metadados, mas sua interpretação é futura. O Designer usa a API de imagens da OpenAI e o UploadThing; a plataforma própria de mídia entra depois, na SPRINT-15-19.
 
 ## Canais e escalação
 
@@ -62,4 +62,4 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/15-future-agents` | Agentes futuros | planejada | 19 |
 | `docs/sprints/16-collaboration` | Colaboração | planejada | 1 |
 
-São 101 prompts ativos, além da sprint histórica de conceitos visuais. O Designer do MVP não possui gate antecipado de mídia própria: usa provider externo; a migração gradual está registrada na SPRINT-15-19.
+São 101 prompts ativos, além da sprint histórica de conceitos visuais. A ordem dos agentes do MVP é de construção e não de execução. A reorientação do modelo e a proposta de nova sprint de referências estão registradas em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](docs/history/2026-09-16-modelo-de-agentes-e-referencias.md).

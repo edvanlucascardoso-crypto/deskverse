@@ -10,10 +10,13 @@ O Deskverse é uma aplicação web de workspace visual:
 - O código-fonte do app Next.js fica em `src`, com `src/app` para App Router e `src/components` para componentes; `package.json`, `next.config.ts`, `tsconfig.json`, `public` e demais configurações ficam na raiz do projeto.
 - Antes de alterar código ou configuração do Next.js, consulte a documentação local correspondente em `node_modules/next/dist/docs/`.
 - Workspace central em canvas DOM de tela inteira, com uma grade espacial de tiles/logos dos agentes. Não tratar essa superfície como Kanban, lista de tarefas ou quadro com colunas.
+- O Deskverse não é uma agência de marketing digital virtual: cada agente representa um profissional independente, com identidade, escopo, capacidade e responsabilidade próprios.
+- Uma tarefa pode ser recebida por um único agente e executada de forma independente (`SOLO`) ou pode ter uma colaboração explícita entre dois ou mais agentes (`COLLABORATION`). Não criar uma cadeia fixa de marketing, uma hierarquia ou uma delegação automática só porque capacidades diferentes estão disponíveis.
+- O agente responsável e o modo de execução devem ser definidos ou confirmados no pedido. Um agente pode propor colaboração quando isso melhorar o resultado, mas a proposta, os participantes, os motivos e a decisão ficam no histórico da tarefa.
 - Cards representam pessoas, agentes, projetos, planos, tarefas, arquivos, entregas e atividade.
 - Painéis contextuais mostram conversa, estado, decisão pendente e histórico.
 - A tela dedicada de gerenciamento de projetos, separada do canvas e dos painéis contextuais, é somente leitura para o usuário: exibe projetos, objetivos, planos, tarefas, dependências, responsáveis, prazos, saúde e histórico sem oferecer operações de criação, edição ou exclusão.
-- Alterações de planejamento são feitas exclusivamente por tools autorizadas dos agentes Gestor de Projetos/Gerente e Social Media, com origem, estado anterior, novo estado e próximo passo rastreáveis.
+- Alterações de planejamento são feitas exclusivamente por tools autorizadas do agente responsável pelo planejamento naquele contexto, com origem, estado anterior, novo estado, motivo e próximo passo rastreáveis; nenhum papel ganha privilégio apenas por senioridade.
 - Antes da criação dos agentes do MVP, a Fase 08 deve entregar a tela de arquivos dos projetos: os agentes enviam seus trabalhos para o UploadThing por tools e o usuário apenas consulta os arquivos e metadados.
 - A tela de arquivos usa Data Table do shadcn/ui com paginação e busca adaptadas ao mobile/tablet; a mesma informação vira uma lista de cards sem exigir rolagem horizontal.
 - O usuário deve acompanhar o trabalho sem perder posição, foco ou contexto.
@@ -48,9 +51,11 @@ Abacate Pay é o provedor oficial de billing: checkout, assinaturas, retorno, we
 
 ## Arquitetura operacional de agentes
 
-- `LeaderAgent` é persistente e mantém objetivo, contexto organizacional, decisões e delegação.
-- `SpecialistAgent` é lógico, reutilizável e compartilhado entre líderes. A delegação usa especialidade/capacidade; não usa ID fixo de agente ou worker.
+- `Agent` é a identidade persistente de um profissional independente e pode receber uma tarefa diretamente.
+- `LeaderAgent` é um papel de coordenação que um agente pode exercer em uma colaboração; não significa que toda tarefa precise de um líder nem que exista uma organização hierárquica padrão.
+- `SpecialistAgent` é lógico, reutilizável e compartilhado quando a tarefa pedir uma capacidade específica. A delegação usa especialidade/capacidade; não usa ID fixo de agente ou worker.
 - `WorkerAgent` é efêmero e representa uma execução LLM, CPU, GPU, navegador, render ou mídia. Não deve virar identidade persistente na interface.
+- Uma colaboração não transforma especialistas em subordinados nem altera permissões, senioridade ou escopo. Cada agente conserva sua própria tarefa, evidência, decisão e responsabilidade.
 - O contrato do produto é `Harness = AgentPolicy + TaskPolicy + ModelAdapter`.
 - `AgentRuntime` abstrai Eve. `InferenceGateway` abstrai o Vercel AI Gateway. O Deskverse decide inteligência e política; runtime executa e gateway transporta.
 - A métrica principal é `cost_per_successful_task`: custo total atribuível às tentativas dividido pelo número de tarefas concluídas corretamente.
@@ -76,10 +81,13 @@ Antes de escolher ou iniciar uma sprint, leia:
 2. docs/sprints/00-meta/SPRINT_MANIFEST.json
 3. docs/sprints/00-meta/SUPERVISOR_PROMPT.md
 4. a README e o arquivo da sprint escolhida
+5. docs/history/README.md e o registro histórico mais recente relacionado ao escopo
 
 O manifesto define ordem, dependências, ambiente e prioridade. Sprints ativas ficam em docs/sprints/<fase>/. Sprints concluídas ficam em docs/sprints/completed/<fase>/.
 
 A próxima prioridade é SPRINT-07-02 — Upload e armazenamento de arquivos. A SPRINT-07-01 foi concluída com requisitos de integração; a fundação 06-01 a 06-07 precedeu a Sprint 05-01 por override explícito do manifesto.
+
+Toda mudança de produto, arquitetura, contrato, sprint, estado visível ou decisão de integração deve criar ou atualizar um registro em `docs/history/` no mesmo conjunto de trabalho. O histórico é append-only: registros anteriores não são reescritos; correções e novas decisões entram em um novo registro relacionado.
 
 ## Checkpoints executivos
 
@@ -92,33 +100,45 @@ A próxima prioridade é SPRINT-07-02 — Upload e armazenamento de arquivos. A 
 
 ## Ordem de criação dos agentes do MVP
 
-A ordem abaixo é obrigatória e deve permanecer visível no roadmap e nas implementações:
+A ordem abaixo é obrigatória para criação dos primeiros agentes e deve permanecer visível no roadmap e nas implementações. Ela não define um funil de execução nem obriga os agentes a trabalharem em conjunto:
 
 1. SPRINT-10-01 — Mídias Sociais
 2. SPRINT-10-02 — Redator
 3. SPRINT-10-03 — Designer
-4. SPRINT-10-04 — fluxo Mídias Sociais → Redator → Designer
+4. SPRINT-10-04 — colaboração opcional entre Mídias Sociais, Redator e Designer
 5. SPRINT-10-05 — presença dos três no escritório
-6. SPRINT-10-06 — primeiro fluxo pós-onboarding
+6. SPRINT-10-06 — primeira tarefa independente e primeira colaboração pós-onboarding
 7. SPRINT-10-07 — experiência local integrada
 
-O Gate A0 é: plano de mídias sociais → texto → design quando disponível → aprovação humana → entrega. Sem capacidade ou entitlement do Designer, o fluxo conclui pelo caminho Mídias Sociais → Redator, com aviso explícito.
+O Gate A0 é: pedido contextualizado → agente responsável escolhido → execução independente ou colaboração explícita → aprovação humana quando necessária → entrega confirmada. Mídias Sociais, Redator e Designer podem participar de uma mesma colaboração, mas nenhum deles é etapa obrigatória para toda tarefa; quando a tarefa for bem resolvida por um agente, ela deve concluir sem criar etapas artificiais.
 
 ## Comportamento dos agentes
 
 - Usuários leigos recebem perguntas curtas de refinamento quando a instrução estiver ambígua.
 - A camada de refinamento confirma um brief antes de executar ou delegar ao líder ou ao agente direto.
 - A instrução original, perguntas, respostas e decisões permanecem rastreáveis.
-- Agentes podem colaborar para melhorar o pedido antes de produzir o resultado.
+- Agentes podem colaborar para melhorar o pedido antes de produzir o resultado, mas a colaboração é opt-in, tem participantes e motivo explícitos e não substitui a responsabilidade individual de cada agente.
+- A tarefa deve registrar se será executada em modo independente (`SOLO`) ou colaborativo (`COLLABORATION`), quem é o responsável, quais agentes participam, o motivo da composição e o resultado de cada participante.
 - Aprovação, espera, cancelamento, takeover e escalonamento são estados visíveis.
 - Takeover humano interrompe ações protegidas e novos envios.
 - Fatos ausentes ou conflitantes geram pergunta ou escalonamento; não invente preço, política, prazo ou promessa.
 - Ferramentas são autorizadas por capacidade, permissão, conexão, autonomia e contexto do workspace.
+- Pedidos aceitam referências anexadas pelo usuário, incluindo imagens, PDFs, documentos, planilhas, textos e outros formatos suportados. O vínculo da referência ao pedido, tarefa e agente, além do nome, tipo, versão, origem, permissão e estado de compreensão, deve ser rastreável.
+- A fundação de referências deve existir antes da criação do primeiro agente: armazenamento, validação, acesso controlado, extração/normalização e entendimento por agentes de imagens e documentos suportados. Áudio, vídeo e música podem ser armazenados como referência com metadados desde o início, mas sua interpretação semântica é uma feature futura e não pode ser simulada como disponível.
+- O contexto entregue ao agente deve indicar quais referências foram compreendidas, quais estão apenas armazenadas e quais falharam, sem inventar conteúdo ausente.
 - Toda memória dos agentes — compartilhada, individual, de projeto, preferência, decisão, tarefa ou conversa elegível — usa PostgreSQL com pgvector; não crie um segundo armazenamento de memória.
 - Preferências alteradas, tarefas concluídas, decisões confirmadas e outros fatos duráveis podem ser salvos em memória com origem, escopo, data e confiança para serem recuperados depois.
 - Um agente pode solicitar, por tool, alteração da própria configuração quando isso for necessário, mas a mudança só ocorre após a permissão adequada e deve gerar notificação em tempo real e feedback visível no card.
 - Todos os agentes devem usar o sistema de notificações em tempo real para pedidos de permissão, espera, falha, conclusão e eventos que exigem atenção humana ou de outro agente.
 - WhatsApp e Instagram usam um núcleo de mensagens neutro ao provedor; contas são autenticadas por workspace e atribuídas com permissões por especialidade. A inbox unificada cobre mensagens, DMs e comentários. Takeover humano exige sinal confiável de coexistência e a escalação preserva agente, superior, humano, motivo e auditoria.
+
+## Histórico obrigatório de mudanças
+
+- Antes de implementar qualquer alteração relevante, identificar o registro histórico correspondente ou criar um novo em `docs/history/`.
+- Cada registro deve informar data, escopo, motivo, estado anterior, novo estado, impacto em produto/arquitetura/roadmap, sprints afetadas, evidências, riscos, pendências e decisão necessária quando houver.
+- Alterações de código, configuração, schema, migration, sprint, contrato ou interface só podem ser consideradas concluídas quando o histórico relacionado também estiver atualizado.
+- Não apagar, sobrescrever ou reordenar registros históricos para esconder decisões anteriores. Se uma decisão mudar, registrar o antes e o depois em um novo documento e apontar para o registro anterior.
+- O histórico em `docs/history/` complementa relatórios de sprint e checkpoints; não substitui evidências de testes nem os documentos de integração.
 
 ## Linguagem da aplicação
 
@@ -199,6 +219,7 @@ O Gate A0 é: plano de mídias sociais → texto → design quando disponível �
 5. Não conecte módulos silenciosamente nem aumente o escopo da sprint.
 6. Preserve os arquivos e alterações de outras tarefas.
 7. Um agente subordinado não cria ou delega trabalho para outro agente.
+8. Antes da Fase 10, confirme o gate de referências: anexos de imagem e documentos devem poder ser armazenados, consultados e compreendidos por agentes; áudio e vídeo devem ao menos ser armazenados com estado explícito de interpretação futura.
 
 ## Qualidade e conclusão
 
