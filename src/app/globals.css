@@ -972,3 +972,75 @@ input:disabled, select:disabled, textarea:disabled { cursor: not-allowed; opacit
   .agent-task { margin-top: 2px; font-size: 6px; line-height: 1.1; }
   .agent-status { top: 5px; right: 5px; width: 7px; height: 7px; }
 }
+
+.canvas-queue-launcher {
+  position: absolute;
+  z-index: 16;
+  bottom: 72px;
+  left: clamp(18px, 4vw, 56px);
+}
+
+.queue-drawer { width: min(760px, 100%); }
+.queue-overview { display: grid; gap: 10px; margin-bottom: 18px; padding: 15px; border: 1px solid color-mix(in srgb, var(--brand) 25%, var(--border)); border-radius: var(--radius-md-value); background: color-mix(in srgb, var(--brand) 4%, var(--card)); }
+.queue-overview h2 { display: flex; align-items: center; gap: 7px; margin: 0; font-size: 16px; font-weight: 600; }
+.queue-overview-note, .queue-fixture-tools p { margin: 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
+.queue-primary-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.queue-primary-actions .primary-button, .queue-primary-actions .secondary-button { min-height: 38px; font-size: 11px; }
+.queue-live-notice { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--brand); font-size: 11px; line-height: 1.4; }
+.queue-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.queue-filters button { min-height: 34px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-sm-value); color: var(--muted-foreground); background: var(--secondary); font-size: 11px; font-weight: 500; }
+.queue-filters button:hover, .queue-filters button.active { border-color: var(--border-strong); color: var(--foreground); background: var(--accent); }
+.queue-job-list { display: grid; gap: 7px; }
+.queue-job-item { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 9px; width: 100%; min-height: 60px; padding: 9px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm-value); color: var(--foreground); background: var(--card); text-align: left; }
+.queue-job-item:hover, .queue-job-item.selected { border-color: color-mix(in srgb, var(--brand) 48%, var(--border)); background: color-mix(in srgb, var(--brand) 6%, var(--card)); }
+.queue-job-item.selected { box-shadow: inset 2px 0 0 var(--brand); }
+.queue-job-status { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid currentColor; border-radius: 50%; color: var(--muted-foreground); background: var(--secondary); }
+.queue-job-status.ready { color: var(--status-available); }
+.queue-job-status.working { color: var(--brand); }
+.queue-job-status.waiting { color: var(--status-waiting); }
+.queue-job-status.error { color: var(--status-error); }
+.queue-job-status.complete { color: var(--status-complete); }
+.queue-job-copy { display: grid; min-width: 0; gap: 3px; }
+.queue-job-copy strong, .queue-job-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-job-copy strong { font-size: 12px; font-weight: 600; }
+.queue-job-copy small, .queue-job-resource { color: var(--muted-foreground); font-size: 10px; }
+.queue-job-resource { max-width: 90px; overflow: hidden; text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.queue-job-detail { display: grid; gap: 16px; margin-top: 18px; padding: 16px; border: 1px solid var(--border-strong); border-radius: var(--radius-md-value); background: var(--card); }
+.queue-job-detail > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.queue-job-detail h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.02em; }
+.queue-state-pill { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; padding: 7px 9px; border: 1px solid var(--border); border-radius: var(--radius-sm-value); color: var(--muted-foreground); background: var(--secondary); font-size: 10px; font-weight: 600; }
+.queue-state-pill.ready { color: var(--status-available); border-color: color-mix(in srgb, var(--status-available) 38%, var(--border)); }
+.queue-state-pill.working { color: var(--brand); border-color: color-mix(in srgb, var(--brand) 38%, var(--border)); }
+.queue-state-pill.waiting { color: var(--status-waiting); border-color: color-mix(in srgb, var(--status-waiting) 42%, var(--border)); }
+.queue-state-pill.error { color: var(--status-error); border-color: color-mix(in srgb, var(--status-error) 42%, var(--border)); }
+.queue-state-pill.complete { color: var(--status-complete); border-color: color-mix(in srgb, var(--status-complete) 38%, var(--border)); }
+.queue-job-meta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.queue-job-meta > div { display: grid; gap: 3px; min-width: 0; }
+.queue-job-meta dt, .queue-job-meta dd { margin: 0; }
+.queue-job-meta dt { color: var(--muted-foreground); font-size: 10px; }
+.queue-job-meta dd { overflow: hidden; color: var(--secondary-foreground); font-size: 11px; line-height: 1.35; text-overflow: ellipsis; }
+.queue-document-reference { display: grid; gap: 4px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-family: var(--font-mono); font-size: 10px; }
+.queue-document-reference .eyebrow { margin-bottom: 2px; font-family: var(--font-sans); }
+.queue-last-error { display: flex; align-items: flex-start; gap: 7px; padding: 10px; border: 1px solid color-mix(in srgb, var(--status-error) 42%, var(--border)); border-radius: var(--radius-sm-value); color: var(--status-error); font-size: 11px; line-height: 1.4; }
+.queue-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.queue-actions .primary-button, .queue-actions .secondary-button { min-height: 38px; font-size: 11px; }
+.danger-button { color: var(--status-error); }
+.queue-fixture-tools { display: grid; gap: 9px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.queue-fixture-tools summary { width: fit-content; color: var(--muted-foreground); cursor: pointer; font-size: 11px; font-weight: 600; }
+.queue-fixture-tools .secondary-button { width: fit-content; min-height: 34px; font-size: 11px; }
+
+@media (max-width: 760px) {
+  .canvas-queue-launcher { bottom: 72px; left: 16px; }
+  .queue-job-detail > header { display: grid; }
+  .queue-state-pill { width: fit-content; }
+}
+
+@media (max-width: 430px) {
+  .queue-primary-actions { display: grid; grid-template-columns: 1fr; }
+  .queue-primary-actions .primary-button, .queue-primary-actions .secondary-button { width: 100%; }
+  .queue-job-item { grid-template-columns: 30px minmax(0, 1fr); }
+  .queue-job-resource { grid-column: 2; text-align: left; }
+  .queue-job-meta { grid-template-columns: 1fr; }
+  .queue-actions { display: grid; grid-template-columns: 1fr; }
+  .queue-actions .primary-button, .queue-actions .secondary-button { width: 100%; }
+}

@@ -15,6 +15,8 @@ import { canvasAnimationLabels, type CanvasAnimationEvent, type CanvasAnimationK
 import { WorkspaceCanvas, type AgentEntry } from "@/components/canvas/workspace-canvas";
 import { PlatformDrawer } from "@/components/platform/platform-drawer";
 import { OfficeControlDrawer } from "@/components/office/office-control-drawer";
+import { QueueDrawer } from "@/components/queue/queue-drawer";
+import { QueueLauncher } from "@/components/queue/queue-launcher";
 import { agentOrderRepository, deviceAgentOrderRepository, mergeAgentOrder, moveAgent } from "@/lib/canvas/agent-order";
 import { authClient } from "@/lib/auth-client";
 import type { WorkspaceRole } from "@/lib/permissions/rbac";
@@ -66,6 +68,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [platformOpen, setPlatformOpen] = useState(false);
   const [officeOpen, setOfficeOpen] = useState(false);
+  const [queueOpen, setQueueOpen] = useState(false);
   const [officeApprovalId, setOfficeApprovalId] = useState<string | null>(null);
   const [conversationOpen, setConversationOpen] = useState(false);
   const [conversationMode, setConversationMode] = useState<ConversationKind>("global");
@@ -411,6 +414,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   return <main className={"app-shell " + theme} data-drawer-background>
     <section className="content" id="canvas">
       <CanvasNavbar workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} query={query} onQueryChange={setQuery} agents={allAgents} onSelectAgent={(id) => { setSelected(id); setFocused(id); }} onOpenMenu={() => { setNotificationsOpen(false); setMenuOpen(true); }} onOpenNotifications={() => { setMenuOpen(false); setNotificationsOpen(true); }} onOpenConversations={() => { setConversationMode("global"); setConversationState("success"); setConversationOpen(true); }} onOpenOfficeControls={() => { setOfficeApprovalId(null); setOfficeOpen(true); }} onAddLeader={() => setCreatorOpen(true)} onOpenAnimationTests={() => setAnimationDrawerOpen(true)} notificationActive={notificationPulse} />
+      <QueueLauncher onOpen={() => setQueueOpen(true)} />
       <CanvasDndProvider><WorkspaceCanvas canvasState={effectiveCanvasState} errorMessage={effectiveCanvasError} entries={entries} selected={selected} focused={focused} zoom={zoom} communication={communication} isReordering={isReordering} animationEvent={animationEvent} reduced={reduced} onSelect={(id) => { setSelected(id); setFocused(id); }} onDragStart={beginAgentDrag} onPreviewReorder={reorderAgents} onOrderCommit={commitAgentOrder} onOrderCancel={cancelAgentOrder} onCanvasKeyDown={onCanvasKeyDown} onRecover={recoverWorkspace} /></CanvasDndProvider>
     </section>
     <AnimatePresence>{selectedAgent && <AgentContextPanel agent={selectedAgent} activity={currentActivity(selectedAgent.id)} reduced={reduced} onClose={() => setSelected(null)} onOpenPrivateChat={() => openPrivateChat(selectedAgent.id)} onStartMeeting={() => startMeeting(selectedAgent.id)} />}</AnimatePresence>
@@ -421,5 +425,6 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
     <CanvasNotificationsDrawer open={notificationsOpen} setOpen={setNotificationsOpen} activities={activityFeed} notice={notice} onOpenActivity={openActivity} />
     <PlatformDrawer open={platformOpen} setOpen={setPlatformOpen} activeWorkspaceId={workspaceScopeId} onWorkspaceChange={changeWorkspace} role={activeRole} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} />
     <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} focusedApprovalId={officeApprovalId} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} />
+    <QueueDrawer open={queueOpen} setOpen={setQueueOpen} workspaceId={workspaceScopeId} demoMode={demoMode} />
   </main>;
 }

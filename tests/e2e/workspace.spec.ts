@@ -33,7 +33,9 @@ test.describe("workspace canvas", () => {
   test("preserves four compact slots on a narrow viewport", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: "domcontentloaded" });
-    await expect(page.locator(".agent-tile").first()).toBeVisible();
+    const narrowTiles = page.locator(".agent-tile");
+    await expect(narrowTiles).toHaveCount(13);
+    for (let index = 0; index < 5; index += 1) await expect(narrowTiles.nth(index)).toBeVisible();
 
     const boxes = await Promise.all(
       Array.from({ length: 5 }, (_, index) => page.locator(".agent-tile").nth(index).boundingBox()),
@@ -100,5 +102,18 @@ test.describe("workspace canvas", () => {
 
     await expect(page.getByRole("heading", { name: "Campanha de primavera" })).toBeVisible();
     await expect(page.getByText("Preparar uma publicação para apresentar a coleção de primavera.")).toBeVisible();
+  });
+
+  test("observes a queued document job from ready to success", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.getByRole("button", { name: "Abrir fila de trabalho" }).click();
+    await expect(page.getByRole("heading", { name: "Fila de trabalho" })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Validar documento/ })).toBeVisible();
+
+    await page.getByRole("button", { name: "Assumir próxima tarefa" }).click();
+    await expect(page.locator(".queue-state-pill").getByText("Em andamento", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Concluir tarefa" }).click();
+    await expect(page.locator(".queue-state-pill").getByText("Concluída", { exact: true })).toBeVisible();
+    await expect(page.getByText("Tarefa concluída e registrada", { exact: true })).toBeVisible();
   });
 });
