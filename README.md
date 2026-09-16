@@ -6,7 +6,7 @@ Fonte operacional do Deskverse, consolidada em 12/09/2026. O produto atual é um
 
 - Fases 01–04: `COMPLETE_WITH_INTEGRATION_REQUIREMENTS` — fundação web, canvas, interações e presença local entregues.
 - Fases 05 e 06: `COMPLETE_WITH_INTEGRATION_REQUIREMENTS` — experiência do escritório, conta, plataforma, autenticação, RBAC e contratos operacionais entregues.
-- Próxima prioridade: `SPRINT-07-01 — Onboarding e contexto inicial`.
+- Próxima prioridade: `SPRINT-07-02 — Upload e armazenamento de arquivos`.
 - Os materiais antigos de engine 3D/Stem permanecem apenas em `docs/sprints/retired/`; não são runtime paralelo do MVP web atual.
 
 ## Fonte de verdade
@@ -51,7 +51,7 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/04-people-and-activity` | Pessoas e atividade | completa com integrações | 4 |
 | `docs/sprints/05-office-experience` | Experiência do Escritório | completa com integrações | 5 |
 | `docs/sprints/06-account-platform` | Plataforma da conta | completa com integrações | 7 |
-| `docs/sprints/07-onboarding-knowledge` | Onboarding e conhecimento | planejada | 7 |
+| `docs/sprints/07-onboarding-knowledge` | Onboarding e conhecimento | em execução | 7 |
 | `docs/sprints/08-work-and-human-loop` | Trabalho e loop humano | planejada | 8 |
 | `docs/sprints/09-agent-execution` | Execução de agentes | planejada | 8 |
 | `docs/sprints/10-mvp-agents` | Agentes do MVP | planejada | 7 |
