@@ -1,6 +1,14 @@
 export type PhysicalQueue = "LLM" | "CPU" | "GPU" | "BROWSER" | "RENDER";
 export type LogicalQueue = "leader_session" | "workspace_capability";
 export type QueuePriority = "URGENT" | "HIGH" | "NORMAL" | "LOW";
+export type QueueJobState = "PENDING" | "READY" | "RUNNING" | "WAITING_USER" | "WAITING_APPROVAL" | "RETRY_SCHEDULED" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "DEAD_LETTER";
+
+export type QueueJobError = {
+  code: string;
+  message: string;
+  retryable: boolean;
+  occurredAt: number;
+};
 
 export type TraceContext = {
   traceId: string;
@@ -48,33 +56,60 @@ export type McpRemoteClient = {
 export type QueueJob = {
   id: string;
   workspaceId: string;
+  runId: string;
+  parentRunId?: string;
+  jobType: string;
   leaderId?: string;
   capability?: string;
   logicalQueue: LogicalQueue;
-  physicalQueue: PhysicalQueue;
+  resourceClass: PhysicalQueue;
   priority: QueuePriority;
+  state: QueueJobState;
+  createdAt: number;
+  updatedAt?: number;
+  availableAt: number;
+  attempt: number;
+  maxAttempts: number;
   idempotencyKey?: string;
   payload: Record<string, unknown>;
-  maxRetries: number;
+  origin?: string;
+  responsible?: string;
+  nextStep?: string;
+  lastError?: QueueJobError;
+  cancelReason?: string;
+  waitReason?: string;
+  checkpoint?: Record<string, unknown>;
+  leaseUntil?: number;
 };
 
 export type QueueLease = QueueJob & {
   leaseId: string;
   workerId: string;
-  attempts: number;
   leasedAt: number;
   heartbeatAt: number;
+  leaseUntil: number;
+};
+
+export type QueueFailureResult = {
+  state: QueueJobState;
+  retried: boolean;
+  deadLettered: boolean;
+  retryAt?: number;
 };
 
 export type QueueBackend = {
   enqueue(job: QueueJob): Promise<{ job: QueueJob; deduplicated: boolean }>;
-  claim(input: { physicalQueue: PhysicalQueue; workerId: string; now?: number }): Promise<QueueLease | null>;
+  claim(input: { resourceClass: PhysicalQueue; workerId: string; now?: number }): Promise<QueueLease | null>;
   heartbeat(input: { leaseId: string; workerId: string; now?: number }): Promise<boolean>;
-  complete(input: { leaseId: string; workerId: string }): Promise<boolean>;
-  fail(input: { leaseId: string; workerId: string; technical: boolean; now?: number }): Promise<{ retried: boolean; deadLettered: boolean }>;
+  complete(input: { leaseId: string; workerId: string; now?: number }): Promise<boolean>;
+  fail(input: { leaseId: string; workerId: string; technical: boolean; now?: number; retryAfterMs?: number; error?: QueueJobError }): Promise<QueueFailureResult>;
+  wait(input: { leaseId: string; workerId: string; state: "WAITING_USER" | "WAITING_APPROVAL"; reason?: string; checkpoint?: Record<string, unknown>; now?: number }): Promise<boolean>;
+  resume(input: { jobId: string; workspaceId: string; now?: number }): Promise<boolean>;
   cancel(input: { jobId: string; workspaceId: string; reason: string }): Promise<boolean>;
   cancelCascade(input: { rootJobId: string; workspaceId: string; reason: string }): Promise<number>;
-  depth(input: { physicalQueue: PhysicalQueue; workspaceId?: string }): Promise<number>;
+  reprocess(input: { jobId: string; workspaceId: string; now?: number }): Promise<boolean>;
+  list(input: { workspaceId?: string; resourceClass?: PhysicalQueue; states?: QueueJobState[]; now?: number }): Promise<QueueJob[]>;
+  depth(input: { resourceClass: PhysicalQueue; workspaceId?: string; now?: number }): Promise<number>;
   deadLetters(input: { workspaceId?: string }): Promise<QueueJob[]>;
 };
 
