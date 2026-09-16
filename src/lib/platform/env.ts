@@ -14,6 +14,7 @@ export function platformServiceStatus(source: PlatformEnvironment = readPlatform
     { id: "auth", label: "Better Auth", configured: Boolean(source.BETTER_AUTH_SECRET && source.BETTER_AUTH_URL), owner: "Plataforma" },
     { id: "queue", label: "Redis / QueueBackend", configured: Boolean(source.REDIS_URL), owner: "Execução" },
     { id: "storage", label: "UploadThing", configured: Boolean(source.UPLOADTHING_TOKEN), owner: "Arquivos" },
+    { id: "transcription", label: "OpenAI Whisper", configured: Boolean(source.OPENAI_API_KEY), owner: "Conhecimento" },
     { id: "runtime", label: "Eve / AgentRuntime", configured: Boolean(source.EVE_RUNTIME_URL), owner: "Execução" },
     { id: "inference", label: "Vercel AI Gateway", configured: Boolean(source.INFERENCE_GATEWAY_URL), owner: "Inferência" },
   ] as const;

@@ -25,7 +25,7 @@ A fundação de jobs deve suportar, sem amarrar o produto a uma tecnologia espec
 
 ## Jobs de conhecimento
 
-Documentos enviados no onboarding percorrem jobs explícitos e rastreáveis: `DOCUMENT_VALIDATE` → `DOCUMENT_EXTRACT` → `DOCUMENT_NORMALIZE` → `DOCUMENT_CHUNK` → `DOCUMENT_EMBED` → `DOCUMENT_INDEX`. Cada etapa recebe `workspaceId`, `documentId`, `documentVersionId`, checksum do conteúdo e `idempotencyKey`; uma nova versão cancela ou invalida com segurança os jobs pendentes da versão anterior.
+Documentos enviados no onboarding percorrem jobs explícitos e rastreáveis: `DOCUMENT_VALIDATE` → `DOCUMENT_EXTRACT` → (`DOCUMENT_TRANSCRIBE` → `DOCUMENT_POLISH` quando for áudio) → `DOCUMENT_NORMALIZE` → `DOCUMENT_CHUNK` → `DOCUMENT_EMBED` → `DOCUMENT_INDEX`. Cada etapa recebe `workspaceId`, `documentId`, `documentVersionId`, checksum do conteúdo e `idempotencyKey`; uma nova versão cancela ou invalida com segurança os jobs pendentes da versão anterior.
 
 ## Backpressure e justiça
 

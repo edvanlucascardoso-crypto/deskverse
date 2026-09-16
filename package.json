@@ -29,8 +29,10 @@
     "better-auth": "^1.7.4",
     "date-fns": "^4.4.0",
     "lucide-react": "1.45.0",
+    "mammoth": "^1.12.3",
     "motion": "13.2.0",
     "next": "16.3.4",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.23.0",
     "react": "19.3.0",
     "react-dnd": "^16.0.1",
@@ -38,7 +40,9 @@
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "19.3.0",
     "react-hook-form": "^7.88.0",
+    "uploadthing": "7.7.4",
     "vaul": "1.1.2",
+    "xlsx": "^0.18.5",
     "zod": "^4.6.5"
   },
   "devDependencies": {

@@ -52,6 +52,48 @@ enum ApprovalState {
   CANCELLED
 }
 
+enum DocumentProcessingStatus {
+  UPLOADED
+  VALIDATING
+  EXTRACTING
+  TRANSCRIBING
+  POLISHING
+  NORMALIZING
+  CHUNKING
+  EMBEDDING
+  INDEXING
+  READY
+  WAITING_USER
+  FAILED
+  REVOKED
+}
+
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  WAITING_USER
+  COMPLETE
+}
+
+enum KnowledgeFactStatus {
+  PROPOSED
+  VERIFIED
+  REJECTED
+}
+
+enum KnowledgeConflictStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum RagIndexStatus {
+  EMPTY
+  BUILDING
+  READY
+  FAILED
+}
+
 model User {
   id                String            @id
   name              String
@@ -143,6 +185,13 @@ model Workspace {
   auditEvents    AuditEvent[]
   idempotency    IdempotencyKey[]
   memories       AgentMemory[]
+  documents      Document[]
+  chunks         DocumentChunk[]
+  onboarding     OnboardingSession?
+  knowledgeFacts KnowledgeFact[]
+  conflicts      KnowledgeConflict[]
+  brandProfile   BrandProfile?
+  ragIndex       RagIndex?
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -315,4 +364,155 @@ model AgentMemory {
   workspace   Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, scope])
+}
+
+model Document {
+  id                String                   @id
+  workspaceId       String
+  name              String
+  mimeType          String
+  format            String
+  size              Int
+  checksum          String
+  origin            String
+  description       String?
+  originalKey       String
+  originalUrl       String?
+  processingStatus  DocumentProcessingStatus @default(UPLOADED)
+  processingError   String?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  workspace         Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  versions          DocumentVersion[]
+  chunks            DocumentChunk[]          @relation("DocumentChunks")
+
+  @@index([workspaceId, processingStatus])
+  @@index([workspaceId, updatedAt])
+  @@unique([workspaceId, originalKey])
+}
+
+model DocumentVersion {
+  id                    String                   @id
+  documentId            String
+  version               Int
+  checksum              String
+  processingStatus      DocumentProcessingStatus @default(UPLOADED)
+  extractedText         String?
+  canonicalMarkdown     String?
+  derivedCsv            String?
+  extractionConfidence  Float?
+  conversionTrace       Json?
+  errorCode             String?
+  errorMessage          String?
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  document              Document                 @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  chunks                DocumentChunk[]
+
+  @@unique([documentId, version])
+  @@index([documentId, processingStatus])
+  @@index([checksum])
+}
+
+model DocumentChunk {
+  id                   String          @id
+  workspaceId          String
+  documentId           String
+  documentVersionId    String
+  chunkIndex           Int
+  titlePath            String
+  pageStart            Int?
+  pageEnd              Int?
+  section              String?
+  startOffset          Int
+  endOffset            Int
+  content              String
+  checksum             String
+  extractionConfidence Float?
+  permissions          Json?
+  embedding            Unsupported("vector")?
+  isActive             Boolean         @default(true)
+  createdAt            DateTime        @default(now())
+  workspace            Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  document             Document        @relation("DocumentChunks", fields: [documentId], references: [id], onDelete: Cascade)
+  documentVersion      DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+
+  @@unique([documentVersionId, chunkIndex])
+  @@index([workspaceId, isActive])
+  @@index([documentVersionId, isActive])
+}
+
+model OnboardingSession {
+  id           String           @id
+  workspaceId  String           @unique
+  status       OnboardingStatus @default(NOT_STARTED)
+  questionIndex Int             @default(0)
+  answers      Json?
+  summary      String?
+  nextStep     String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  workspace    Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model KnowledgeFact {
+  id                    String              @id
+  workspaceId           String
+  key                   String
+  value                 String
+  source                String
+  sourceDocumentVersionId String?
+  sourcePage            Int?
+  confidence            Float               @default(0.5)
+  status                KnowledgeFactStatus @default(PROPOSED)
+  verifiedAt            DateTime?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  workspace             Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, key])
+}
+
+model KnowledgeConflict {
+  id          String                  @id
+  workspaceId String
+  factKey     String
+  statementA  String
+  sourceA     String
+  statementB  String
+  sourceB     String
+  status      KnowledgeConflictStatus @default(OPEN)
+  resolution  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  workspace   Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, factKey])
+}
+
+model BrandProfile {
+  id          String   @id
+  workspaceId String   @unique
+  audience    String?
+  tone        String?
+  rules       Json?
+  readiness   String   @default("not_ready")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model RagIndex {
+  id          String         @id
+  workspaceId String         @unique
+  generation  Int            @default(0)
+  status      RagIndexStatus @default(EMPTY)
+  lastAction  String?
+  lastError   String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 }

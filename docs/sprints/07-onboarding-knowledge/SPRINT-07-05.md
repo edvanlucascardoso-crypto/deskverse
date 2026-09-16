@@ -13,6 +13,19 @@ Entregar o RAG do workspace: indexação de Markdown normalizado, consulta, resu
 
 `Markdown confirmado → chunks estruturais → embeddings → pgvector → recuperação com fontes → contexto mínimo do agente`
 
+O RAG aceita somente o Markdown canônico confirmado pela SPRINT-07-04. PDF e Word chegam como Markdown; XLSX chega pelo CSV derivado e sua representação Markdown tabular; áudio chega como transcrição revisada pelo GPT-5.6 Luna com raciocínio `medium`. Arquivo original, CSV, texto bruto de áudio e Markdown permanecem versionados e auditáveis, mas somente o artefato normalizado pode gerar chunks e embeddings.
+
+## Ciclo de vida do RAG
+
+Cada workspace possui um `RagIndex` com geração e estado `EMPTY`, `BUILDING`, `READY` ou `FAILED`. O controle de RAG é destrutivo por definição e exige confirmação explícita também na API — não existe reconstrução ou limpeza silenciosa:
+
+- `POST /api/workspaces/:workspaceId/knowledge/rag` apaga chunks e embeddings da geração anterior e cria uma nova a partir da versão `READY` mais recente de cada documento.
+- `DELETE /api/workspaces/:workspaceId/knowledge/rag` remove todos os chunks e embeddings do workspace. O arquivo original, o Markdown, CSV, transcrição e auditoria ficam preservados para permitir uma nova criação.
+- `POST /api/workspaces/:workspaceId/knowledge/documents/:documentId/rag` substitui somente os chunks e embeddings do arquivo confirmado, mantendo o restante da geração. O arquivo precisa ter conversão pronta.
+- As três operações exigem RBAC `workspace:update`, confirmação Zod com literal próprio e registro de auditoria. Enquanto a operação está em andamento ou falhou, a busca não libera evidências; a pessoa usuária recebe o próximo passo para recriar o RAG.
+
+O botão por arquivo fica indisponível para `WAITING_USER`, `FAILED` ou qualquer versão sem Markdown canônico. A ação de workspace sempre oferece a escolha visível entre apagar e criar uma nova geração ou apagar apenas o índice atual.
+
 - Dividir pelo contexto estrutural primeiro — título, subtítulo, página, lista e tabela — e só então por tamanho; nunca separar linha de tabela, item de lista ou bloco de código sem preservar continuidade.
 - Usar alvo de 600 tokens por chunk, faixa de 350–900 tokens e sobreposição de até 100 tokens apenas quando a divisão não for naturalmente semântica.
 - Cada chunk registra `workspaceId`, documento/versão, página, caminho de títulos, offsets, conteúdo, checksum, embedding, confiança da extração e permissões herdadas do arquivo.
@@ -48,6 +61,8 @@ Implementação, testes proporcionais ao risco, roteiro de demonstração e inst
 - O fluxo principal funciona do início ao fim.
 - Uma pergunta respondida por documento retorna os chunks utilizados e suas referências de página/seção.
 - Uma pergunta sem base suficiente retorna ausência de evidência, sem resposta inventada.
+- Nenhum arquivo armazenado, conversão pendente ou transcrição não revisada aparece como evidência do RAG.
+- A limpeza total exige confirmação, preserva originais/derivados e deixa o workspace sem evidência até uma nova criação; a substituição por arquivo não remove chunks de outros documentos.
 - Busca de um workspace nunca recupera chunk ou metadado de outro workspace.
 - Estados vazio, carregando, erro e sucesso são compreensíveis.
 - A tela permanece utilizável com teclado e viewport estreita.

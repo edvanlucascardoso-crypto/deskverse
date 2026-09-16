@@ -16,4 +16,11 @@ describe("knowledge queue domain", () => {
     expect(queueStateLabels.WAITING_APPROVAL).toBe("Aguardando sua aprovação");
     expect(queueStateLabels.DEAD_LETTER).toBe("Parada após tentativas");
   });
+
+  it("adds Whisper and transcript review before normalization for audio", () => {
+    const jobs = createKnowledgePipelineJobs({ workspaceId: "workspace-a", documentId: "audio-a", documentVersionId: "audio-a-v1", checksum: "sha256:audio", format: "audio", now: 1_000 });
+
+    expect(jobs.map((job) => job.jobType)).toEqual(["DOCUMENT_VALIDATE", "DOCUMENT_EXTRACT", "DOCUMENT_TRANSCRIBE", "DOCUMENT_POLISH", "DOCUMENT_NORMALIZE", "DOCUMENT_CHUNK", "DOCUMENT_EMBED", "DOCUMENT_INDEX"]);
+    expect(jobs[2]?.nextStep).toContain("etapa anterior");
+  });
 });

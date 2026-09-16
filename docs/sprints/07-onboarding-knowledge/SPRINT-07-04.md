@@ -13,11 +13,21 @@ Entregar extração, normalização, falhas parciais e proveniência como uma fa
 
 `arquivo original no UploadThing → extração → Markdown canônico → validação → pronto para chunking`
 
+### Conversões obrigatórias antes do RAG
+
+- PDF → Markdown canônico. PDF escaneado passa por OCR e mantém a confiança da extração.
+- Word `.docx` → Markdown canônico. Títulos, listas, tabelas e links devem permanecer rastreáveis; `.doc` sem adapter compatível deve falhar de forma recuperável.
+- XLSX/XLS → CSV por planilha → Markdown tabular canônico para chunking e busca. O CSV derivado permanece disponível para download/auditoria.
+- Áudio → texto usando o adapter de transcrição da OpenAI com Whisper. O texto bruto nunca é usado diretamente no RAG: passa pelo `InferenceGateway` com o modelo `gpt-5.6-luna` e raciocínio solicitado `medium` para correção e aprimoramento, preservando a indicação de que o conteúdo é transcrito e revisado.
+- A chamada de Whisper e a revisão de texto devem ficar atrás de adapters; sem `OPENAI_API_KEY` o áudio fica em estado recuperável `WAITING_USER`/`FAILED` com próximo passo explícito. Testes locais podem usar um provider fake e não fazem chamada externa.
+
 - PDF, DOCX, PPTX, XLSX, TXT e HTML passam por um `DocumentNormalizer` atrás de adapter, sem amarrar o produto a uma biblioteca de conversão.
 - Para PDFs, preservar página, título, hierarquia, listas, tabelas, links e imagens com referência; PDF escaneado entra em OCR e mantém a indicação de confiança.
 - O Markdown canônico conserva `documentId`, `documentVersionId`, página, seção, offsets e checksum da extração.
 - O original continua acessível para auditoria e download; Markdown e metadados são derivados versionados.
 - Documento corrompido, protegido, sem texto extraível ou com OCR insuficiente não entra silenciosamente no RAG: fica em falha recuperável, com motivo e opção de reprocessar ou enviar nova versão.
+
+Uma versão só é elegível para RAG quando está `READY` e possui Markdown canônico. A conversão pode ser repetida sem apagar o original; a substituição do RAG usa a versão pronta mais recente do arquivo.
 
 ## Trabalho
 
@@ -47,6 +57,7 @@ Implementação, testes proporcionais ao risco, roteiro de demonstração e inst
 - O fluxo principal funciona do início ao fim.
 - Um PDF textual e um PDF escaneado podem gerar Markdown rastreável ou uma falha recuperável, sem perder o arquivo original.
 - Nenhum chunk ou embedding é criado antes do Markdown normalizado estar confirmado.
+- PDF, DOCX e XLSX produzem os artefatos derivados definidos acima antes de entrar no chunking; áudio só prossegue depois de Whisper e revisão `gpt-5.6-luna` `medium` confirmadas.
 - Estados vazio, carregando, erro e sucesso são compreensíveis.
 - A tela permanece utilizável com teclado e viewport estreita.
 - Falhas parciais não apagam dados válidos nem deixam a interface travada.

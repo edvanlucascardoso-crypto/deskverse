@@ -12,7 +12,7 @@
     "docs/sprints/<sprint>-<agent>/INTEGRATION_REQUIREMENTS.md",
     "docs/history/README.md"
   ],
-  "nextPriority": "SPRINT-07-02",
+  "nextPriority": "SPRINT-08-00",
   "phaseOrder": [
     { "id": "00", "path": "completed/00-user-visual-concepts", "status": "archived", "sprintCount": 1 },
     { "id": "01", "path": "01-web-foundation", "status": "complete_with_integration_requirements", "sprintCount": 4 },
@@ -21,7 +21,7 @@
     { "id": "04", "path": "04-people-and-activity", "status": "complete_with_integration_requirements", "sprintCount": 4 },
     { "id": "05", "path": "05-office-experience", "status": "complete_with_integration_requirements", "sprintCount": 5 },
     { "id": "06", "path": "06-account-platform", "status": "complete_with_integration_requirements", "sprintCount": 7 },
-    { "id": "07", "path": "07-onboarding-knowledge", "status": "in_progress", "sprintCount": 7 },
+    { "id": "07", "path": "07-onboarding-knowledge", "status": "complete_with_integration_requirements", "sprintCount": 7 },
     { "id": "08", "path": "08-work-and-human-loop", "status": "planned", "sprintCount": 9 },
     { "id": "09", "path": "09-agent-execution", "status": "planned", "sprintCount": 8 },
     { "id": "10", "path": "10-mvp-agents", "status": "planned", "sprintCount": 7 },

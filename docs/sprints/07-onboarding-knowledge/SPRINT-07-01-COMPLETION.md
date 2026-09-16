@@ -47,3 +47,9 @@
 ## Próxima prioridade
 
 `SPRINT-07-02 — Upload e armazenamento de arquivos`.
+
+## Atualização do corte de 16/09/2026
+
+A execução completa da Fase 07 adicionou os estágios condicionais `DOCUMENT_TRANSCRIBE` e `DOCUMENT_POLISH` entre extração e normalização quando o payload é áudio. A cadeia final ficou `VALIDATE → EXTRACT → TRANSCRIBE → POLISH → NORMALIZE → CHUNK → EMBED → INDEX`, sem alterar o caminho de documentos que não são áudio. A fila continua atrás de `QueueBackend`; o adapter local foi usado somente para testes e demonstração.
+
+Evidências atuais: `yarn test` passou em 15 arquivos/46 testes; `yarn lint`, `yarn typecheck`, `yarn db:validate` e `yarn next build` com variáveis locais de Better Auth passaram. O E2E do drawer de onboarding/conhecimento passou em Chromium desktop e mobile. A transcrição real continua deliberadamente sem teste externo até a configuração de `OPENAI_API_KEY`.

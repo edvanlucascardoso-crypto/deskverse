@@ -34,8 +34,13 @@ test.describe("workspace canvas", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.reload({ waitUntil: "domcontentloaded" });
     const narrowTiles = page.locator(".agent-tile");
+    await expect(narrowTiles.first()).toBeVisible();
     await expect(narrowTiles).toHaveCount(13);
     for (let index = 0; index < 5; index += 1) await expect(narrowTiles.nth(index)).toBeVisible();
+    await page.waitForFunction(() => Array.from(document.querySelectorAll(".agent-tile")).slice(0, 5).every((element) => {
+      const box = element.getBoundingClientRect();
+      return box.width > 0 && box.height > 0;
+    }));
 
     const boxes = await Promise.all(
       Array.from({ length: 5 }, (_, index) => page.locator(".agent-tile").nth(index).boundingBox()),
@@ -115,5 +120,34 @@ test.describe("workspace canvas", () => {
     await page.getByRole("button", { name: "Concluir tarefa" }).click();
     await expect(page.locator(".queue-state-pill").getByText("Concluída", { exact: true })).toBeVisible();
     await expect(page.getByText("Tarefa concluída e registrada", { exact: true })).toBeVisible();
+  });
+
+  test("opens the onboarding and knowledge drawer with conversion and RAG states", async ({ page }) => {
+    await page.getByRole("button", { name: "Abrir base de conhecimento" }).click();
+    await expect(page.getByRole("heading", { name: "Base de conhecimento" })).toBeVisible();
+    await expect(page.getByText("guia-de-marca.pdf", { exact: true })).toBeVisible();
+    await expect(page.getByText("A transcrição aguarda OPENAI_API_KEY.", { exact: true })).toBeVisible();
+
+    await page.getByRole("tab", { name: "Buscar" }).click();
+    await page.getByPlaceholder("Pergunte à base autorizada").fill("tom claro");
+    await page.getByRole("button", { name: "Buscar evidências" }).click();
+    await expect(page.getByText("Evidência encontrada", { exact: true })).toBeVisible();
+    await expect(page.getByText("guia-de-marca.pdf", { exact: true })).toBeVisible();
+
+    await page.getByRole("tab", { name: "Arquivos" }).click();
+    await page.getByRole("button", { name: "Apagar e criar novo RAG" }).click();
+    await expect(page.getByText("O RAG atual, seus chunks e embeddings serão apagados.", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Confirmar apagar e criar novo RAG" }).click();
+    await expect(page.getByText("Novo RAG criado a partir dos documentos prontos.", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Substituir RAG de guia-de-marca.pdf" }).click();
+    await expect(page.getByText("Os chunks e embeddings atuais deste documento serão removidos", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Confirmar substituição" }).click();
+    await expect(page.getByText("RAG deste arquivo substituído.", { exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Apagar RAG", exact: true }).click();
+    await expect(page.getByText("Todos os chunks e embeddings serão removidos.", { exact: false })).toBeVisible();
+    await page.getByRole("button", { name: "Confirmar apagar RAG", exact: true }).click();
+    await expect(page.getByText("RAG apagado. Os arquivos continuam disponíveis para uma nova criação.", { exact: true })).toBeVisible();
   });
 });

@@ -31,6 +31,8 @@ export const resourceClassLabels: Record<PhysicalQueue, string> = {
 const jobTypeLabels: Record<string, string> = {
   DOCUMENT_VALIDATE: "Validar documento",
   DOCUMENT_EXTRACT: "Extrair conteúdo",
+  DOCUMENT_TRANSCRIBE: "Transcrever áudio",
+  DOCUMENT_POLISH: "Revisar transcrição",
   DOCUMENT_NORMALIZE: "Organizar conteúdo",
   DOCUMENT_CHUNK: "Separar trechos",
   DOCUMENT_EMBED: "Preparar busca semântica",
@@ -54,11 +56,13 @@ export function createQueueFixtures(workspaceId: string, now = Date.now()): Queu
   return createKnowledgePipelineJobs({ workspaceId, documentId: "document-aurora", documentVersionId: "document-aurora-v1", checksum: "sha256:fixture-aurora", now });
 }
 
-const knowledgeStages = ["DOCUMENT_VALIDATE", "DOCUMENT_EXTRACT", "DOCUMENT_NORMALIZE", "DOCUMENT_CHUNK", "DOCUMENT_EMBED", "DOCUMENT_INDEX"] as const;
+const documentStages = ["DOCUMENT_VALIDATE", "DOCUMENT_EXTRACT", "DOCUMENT_NORMALIZE", "DOCUMENT_CHUNK", "DOCUMENT_EMBED", "DOCUMENT_INDEX"] as const;
+const audioStages = ["DOCUMENT_VALIDATE", "DOCUMENT_EXTRACT", "DOCUMENT_TRANSCRIBE", "DOCUMENT_POLISH", "DOCUMENT_NORMALIZE", "DOCUMENT_CHUNK", "DOCUMENT_EMBED", "DOCUMENT_INDEX"] as const;
 
-export function createKnowledgePipelineJobs(input: { workspaceId: string; documentId: string; documentVersionId: string; checksum: string; now?: number }): QueueJob[] {
+export function createKnowledgePipelineJobs(input: { workspaceId: string; documentId: string; documentVersionId: string; checksum: string; format?: "audio" | "document"; now?: number }): QueueJob[] {
   const now = input.now ?? Date.now();
   const baseRunId = `${input.workspaceId}:${input.documentVersionId}:knowledge`;
+  const knowledgeStages = input.format === "audio" ? audioStages : documentStages;
   return knowledgeStages.map((jobType, index) => {
     const runId = `${baseRunId}:${jobType}`;
     const parentRunId = index ? `${baseRunId}:${knowledgeStages[index - 1]}` : undefined;
