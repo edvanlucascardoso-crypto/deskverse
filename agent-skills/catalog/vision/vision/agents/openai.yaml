@@ -1,0 +1,6 @@
+interface:
+  display_name: "Vision"
+  short_description: "Describe images with an external vision API"
+  default_prompt: "Use $vision to describe the image at <path-or-url>."
+policy:
+  allow_implicit_invocation: true

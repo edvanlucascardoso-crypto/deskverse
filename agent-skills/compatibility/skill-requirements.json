@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "requiredModelCapabilities": ["text_input"],
+    "optionalModelCapabilities": ["structured_output", "tool_calling"],
+    "requiredWorkerCapabilities": [],
+    "inputModalities": ["text"],
+    "outputFormat": "text_or_structured",
+    "sideEffect": "none",
+    "activation": "candidate",
+    "references": "on_demand",
+    "scripts": "authorized_tool_only",
+    "fallback": "ask_for_context_or_escalate"
+  },
+  "skills": {
+    "social-post-forge": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "outputFormat": "structured_content_brief",
+      "sideEffect": "external_write_if_authorized",
+      "requiredDeskverseTools": ["social_publish"],
+      "activation": "candidate",
+      "fallback": "draft_without_publishing"
+    },
+    "copywriting": {
+      "requiredModelCapabilities": ["text_input"],
+      "optionalModelCapabilities": ["structured_output"],
+      "outputFormat": "structured_copy_brief",
+      "activation": "candidate",
+      "fallback": "ask_for_missing_brief"
+    },
+    "brand-voice": {
+      "requiredModelCapabilities": ["text_input"],
+      "optionalModelCapabilities": ["structured_output"],
+      "outputFormat": "structured_voice_review",
+      "activation": "candidate",
+      "fallback": "use_authorized_brand_profile_only"
+    },
+    "market-researcher": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": [],
+      "outputFormat": "evidence_table",
+      "requiredDeskverseTools": ["web_research"],
+      "activation": "candidate",
+      "fallback": "return_research_blocked_without_inventing_facts"
+    },
+    "business-analyst": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "outputFormat": "decision_brief",
+      "activation": "candidate",
+      "fallback": "request_missing_business_context"
+    },
+    "competitor-analyst": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": [],
+      "outputFormat": "evidence_table",
+      "requiredDeskverseTools": ["web_research"],
+      "activation": "candidate",
+      "fallback": "return_research_blocked_without_inventing_facts"
+    },
+    "okr-planner": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "outputFormat": "okr_plan",
+      "sideEffect": "planning_write_if_authorized",
+      "requiredDeskverseTools": ["planning_mutation"],
+      "activation": "candidate",
+      "fallback": "draft_plan_without_mutation"
+    },
+    "product-manager": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "outputFormat": "decision_brief",
+      "sideEffect": "planning_write_if_authorized",
+      "requiredDeskverseTools": ["planning_mutation"],
+      "activation": "candidate",
+      "fallback": "draft_decision_without_mutation"
+    },
+    "vision": {
+      "requiredModelCapabilities": ["text_input", "image_input", "vision", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "inputModalities": ["text", "image"],
+      "outputFormat": "visual_analysis_json",
+      "activation": "candidate",
+      "fallback": "queue_visual_worker_or_ask_for_textual_description"
+    },
+    "video": {
+      "requiredModelCapabilities": ["text_input", "image_input", "vision"],
+      "optionalModelCapabilities": ["structured_output"],
+      "requiredWorkerCapabilities": ["frame_extraction", "transcription"],
+      "inputModalities": ["text", "image_sequence"],
+      "outputFormat": "timecoded_visual_analysis",
+      "activation": "reference_only",
+      "fallback": "wait_for_authorized_media_worker"
+    },
+    "remotion-motion-graphics": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": ["image_input", "vision"],
+      "requiredWorkerCapabilities": ["render_worker"],
+      "outputFormat": "motion_scene_spec",
+      "sideEffect": "asset_write_if_authorized",
+      "requiredDeskverseTools": ["render_media", "asset_upload"],
+      "activation": "candidate",
+      "fallback": "return_scene_spec_without_rendering"
+    },
+    "ffmpeg-skill": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": ["vision"],
+      "requiredWorkerCapabilities": ["media_worker"],
+      "outputFormat": "media_edit_plan_and_verification",
+      "sideEffect": "asset_write_if_authorized",
+      "requiredDeskverseTools": ["media_edit", "asset_upload"],
+      "activation": "candidate",
+      "fallback": "return_edit_plan_without_executing"
+    },
+    "video-editing-skill": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling", "vision"],
+      "requiredWorkerCapabilities": ["media_worker"],
+      "outputFormat": "provider_neutral_edit_brief",
+      "sideEffect": "external_write_if_authorized",
+      "activation": "reference_only",
+      "fallback": "return_provider_neutral_edit_brief"
+    },
+    "data-analyst": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": ["image_input", "vision"],
+      "requiredWorkerCapabilities": ["data_query_worker"],
+      "outputFormat": "analysis_with_provenance",
+      "requiredDeskverseTools": ["data_query"],
+      "activation": "candidate",
+      "fallback": "ask_for_authorized_data_source"
+    },
+    "data-qa": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": [],
+      "requiredWorkerCapabilities": ["data_query_worker"],
+      "outputFormat": "data_quality_report",
+      "requiredDeskverseTools": ["data_query"],
+      "activation": "candidate",
+      "fallback": "return_checks_without_claiming_validation"
+    },
+    "metric-definition": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling"],
+      "outputFormat": "metric_contract",
+      "activation": "candidate",
+      "fallback": "request_source_and_grain"
+    },
+    "executive-memo": {
+      "requiredModelCapabilities": ["text_input", "structured_output"],
+      "optionalModelCapabilities": ["tool_calling", "image_input", "vision"],
+      "outputFormat": "evidence_based_memo",
+      "activation": "candidate",
+      "fallback": "preserve_uncertainty_and_missing_evidence"
+    },
+    "jupyter-notebook": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": ["image_input", "vision"],
+      "requiredWorkerCapabilities": ["code_execution_worker"],
+      "outputFormat": "reproducible_analysis_artifact",
+      "sideEffect": "asset_write_if_authorized",
+      "requiredDeskverseTools": ["code_execute", "asset_upload"],
+      "activation": "reference_only",
+      "fallback": "return_analysis_plan_without_execution"
+    },
+    "pdf": {
+      "requiredModelCapabilities": ["text_input", "structured_output", "tool_calling"],
+      "optionalModelCapabilities": ["image_input", "vision"],
+      "requiredWorkerCapabilities": ["document_worker"],
+      "inputModalities": ["text", "document"],
+      "outputFormat": "document_artifact_or_analysis",
+      "sideEffect": "asset_write_if_authorized",
+      "requiredDeskverseTools": ["document_process", "asset_upload"],
+      "activation": "reference_only",
+      "fallback": "return_document_plan_without_execution"
+    }
+  }
+}

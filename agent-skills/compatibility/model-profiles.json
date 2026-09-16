@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "kind": "planning_snapshot",
+  "source": "docs/sprints/09-agent-execution/SPRINT-09-02.md",
+  "runtimeRule": "O catálogo efetivo do Vercel AI Gateway prevalece sobre este snapshot.",
+  "families": [
+    {
+      "id": "muse-spark",
+      "modelPatterns": ["muse-spark-*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh", "max"],
+      "maxPolicy": "profile_and_benchmark",
+      "contextPolicy": "persistent_plan_with_selective_retrieval",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    },
+    {
+      "id": "kimi",
+      "modelPatterns": ["kimi-k3*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh", "max"],
+      "maxPolicy": "profile_and_benchmark",
+      "contextPolicy": "retrieval_compaction_and_checkpoint",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported",
+      "alwaysThinking": true
+    },
+    {
+      "id": "openai",
+      "modelPatterns": ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["none", "low", "medium", "high", "xhigh", "max"],
+      "maxPolicy": "never",
+      "contextPolicy": "selective_context_structured_tools",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    },
+    {
+      "id": "anthropic",
+      "modelPatterns": ["claude-*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh"],
+      "maxPolicy": "never",
+      "contextPolicy": "selective_repository_and_task_context",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    },
+    {
+      "id": "gemini",
+      "modelPatterns": ["gemini-3.1-*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh"],
+      "maxPolicy": "never",
+      "contextPolicy": "selective_multimodal_context",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    },
+    {
+      "id": "deepseek",
+      "modelPatterns": ["deepseek-v4.1-*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh", "max"],
+      "maxPolicy": "profile_and_benchmark",
+      "contextPolicy": "selective_context_with_budget",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    },
+    {
+      "id": "qwen",
+      "modelPatterns": ["qwen3.5-*"],
+      "capabilities": ["text_input", "image_input", "vision", "structured_output", "tool_calling"],
+      "reasoningLevels": ["low", "medium", "high", "xhigh"],
+      "maxPolicy": "never",
+      "contextPolicy": "selective_multimodal_context",
+      "toolResultCompression": "compact_text_preserve_json",
+      "cachePolicy": "stable_prefix_when_supported"
+    }
+  ],
+  "modelOverrides": [
+    {
+      "modelId": "gpt-5.6-luna",
+      "maxPolicy": "profile_and_benchmark"
+    },
+    {
+      "modelId": "gpt-5.6-sol",
+      "maxPolicy": "never"
+    },
+    {
+      "modelId": "gpt-5.6-terra",
+      "maxPolicy": "never"
+    }
+  ]
+}

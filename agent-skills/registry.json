@@ -1,0 +1,198 @@
+{
+  "registryVersion": 1,
+  "status": "staged_not_enabled",
+  "retrievedAt": "2026-09-16",
+  "standard": "https://agentskills.io/specification",
+  "root": "agent-skills/catalog",
+  "compatibility": {
+    "profilesPath": "compatibility/model-profiles.json",
+    "requirementsPath": "compatibility/skill-requirements.json",
+    "resolverPath": "compatibility/resolve-skill.mjs",
+    "strategy": "canonical-skill-plus-capability-profile",
+    "runtimeOwner": "InferenceGateway"
+  },
+  "activationPolicy": {
+    "progressiveDisclosure": true,
+    "loadFullSkillOnlyOnCapabilityMatch": true,
+    "loadReferencesOnDemand": true,
+    "executeScriptsOnlyThroughAuthorizedDeskverseTools": true,
+    "externalProviderCallsRequireAdapter": true,
+    "secretsInPromptTraceOrUi": false,
+    "modelNeutralSkillInstructions": true,
+    "providerSpecificPromptSyntax": "forbidden_in_canonical_skill",
+    "modelSelection": "after_agent_task_and_seniority_classification"
+  },
+  "skills": [
+    {
+      "id": "social-post-forge",
+      "path": "catalog/content/social-post-forge",
+      "source": { "repo": "Nagacash/social-post-forge", "path": ".", "ref": "main", "commit": "2e8cc4e7a949a7beafbc7031ec4f0713807231b" },
+      "license": "MIT",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-01", "SPRINT-15-01", "SPRINT-15-04", "SPRINT-15-07", "SPRINT-15-08", "SPRINT-15-09", "SPRINT-15-10", "SPRINT-15-16"],
+      "notes": "Contains generation and publishing scripts. Use as workflow reference until publishing is mapped to authorized Deskverse tools."
+    },
+    {
+      "id": "copywriting",
+      "path": "catalog/content/copywriting",
+      "source": { "repo": "judicael-s/Copywriting-skill", "path": ".", "ref": "main", "commit": "8282f17e1f15d0f2b4fa19a90b2005864f77cbe5" },
+      "license": "MIT",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-01", "SPRINT-10-02", "SPRINT-15-01", "SPRINT-15-04", "SPRINT-15-07", "SPRINT-15-08", "SPRINT-15-09", "SPRINT-15-10"],
+      "notes": "Includes nested social-copywriting, seo-copywriting and tone-of-voice skills for progressive loading."
+    },
+    {
+      "id": "brand-voice",
+      "path": "catalog/content/brand-voice",
+      "source": { "repo": "naomimetzger/brand-voice", "path": ".", "ref": "main", "commit": "ea05e3696b44e57b75c8f160ecd62647f6671b0b" },
+      "license": "MIT",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-01", "SPRINT-10-02", "SPRINT-10-03", "SPRINT-15-07", "SPRINT-15-08", "SPRINT-15-09", "SPRINT-15-10"],
+      "notes": "Replace the local voice guide with the authorized workspace BrandProfile before activation."
+    },
+    {
+      "id": "market-researcher",
+      "path": "catalog/business/market-researcher",
+      "source": { "repo": "xcrrr/claude-skills", "path": "skills/business/market-researcher", "ref": "main", "commit": "145342ceff6318d2f5ffe8f95473fecc8b27d1e9" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-01", "SPRINT-15-01", "SPRINT-15-04", "SPRINT-15-07", "SPRINT-15-16"],
+      "notes": "Requires web research and explicit source provenance."
+    },
+    {
+      "id": "business-analyst",
+      "path": "catalog/business/business-analyst",
+      "source": { "repo": "xcrrr/claude-skills", "path": "skills/business/business-analyst", "ref": "main", "commit": "145342ceff6318d2f5ffe8f95473fecc8b27d1e9" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-03", "SPRINT-15-05", "SPRINT-15-06", "SPRINT-15-08", "SPRINT-15-09", "SPRINT-15-10", "SPRINT-15-11", "SPRINT-15-14", "SPRINT-15-15", "SPRINT-15-18"],
+      "notes": "Reference only until its outputs use Deskverse brief, decision and audit contracts."
+    },
+    {
+      "id": "competitor-analyst",
+      "path": "catalog/business/competitor-analyst",
+      "source": { "repo": "xcrrr/claude-skills", "path": "skills/business/competitor-analyst", "ref": "main", "commit": "145342ceff6318d2f5ffe8f95473fecc8b27d1e9" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-01", "SPRINT-15-07", "SPRINT-15-16"],
+      "notes": "Use only with verifiable sources and workspace authorization."
+    },
+    {
+      "id": "okr-planner",
+      "path": "catalog/business/okr-planner",
+      "source": { "repo": "xcrrr/claude-skills", "path": "skills/business/okr-planner", "ref": "main", "commit": "145342ceff6318d2f5ffe8f95473fecc8b27d1e9" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-01", "SPRINT-15-06", "SPRINT-15-11", "SPRINT-15-18"],
+      "notes": "Planning mutations remain exclusive to authorized agent tools."
+    },
+    {
+      "id": "product-manager",
+      "path": "catalog/business/product-manager",
+      "source": { "repo": "xcrrr/claude-skills", "path": "skills/business/product-manager", "ref": "main", "commit": "145342ceff6318d2f5ffe8f95473fecc8b27d1e9" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-06", "SPRINT-15-11", "SPRINT-15-18"],
+      "notes": "Reference for decision framing; it cannot bypass the project's read-only user surface."
+    },
+    {
+      "id": "vision",
+      "path": "catalog/vision/vision",
+      "source": { "repo": "DLeungDL/vision", "path": "skills/vision", "ref": "main", "commit": "4cca957bf2c9a7446ca104210bb907a193dbd1d3" },
+      "license": "See source repository",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-03", "SPRINT-15-02", "SPRINT-15-12", "SPRINT-15-13", "SPRINT-15-19"],
+      "notes": "Codex/OpenAI-compatible vision adapter candidate. Requires an authorized provider adapter and secret isolation."
+    },
+    {
+      "id": "video",
+      "path": "catalog/vision/video",
+      "source": { "repo": "ellyseum/claude-vision", "path": "skills/video", "ref": "main", "commit": "3a58359e1391cf892d6376a43ed439644c955bf5" },
+      "license": "MIT",
+      "status": "reference_only",
+      "assignedAgents": ["SPRINT-15-02", "SPRINT-15-12", "SPRINT-15-13"],
+      "notes": "Claude Code hook/Task contract; adapt the frame-analysis workflow instead of executing it as-is."
+    },
+    {
+      "id": "remotion-motion-graphics",
+      "path": "catalog/media/remotion-motion-graphics",
+      "source": { "repo": "haidrrrry/claude-remotion-skill", "path": "remotion-motion-graphics", "ref": "main", "commit": "1dcbe5e3fc6cf970bd10d3cc05f0a8a5d19d0383" },
+      "license": "MIT",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-10-03", "SPRINT-15-02", "SPRINT-15-12", "SPRINT-15-13", "SPRINT-15-19"],
+      "notes": "Motion craft and render-inspect-fix loop; worker and asset I/O still need Deskverse integration."
+    },
+    {
+      "id": "ffmpeg-skill",
+      "path": "catalog/media/ffmpeg-skill",
+      "source": { "repo": "kajisho5/ffmpeg-skill", "path": ".", "ref": "main", "commit": "cecf37ca8194a83bacf5a564700112f73656c26d" },
+      "license": "MIT",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-02", "SPRINT-15-12", "SPRINT-15-13"],
+      "notes": "Local FFmpeg scripts with typed arguments and verification. Expose through a constrained tool wrapper."
+    },
+    {
+      "id": "video-editing-skill",
+      "path": "catalog/media/video-editing-skill",
+      "source": { "repo": "rendleyhq/video-editing-skill", "path": ".", "ref": "main", "commit": "837982ef6ddc324b0a390112f10b86a140074cda" },
+      "license": "MIT",
+      "status": "reference_only",
+      "assignedAgents": ["SPRINT-15-12"],
+      "notes": "Rendley-specific MCP/REST integration. Do not activate as a Deskverse provider."
+    },
+    {
+      "id": "data-analyst",
+      "path": "catalog/analysis/data-analyst",
+      "source": { "repo": "wdzhwsh4067/data-analyst-skills", "path": "skills/data-analyst", "ref": "main", "commit": "9afa09588de511cbf21bea221a1f9410b7d4e704" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-01", "SPRINT-15-04", "SPRINT-15-05", "SPRINT-15-14", "SPRINT-15-15", "SPRINT-15-16"],
+      "notes": "Requires data-source, row-grain and decision context before analysis."
+    },
+    {
+      "id": "data-qa",
+      "path": "catalog/analysis/data-qa",
+      "source": { "repo": "wdzhwsh4067/data-analyst-skills", "path": "skills/data-qa", "ref": "main", "commit": "9afa09588de511cbf21bea221a1f9410b7d4e704" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-05", "SPRINT-15-14", "SPRINT-15-15"],
+      "notes": "Shared validation capability for quantitative agents."
+    },
+    {
+      "id": "metric-definition",
+      "path": "catalog/analysis/metric-definition",
+      "source": { "repo": "wdzhwsh4067/data-analyst-skills", "path": "skills/metric-definition", "ref": "main", "commit": "9afa09588de511cbf21bea221a1f9410b7d4e704" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-01", "SPRINT-15-04", "SPRINT-15-05", "SPRINT-15-14", "SPRINT-15-15", "SPRINT-15-16"],
+      "notes": "Can support metric provenance and economic measurement, subject to Deskverse definitions."
+    },
+    {
+      "id": "executive-memo",
+      "path": "catalog/analysis/executive-memo",
+      "source": { "repo": "wdzhwsh4067/data-analyst-skills", "path": "skills/executive-memo", "ref": "main", "commit": "9afa09588de511cbf21bea221a1f9410b7d4e704" },
+      "license": "MIT (source repository)",
+      "status": "candidate",
+      "assignedAgents": ["SPRINT-15-06", "SPRINT-15-11", "SPRINT-15-15", "SPRINT-15-16", "SPRINT-15-18"],
+      "notes": "Preserve source, uncertainty and next step in the Deskverse artifact contract."
+    },
+    {
+      "id": "jupyter-notebook",
+      "path": "catalog/analysis/jupyter-notebook",
+      "source": { "repo": "openai/skills", "path": "skills/.curated/jupyter-notebook", "ref": "main", "commit": "49f948faa9258a0c61caceaf225e179651397431" },
+      "license": "Apache-2.0",
+      "status": "reference_only",
+      "assignedAgents": ["SPRINT-15-05", "SPRINT-15-14", "SPRINT-15-15", "SPRINT-15-16"],
+      "notes": "Source repository is deprecated; retain as a reproducible reference until replaced by a current source."
+    },
+    {
+      "id": "pdf",
+      "path": "catalog/analysis/pdf",
+      "source": { "repo": "openai/skills", "path": "skills/.curated/pdf", "ref": "main", "commit": "49f948faa9258a0c61caceaf225e179651397431" },
+      "license": "Apache-2.0",
+      "status": "reference_only",
+      "assignedAgents": ["SPRINT-15-05", "SPRINT-15-11", "SPRINT-15-14", "SPRINT-15-15"],
+      "notes": "Source repository is deprecated; use only after checking the current document/PDF skill source."
+    }
+  ]
+}

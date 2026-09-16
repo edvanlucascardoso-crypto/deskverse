@@ -11,6 +11,6 @@ export default defineConfig({
   test: {
     environment: "node",
     passWithNoTests: false,
-    exclude: ["node_modules/**", "tests/e2e/**"],
+    exclude: ["node_modules/**", "tests/e2e/**", "agent-skills/**"],
   },
 });

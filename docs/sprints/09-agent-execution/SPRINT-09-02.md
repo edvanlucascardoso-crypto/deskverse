@@ -9,6 +9,14 @@
 
 Implementar uma camada única de inferência via **Vercel AI Gateway**, mantendo routing de inteligência no Deskverse e provider routing no gateway.
 
+## Skills externas e neutralidade de modelo
+
+Skills externas não serão copiadas por modelo nem colocadas integralmente no prompt mestre. A skill canônica permanece única; seus requisitos ficam em `agent-skills/compatibility/skill-requirements.json`, os profiles ficam em `agent-skills/compatibility/model-profiles.json` e o resolver de referência fica em `agent-skills/compatibility/resolve-skill.mjs`.
+
+Na implementação desta sprint, o `ModelAdapter` deve incorporar esse contrato e produzir um plano normalizado antes de chamar o `InferenceGateway`. O plano cobre reasoning pedido/efetivo, contexto, modalidade, saída estruturada, compactação de resultados de tools, capabilities de worker, tools exigidas e fallback. Sintaxe de provider, autenticação, failover técnico e chamadas externas continuam exclusivamente no Gateway ou nas tools autorizadas.
+
+Uma skill `reference_only` não pode ser ativada diretamente. No caso de análise de vídeo, extração de frames/transcrição pertence ao worker e a interpretação das imagens pertence ao modelo com capability `vision`; isso permite trocar Claude, GPT ou outra família sem duplicar a skill ou prometer compatibilidade inexistente.
+
 ## Contratos
 
 Criar:
@@ -91,6 +99,7 @@ Essas regras são hipóteses iniciais derivadas das capacidades documentadas e d
 - Trocar modelo via configuração sem alterar Agent Core.
 - Um mesmo model ID pode mudar de provider sem conhecimento do agente.
 - Trace mostra agente, senioridade, model, provider final, reasoning pedido/efetivo, tokens, cache, custo e fallback.
+- Resolver de skills escolhe a skill canônica apenas após capability match, bloqueia model/worker/tool ausente e registra skill, revisão, profile, modelo e provider no trace.
 - Teste cobre GPT-5.6 Luna, Muse Spark 1.3 e DeepSeek V4.1 Flash com capability-aware `max`, GPT-5.6 Sol/outros OpenAI e Anthropic sem `max`, além de Kimi com capability-aware `max`.
 - Model catalog/preços não dependem de constantes antigas.
 
