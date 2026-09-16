@@ -34,7 +34,7 @@ Cada agente de implementação recebe uma única sprint. Integrações entre spr
 
 `tarefa independente` ou `colaboração explícita entre profissionais` → aprovação humana quando necessária → entrega.
 
-No MVP, qualquer agente pode executar uma tarefa própria. Quando a tarefa pedir colaboração, os participantes e o motivo devem ser explícitos e rastreáveis; a presença de Mídias Sociais, Redator e Designer não cria um pipeline obrigatório. A base de referências de imagens e documentos deve existir antes da criação do primeiro agente. Áudio, vídeo e música podem ser armazenados com metadados, mas sua interpretação é futura. O Designer usa a API de imagens da OpenAI e o UploadThing; a plataforma própria de mídia entra depois, na SPRINT-15-19.
+No MVP, qualquer agente pode executar uma tarefa própria. Quando a tarefa pedir colaboração, os participantes e o motivo devem ser explícitos e rastreáveis; a presença de Mídias Sociais, Redator e Designer não cria um pipeline obrigatório. A base de referências de imagens e documentos deve existir antes da criação do primeiro agente. Áudio, vídeo e música podem ser armazenados com metadados, mas sua interpretação semântica é futura. O Designer usa a API de imagens da OpenAI e o UploadThing; a plataforma própria de mídia entra depois, na SPRINT-15-19. A SPRINT-15-20 adiciona o Masterizador de Áudio para diagnóstico técnico e processamento não destrutivo de referências de áudio.
 
 ## Canais e escalação
 
@@ -59,7 +59,7 @@ WhatsApp e Instagram entram como canais nativos atrás de um núcleo de mensagen
 | `docs/sprints/12-billing-and-usage` | Billing e uso | planejada | 5 |
 | `docs/sprints/13-public-site-and-guide` | Site público e guia | planejada | 4 |
 | `docs/sprints/14-security-and-release` | Segurança e release | planejada | 8 |
-| `docs/sprints/15-future-agents` | Agentes futuros | planejada | 19 |
+| `docs/sprints/15-future-agents` | Agentes futuros | planejada | 20 |
 | `docs/sprints/16-collaboration` | Colaboração | planejada | 1 |
 
-São 101 prompts ativos, além da sprint histórica de conceitos visuais. A ordem dos agentes do MVP é de construção e não de execução. A reorientação do modelo e a proposta de nova sprint de referências estão registradas em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](docs/history/2026-09-16-modelo-de-agentes-e-referencias.md).
+São 102 prompts ativos, além da sprint histórica de conceitos visuais. A ordem dos agentes do MVP é de construção e não de execução. A reorientação do modelo, a proposta de sprint de referências e a inclusão do Masterizador de Áudio estão registradas em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](docs/history/2026-09-16-modelo-de-agentes-e-referencias.md) e [docs/history/2026-09-16-masterizador-de-audio.md](docs/history/2026-09-16-masterizador-de-audio.md).

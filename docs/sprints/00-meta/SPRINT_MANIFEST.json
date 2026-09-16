@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-09-16",
   "sourceOfTruth": [
     "AGENTS.md",
     "docs/sprints/SPRINT_STATUS.md",
@@ -9,7 +9,8 @@
     "docs/sprints/<sprint>-<agent>/README.md",
     "docs/sprints/<sprint>-<agent>/SPRINT-<id>.md",
     "docs/sprints/<sprint>-<agent>/PRD-*.md",
-    "docs/sprints/<sprint>-<agent>/INTEGRATION_REQUIREMENTS.md"
+    "docs/sprints/<sprint>-<agent>/INTEGRATION_REQUIREMENTS.md",
+    "docs/history/README.md"
   ],
   "nextPriority": "SPRINT-07-02",
   "phaseOrder": [
@@ -28,7 +29,7 @@
     { "id": "12", "path": "12-billing-and-usage", "status": "planned", "sprintCount": 5 },
     { "id": "13", "path": "13-public-site-and-guide", "status": "planned", "sprintCount": 4 },
     { "id": "14", "path": "14-security-and-release", "status": "planned", "sprintCount": 8 },
-    { "id": "15", "path": "15-future-agents", "status": "planned", "sprintCount": 19 },
+    { "id": "15", "path": "15-future-agents", "status": "planned", "sprintCount": 20 },
     { "id": "16", "path": "16-collaboration", "status": "planned", "sprintCount": 1 }
   ],
   "executionOverrides": [
@@ -43,7 +44,8 @@
     { "id": "SPRINT-11-04-SVC-01", "path": "11-integrations-and-planning/11-04-whatsapp/services/SPRINT-11-04-SVC-01-mcp-channels.md", "ownerSprint": "SPRINT-11-04", "runtime": "Railway", "blocksMvp": false },
     { "id": "SPRINT-15-12-SVC-01", "path": "15-12-edicao-de-video/services/SPRINT-15-12-SVC-01-video-engine.md", "ownerSprint": "SPRINT-15-12", "runtime": "Railway+RunPodServerless", "blocksMvp": false },
     { "id": "SPRINT-15-13-SVC-01", "path": "15-13-efeitos-visuais/services/SPRINT-15-13-SVC-01-vfx-extension.md", "ownerSprint": "SPRINT-15-13", "runtime": "Railway+RunPodServerless", "blocksMvp": false },
-    { "id": "SPRINT-15-02-SVC-01", "path": "15-02-motion-design/services/SPRINT-15-02-SVC-01-motion-mcp.md", "ownerSprint": "SPRINT-15-02", "runtime": "Railway+RunPodServerless", "dependsOn": ["SPRINT-15-02-SPIKE-01", "SPRINT-15-02-02", "SPRINT-07-02", "SPRINT-08-02", "SPRINT-09-03", "SPRINT-09-04", "SPRINT-09-05", "SPRINT-09-06", "SPRINT-14-01", "SPRINT-14-02", "SPRINT-14-03", "SPRINT-14-04", "SPRINT-14-05", "SPRINT-14-06", "SPRINT-14-07", "SPRINT-14-08"], "blocksMvp": false }
+    { "id": "SPRINT-15-02-SVC-01", "path": "15-02-motion-design/services/SPRINT-15-02-SVC-01-motion-mcp.md", "ownerSprint": "SPRINT-15-02", "runtime": "Railway+RunPodServerless", "dependsOn": ["SPRINT-15-02-SPIKE-01", "SPRINT-15-02-02", "SPRINT-07-02", "SPRINT-08-02", "SPRINT-09-03", "SPRINT-09-04", "SPRINT-09-05", "SPRINT-09-06", "SPRINT-14-01", "SPRINT-14-02", "SPRINT-14-03", "SPRINT-14-04", "SPRINT-14-05", "SPRINT-14-06", "SPRINT-14-07", "SPRINT-14-08"], "blocksMvp": false },
+    { "id": "SPRINT-15-20-SVC-01", "path": "15-20-masterizacao-de-audio/services/SPRINT-15-20-SVC-01-audio-tool.md", "ownerSprint": "SPRINT-15-20", "runtime": "Railway+CPU", "dependsOn": ["SPRINT-07-02", "SPRINT-08-02", "SPRINT-09-03", "SPRINT-09-04", "SPRINT-09-05", "SPRINT-09-06", "SPRINT-09-07", "SPRINT-09-08", "SPRINT-14-01", "SPRINT-14-02", "SPRINT-14-03", "SPRINT-14-04", "SPRINT-14-05", "SPRINT-14-06", "SPRINT-14-07", "SPRINT-14-08"], "blocksMvp": false }
   ],
   "agentDirectories": [
     { "id": "SPRINT-15-01", "path": "15-01-crescimento", "status": "planned", "blocksMvp": false },
@@ -64,7 +66,8 @@
     { "id": "SPRINT-15-16", "path": "15-16-inteligencia-de-mercado", "status": "planned", "blocksMvp": false },
     { "id": "SPRINT-15-17", "path": "15-17-observador-humano", "status": "planned", "blocksMvp": false },
     { "id": "SPRINT-15-18", "path": "15-18-lideranca-multi-grupo", "status": "planned", "blocksMvp": false },
-    { "id": "SPRINT-15-19", "path": "15-19-plataforma-de-imagem", "status": "planned", "blocksMvp": false }
+    { "id": "SPRINT-15-19", "path": "15-19-plataforma-de-imagem", "status": "planned", "blocksMvp": false },
+    { "id": "SPRINT-15-20", "path": "15-20-masterizacao-de-audio", "status": "planned", "blocksMvp": false }
   ],
   "roadmapExtensions": [
     { "id": "SPRINT-15-02-SPIKE-01", "path": "15-02-motion-design/SPRINT-15-02-SPIKE-01.md", "ownerSprint": "SPRINT-15-02", "status": "planned", "atemporal": true, "blocksMvp": false },
@@ -77,9 +80,9 @@
     {
       "id": "A0",
       "name": "primeiro fluxo de agente",
-      "requires": ["SPRINT-08-02", "SPRINT-09-08", "SPRINT-10-04"],
-      "sequence": ["Mídias Sociais planeja", "Redator escreve", "Designer opcional", "humano aprova", "entrega confirmada"],
-      "fallback": "Sem capacidade ou entitlement do Designer, concluir Mídias Sociais → Redator com aviso explícito."
+      "requires": ["SPRINT-08-02", "SPRINT-09-08", "SPRINT-10-01"],
+      "sequence": ["pedido contextualizado", "agente responsável escolhido", "execução SOLO ou COLLABORATION explícita", "humano aprova quando necessário", "entrega confirmada"],
+      "fallback": "Concluir com o agente responsável quando a tarefa não exigir colaboração; não criar etapas artificiais de marketing."
     }
   ],
   "dependencyExceptions": [],
@@ -89,7 +92,8 @@
     "inferenceGateway": "InferenceGateway",
     "inferenceImplementation": "VercelAIGateway",
     "delegation": "capability",
-    "persistentKinds": ["leader", "specialist"],
+    "persistentKinds": ["agent", "specialist"],
+    "coordinationRoles": ["leader"],
     "ephemeralKind": "worker",
     "seniority": ["junior", "pleno", "senior", "especialista"],
     "economicsMetric": "cost_per_successful_task"

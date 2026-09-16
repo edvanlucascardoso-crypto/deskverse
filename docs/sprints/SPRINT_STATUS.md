@@ -13,21 +13,21 @@ SPRINT_MANIFEST.json define a ordem, as dependências e o ambiente. Este arquivo
 - Fase 04 — Pessoas e atividade: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Cards locais de identidade e presença, todos os estados de trabalho, chat global, chat privado, reunião local, comunicação espacial sequencial e linha do tempo acionável foram entregues; fonte autenticada de presença, atividade persistida e transporte em tempo real permanecem como integração futura.
 - Fase 05 — Experiência do Escritório: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Store local, atividade incremental, simulador, checkpoints, aprovação humana, recuperação e loop até entrega foram entregues; runtime real e evidência visual CUA aguardam ambiente integrado.
 - Fase 06 — Conta e Plataforma: COMPLETE_WITH_INTEGRATION_REQUIREMENTS. Limites de aplicação, schema multi-tenant, migration pgvector, Better Auth, workspaces, membros, RBAC, contratos operacionais, healthcheck e shell protegido foram entregues; deploy da migration, serviços externos e evidência visual CUA aguardam ambiente integrado.
-- Fase 07 — IN_PROGRESS. A SPRINT-07-01 está `COMPLETE_WITH_INTEGRATION_REQUIREMENTS`; as sprints seguintes permanecem planejadas. Fases 08–16 seguem PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e suas sprints não criam bloqueio implícito entre agentes nem bloqueiam a Fase 10; `SPRINT-15-02-SPIKE-01` é independente de `SPRINT-15-01`.
+- Fase 07 — IN_PROGRESS. A SPRINT-07-01 está `COMPLETE_WITH_INTEGRATION_REQUIREMENTS`; as sprints seguintes permanecem planejadas. Fases 08–16 seguem PLANNED, reescritas para a dinâmica de canvas em grid de cards. A Fase 15 é pós-MVP e suas sprints não criam bloqueio implícito entre agentes nem bloqueiam a Fase 10; `SPRINT-15-02-SPIKE-01` é independente de `SPRINT-15-01`. A SPRINT-15-20 adiciona o agente futuro Masterizador de Áudio e seu serviço privado de análise/masterização em CPU.
 - Antes de iniciar a criação dos agentes da Fase 10, a SPRINT-08-02 deve entregar a tela de arquivos dos projetos com UploadThing, Data Table paginada com busca no desktop e lista de cards no mobile. A direção de 16/09/2026 acrescenta um gate anterior de referências no pedido: armazenamento, vínculo, permissão, compreensão de imagens/documentos e estado explícito para áudio/vídeo ainda não interpretados.
 - Próxima sprint obrigatória: SPRINT-07-02 — Upload e armazenamento de arquivos. A SPRINT-07-01 entregou o contrato local de filas, jobs assíncronos, observação e pipeline de conhecimento; as integrações pendentes permanecem visíveis no relatório da sprint.
 - O PRD e o grupo técnico da SPRINT-15-02 ficam na Fase 15 como trabalho pós-MVP. O Spike pode ser atemporal; nenhuma etapa de Motion MCP é requisito do Gate A0 ou da criação dos agentes da Fase 10.
 
-O roadmap é validado por dependências, não apenas pelo número da fase. O Designer do MVP não depende de pipeline próprio de imagem: usa a API de imagens da OpenAI e UploadThing. A plataforma própria de imagem fica na SPRINT-15-19, posterior ao MVP.
+O roadmap é validado por dependências, não apenas pelo número da fase. O Designer do MVP não depende de pipeline próprio de imagem: usa a API de imagens da OpenAI e UploadThing. A plataforma própria de imagem fica na SPRINT-15-19, posterior ao MVP. A SPRINT-15-20 também é posterior ao MVP e trata análise técnica e processamento de sinal; não habilita interpretação semântica de música.
 
 ## Ordem obrigatória do MVP de agentes
 
 1. SPRINT-10-01 — Mídias Sociais
 2. SPRINT-10-02 — Redator
 3. SPRINT-10-03 — Designer
-4. SPRINT-10-04 — fluxo Mídias Sociais → Redator → Designer
-5. SPRINT-10-05 — canvas de líderes e especialistas
-6. SPRINT-10-06 — primeiro fluxo pós-onboarding
+4. SPRINT-10-04 — colaboração opcional entre Mídias Sociais, Redator e Designer
+5. SPRINT-10-05 — presença dos três no escritório
+6. SPRINT-10-06 — primeira tarefa independente e primeira colaboração pós-onboarding
 7. SPRINT-10-07 — experiência local integrada
 
 Essa ordem registra a construção inicial, não um fluxo obrigatório. O Gate A0 precisa ser revisado para permitir tarefa `SOLO` ou `COLLABORATION`, com agente responsável escolhido, participantes e motivo rastreáveis. Mídias Sociais, Redator e Designer podem colaborar, mas nenhum é etapa obrigatória de toda tarefa. A senioridade é Júnior/Pleno/Sênior/Especialista e não altera permissões.
@@ -47,6 +47,7 @@ Essa ordem registra a construção inicial, não um fluxo obrigatório. O Gate A
 - PRDs soltos de acesso, imagem e vídeo foram absorvidos nas sprints responsáveis e removidos para manter uma fonte operacional única.
 - O Deskverse não é uma agência de marketing digital virtual: agentes são profissionais independentes, recebem tarefas próprias e colaboram apenas quando a tarefa pedir ou quando uma proposta de colaboração for aceita.
 - A interpretação de áudio, vídeo e música é futura. Antes da Fase 10, imagens e documentos suportados devem ter base de acesso, extração/normalização, entendimento e montagem de contexto para agentes. A decisão e o histórico completo estão em [docs/history/2026-09-16-modelo-de-agentes-e-referencias.md](../history/2026-09-16-modelo-de-agentes-e-referencias.md).
+- O Masterizador de Áudio entra como agente futuro na SPRINT-15-20. Sua competência é técnica: medir loudness/LUFS, true peak, clipping, dinâmica, ruído, espectro e estéreo, sugerir/realizar EQ, compressão, limitação e ganho e entregar versões comparáveis. A decisão é condicionada a benchmark e auditoria das licenças dos projetos open source; não é interpretação semântica de música.
 
 ## Colaboração
 
