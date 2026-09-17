@@ -12,6 +12,9 @@ describe("office schemas", () => {
     expect(result).toEqual({
       title: "Campanha de primavera",
       objective: "Preparar uma publicação para a coleção.",
+      leaderId: "social",
+      leaderName: "Marina Social",
+      parameters: "",
       delivery: "Texto e arte revisados",
     });
   });

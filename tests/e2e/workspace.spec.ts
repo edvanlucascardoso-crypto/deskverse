@@ -94,6 +94,10 @@ test.describe("workspace canvas", () => {
     await page.getByRole("button", { name: "Acompanhar pedidos" }).click();
     await page.getByRole("button", { name: "Novo pedido" }).click();
     await expect(page.getByRole("heading", { name: "O que precisa ser feito?" })).toBeVisible();
+    await expect(page.locator(".office-choice-list").first()).toHaveCSS("overflow-y", "auto");
+    await page.getByRole("radio", { name: /Sofia Projetos/ }).click();
+    await page.getByRole("checkbox", { name: /Público prioritário/ }).click();
+    await page.getByRole("radio", { name: "Pacote completo pronto para entrega" }).click();
 
     await page.getByRole("button", { name: "Criar pedido" }).click();
     await expect(page.getByText("Dê um nome com pelo menos 3 caracteres.")).toBeVisible();
@@ -107,6 +111,20 @@ test.describe("workspace canvas", () => {
 
     await expect(page.getByRole("heading", { name: "Campanha de primavera" })).toBeVisible();
     await expect(page.getByText("Preparar uma publicação para apresentar a coleção de primavera.")).toBeVisible();
+    await expect(page.getByText(/Responsável: Sofia Projetos/)).toBeVisible();
+    await expect(page.getByText("Público prioritário", { exact: true })).toBeVisible();
+  });
+
+  test("allows an office request to be cancelled with confirmation", async ({ page }) => {
+    await page.getByRole("button", { name: "Acompanhar pedidos" }).click();
+    await expect(page.getByRole("button", { name: "Cancelar pedido", exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "Cancelar pedido", exact: true }).click();
+    await expect(page.getByRole("alert")).toContainText("Cancelar este pedido?");
+    await page.getByRole("button", { name: "Sim, cancelar pedido" }).click();
+
+    await expect(page.getByText("Cancelado", { exact: true })).toBeVisible();
+    await expect(page.getByText("Este pedido foi cancelado.", { exact: false })).toBeVisible();
   });
 
   test("observes a queued document job from ready to success", async ({ page }) => {

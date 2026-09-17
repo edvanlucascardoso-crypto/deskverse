@@ -8,7 +8,7 @@ export type OfficeAgentEventInput = z.input<typeof officeAgentEventInputSchema>;
 export type OfficeAgentEvent = z.output<typeof officeAgentEventInputSchema> & { id: string; occurredAt: string };
 export type OfficeApprovalDecision = z.infer<typeof officeApprovalDecisionSchema>;
 
-export type OfficeRunState = "empty" | "loading" | "working" | "WAITING_USER" | "WAITING_APPROVAL" | "success" | "error";
+export type OfficeRunState = "empty" | "loading" | "working" | "WAITING_USER" | "WAITING_APPROVAL" | "success" | "error" | "cancelled";
 export type OfficePhase = "entrada" | "trabalho" | "decisao" | "entrega";
 export type OfficeApprovalState = "pending" | "approved" | "changes_requested" | "rejected" | "cancelled" | "expired";
 export type OfficeEvent = Omit<OfficeAgentEvent, "type"> & { type: OfficeAgentEvent["type"] | "run.reset" };
@@ -18,6 +18,8 @@ export type OfficeSnapshot = {
   runId: string;
   title: string;
   brief: string;
+  leaderId: string;
+  parameters: string;
   state: OfficeRunState;
   phase: OfficePhase;
   source: string;
@@ -42,6 +44,7 @@ export type OfficeAction =
   | { type: "COMPLETE" }
   | { type: "FAIL"; message?: string }
   | { type: "RETRY" }
+  | { type: "CANCEL" }
   | { type: "CLEAR" };
 
 export type OfficeLoadResult = { ok: true; state: OfficeWorkspaceState } | { ok: false; message: string; lastState?: OfficeWorkspaceState };

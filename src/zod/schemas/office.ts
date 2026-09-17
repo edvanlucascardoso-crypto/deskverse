@@ -3,6 +3,9 @@ import { z } from "zod";
 export const createOfficeRunInputSchema = z.object({
   title: z.string().trim().min(3, "Dê um nome com pelo menos 3 caracteres.").max(80, "Use no máximo 80 caracteres."),
   objective: z.string().trim().min(10, "Explique o que precisa ser feito.").max(500, "Use no máximo 500 caracteres."),
+  leaderId: z.string().trim().min(1, "Escolha um agente líder.").default("social"),
+  leaderName: z.string().trim().min(1).max(80).default("Marina Social"),
+  parameters: z.string().trim().max(1000, "Use no máximo 1.000 caracteres.").optional().default(""),
   delivery: z.string().trim().min(3, "Descreva como o trabalho será considerado pronto.").max(120, "Use no máximo 120 caracteres."),
   notes: z.string().trim().max(1000, "Use no máximo 1.000 caracteres.").optional(),
 });

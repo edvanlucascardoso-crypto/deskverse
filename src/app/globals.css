@@ -539,6 +539,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .office-run-list-status.WAITING_USER, .office-run-list-status.WAITING_APPROVAL { color: var(--status-waiting); }
 .office-run-list-status.error { color: var(--destructive); }
 .office-run-list-status.success { color: var(--status-complete); }
+.office-run-list-status.cancelled { color: var(--status-error); }
 .office-run-list-copy { display: grid; min-width: 0; gap: 3px; }
 .office-run-list-copy strong { overflow: hidden; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .office-run-list-copy small { overflow: hidden; color: var(--muted-foreground); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
@@ -552,11 +553,29 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .office-state-pill.WAITING_USER, .office-state-pill.WAITING_APPROVAL { color: var(--status-waiting); border-color: color-mix(in srgb, var(--status-waiting) 45%, var(--border)); }
 .office-state-pill.error { color: var(--destructive); border-color: color-mix(in srgb, var(--destructive) 48%, var(--border)); }
 .office-state-pill.success { color: var(--status-complete); border-color: color-mix(in srgb, var(--status-complete) 40%, var(--border)); }
+.office-state-pill.cancelled { color: var(--status-error); border-color: color-mix(in srgb, var(--status-error) 38%, var(--border)); }
 .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .office-new-run-drawer { width: min(560px, 100%); }
 .office-new-run-intro { margin: -4px 0 20px; color: var(--muted-foreground); font-size: 13px; line-height: 1.5; }
 .office-new-run-intro p { margin: 0; }
 .office-run-form { display: grid; gap: 16px; }
+.office-choice-fieldset { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.office-choice-fieldset legend { display: flex; align-items: center; gap: 6px; padding: 0; color: var(--secondary-foreground); font-size: 12px; font-weight: 600; }
+.office-choice-fieldset legend svg { color: var(--primary); }
+.office-choice-fieldset legend em { color: var(--muted-foreground); font-size: 10px; font-style: normal; font-weight: 400; }
+.office-choice-hint { margin: -1px 0 2px; color: var(--muted-foreground); font-size: 11px; line-height: 1.4; }
+.office-choice-list { display: grid; gap: 7px; max-height: 220px; margin: 0; padding: 2px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border); border-radius: var(--radius-md-value); background: color-mix(in srgb, var(--background) 78%, var(--card)); scrollbar-color: var(--border-strong) transparent; }
+.office-leader-list { max-height: 246px; }
+.office-choice { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 9px; width: 100%; min-height: 51px; padding: 8px 9px; border: 1px solid transparent; border-radius: var(--radius-sm-value); color: var(--foreground); background: var(--card); text-align: left; }
+.office-choice:hover, .office-choice:focus-visible, .office-choice.active { border-color: color-mix(in srgb, var(--primary) 48%, var(--border)); background: color-mix(in srgb, var(--primary) 7%, var(--card)); }
+.office-choice.active { box-shadow: inset 2px 0 0 var(--primary); }
+.office-choice-icon { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm-value); background: var(--secondary); }
+.office-choice-copy { display: grid; min-width: 0; gap: 3px; }
+.office-choice-copy strong, .office-choice-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.office-choice-copy strong { font-size: 12px; font-weight: 600; }
+.office-choice-copy small { color: var(--muted-foreground); font-size: 10px; line-height: 1.35; }
+.office-choice > svg { color: var(--primary); }
+.office-choice-error { color: var(--destructive); font-size: 11px; font-weight: 500; }
 .office-form-field { display: grid; gap: 7px; color: var(--secondary-foreground); font-size: 12px; font-weight: 600; }
 .office-form-field > span { display: flex; align-items: center; gap: 6px; }
 .office-form-field > span svg { color: var(--primary); }
@@ -568,6 +587,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .office-form-field small { color: var(--destructive); font-size: 11px; font-weight: 500; }
 .office-run-form-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding-top: 4px; }
 .office-run-form-actions .primary-button, .office-run-form-actions .secondary-button { min-height: 42px; }
+.office-cancel-confirmation { display: grid; gap: 11px; margin-top: 13px; padding: 13px; border: 1px solid color-mix(in srgb, var(--status-error) 48%, var(--border)); border-radius: var(--radius-md-value); background: color-mix(in srgb, var(--status-error) 6%, var(--card)); }
+.office-cancel-confirmation strong { color: var(--status-error); font-size: 12px; }
+.office-cancel-confirmation p { margin: 4px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.4; }
+.office-cancel-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.office-cancel-actions .primary-button, .office-cancel-actions .secondary-button { min-height: 38px; font-size: 11px; }
+.office-actions .danger-button { border-color: color-mix(in srgb, var(--status-error) 42%, var(--border)); }
+.office-cancel-actions .primary-button.danger-button { color: #fff; background: var(--status-error); }
+.office-cancelled-note { display: flex; align-items: flex-start; gap: 7px; margin: 13px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.45; }
+.office-cancelled-note svg { flex: 0 0 auto; color: var(--status-error); }
 .office-stepper { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 14px 0 18px; }
 .office-stepper > div { display: grid; justify-items: center; gap: 6px; padding: 8px 3px; border-top: 2px solid var(--border); color: var(--muted-foreground); }
 .office-stepper > div.active, .office-stepper > div.done { color: var(--primary); border-color: var(--primary); }
@@ -577,6 +605,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .office-next-step .eyebrow { margin-bottom: 0; }
 .office-next-step strong { font-size: 13px; line-height: 1.35; }
 .office-next-step span { color: var(--muted-foreground); font-size: 10px; }
+.office-request-context { display: grid; gap: 10px; margin: 0 0 14px; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-md-value); background: var(--card); }
+.office-request-context div { display: grid; gap: 3px; }
+.office-request-context span { color: var(--muted-foreground); font-size: 10px; font-weight: 600; }
+.office-request-context p { margin: 0; color: var(--secondary-foreground); font-size: 11px; line-height: 1.45; }
 .office-approvals { margin-top: 18px; }
 .office-approvals .platform-section-heading { align-items: center; }
 .office-approval-list { display: grid; gap: 8px; margin-top: 12px; }
@@ -682,6 +714,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .office-state-pill { width: fit-content; }
   .office-event header { display: grid; gap: 3px; }
   .checkpoint-tag { font-size: 9px; }
+  .office-cancel-actions { display: grid; grid-template-columns: 1fr; }
+  .office-cancel-actions .primary-button, .office-cancel-actions .secondary-button { width: 100%; }
 }
 
 .session-menu { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: space-between; gap: 9px; margin-left: auto; }

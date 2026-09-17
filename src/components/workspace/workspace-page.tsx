@@ -157,6 +157,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
   }, [orderScope]);
 
   const allAgents = useMemo(() => [...agents, ...customLeaders], [customLeaders]);
+  const leaders = useMemo(() => allAgents.filter((agent) => agent.kind === "leader"), [allAgents]);
   const currentActivity = useCallback((id: string) => liveActivity[id] ?? allAgents.find((agent) => agent.id === id)?.activity ?? "idle", [allAgents, liveActivity]);
   const visibleOrder = animationOrder ?? optimisticOrder ?? order;
   const entries = useMemo<AgentEntry[]>(() => visibleOrder.map((id) => allAgents.find((agent) => agent.id === id)).filter((agent): agent is Agent => Boolean(agent)).map((agent) => ({ agent, activity: currentActivity(agent.id) })).filter(({ activity }) => {
@@ -246,9 +247,9 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
       officeNotificationEventIds.current.add(event.id);
       addActivity(officeEventToActivity(event, run));
     });
-    const latest = newEvents[newEvents.length - 1].event;
-    setLiveActivity((current) => ({ ...current, social: officeEventToCanvasActivity(latest) }));
-    setNotice(latest.message);
+    const latestUpdate = newEvents[newEvents.length - 1];
+    setLiveActivity((current) => ({ ...current, [latestUpdate.run.leaderId || "social"]: officeEventToCanvasActivity(latestUpdate.event) }));
+    setNotice(latestUpdate.event.message);
     setNotificationPulse(true);
     scheduleAnimationReset(() => setNotificationPulse(false), 900);
   }, [addActivity, office.loading, office.runs, orderScope.userId, scheduleAnimationReset, workspaceScopeId]);
@@ -428,7 +429,7 @@ export default function WorkspacePage({ demoMode = false, initialWorkspace = nul
     <CanvasMenuSheet open={menuOpen} setOpen={setMenuOpen} view={view} setView={setView} canvasState={canvasState} setCanvasState={setCanvasState} theme={theme} setTheme={setTheme} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} onOpenPlatform={() => setPlatformOpen(true)} />
     <CanvasNotificationsDrawer open={notificationsOpen} setOpen={setNotificationsOpen} activities={activityFeed} notice={notice} onOpenActivity={openActivity} />
     <PlatformDrawer open={platformOpen} setOpen={setPlatformOpen} activeWorkspaceId={workspaceScopeId} onWorkspaceChange={changeWorkspace} role={activeRole} workspaceName={workspace.snapshot?.context.name ?? "Estúdio Aurora"} />
-    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} focusedApprovalId={officeApprovalId} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} />
+    <OfficeControlDrawer open={officeOpen} setOpen={setOfficeOpen} snapshot={office.snapshot} focusedApprovalId={officeApprovalId} runs={office.runs} activeRunId={office.activeRunId} loading={office.loading} error={office.error} onDispatch={office.dispatch} onSelectRun={office.selectRun} onCreateRun={office.createRun} onRunScenario={office.runScenario} onRetry={office.retry} leaders={leaders} />
     <QueueDrawer open={queueOpen} setOpen={setQueueOpen} workspaceId={workspaceScopeId} demoMode={demoMode} />
     <KnowledgeDrawer open={knowledgeOpen} setOpen={setKnowledgeOpen} workspaceId={workspaceScopeId} demoMode={demoMode} />
   </main>;

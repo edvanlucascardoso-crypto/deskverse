@@ -1,4 +1,4 @@
-import { AlertTriangle, Check, CheckCircle2, CircleDot, Clock3, ListChecks, Play, Plus, RefreshCw, Send, ShieldCheck, UserRound } from "lucide-react";
+import { AlertTriangle, Check, CheckCircle2, CircleDot, Clock3, ListChecks, Play, Plus, RefreshCw, Send, ShieldCheck, UserRound, X, XCircle } from "lucide-react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { NewOfficeRunDrawer } from "@/components/office/new-office-run-drawer";
 import type { CreateOfficeRunInput, OfficeAction, OfficeSnapshot } from "@/types/office";
 import { officeScenarios } from "@/features/office/office-simulator";
 import { officeApprovalStateLabel, officeCheckpointLabel, officePhaseLabels, officeStateLabel } from "@/features/office/office-domain";
+import type { Agent } from "@/components/canvas/agent-data";
 
 type OfficeControlDrawerProps = {
   open: boolean;
@@ -22,6 +23,7 @@ type OfficeControlDrawerProps = {
   onCreateRun: (input: CreateOfficeRunInput) => void;
   onRunScenario: (actions: OfficeAction[]) => void;
   onRetry: () => void;
+  leaders: Agent[];
 };
 
 const phases = ["entrada", "trabalho", "decisao", "entrega"] as const;
@@ -30,14 +32,22 @@ function timeAgo(value: string) {
   try { return formatDistanceToNowStrict(new Date(value), { addSuffix: true, locale: ptBR }); } catch { return "agora"; }
 }
 
-export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId = null, runs, activeRunId, loading, error, onDispatch, onSelectRun, onCreateRun, onRunScenario, onRetry }: OfficeControlDrawerProps) {
+export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId = null, runs, activeRunId, loading, error, onDispatch, onSelectRun, onCreateRun, onRunScenario, onRetry, leaders }: OfficeControlDrawerProps) {
   const state = snapshot?.state ?? "loading";
   const [userAnswer, setUserAnswer] = useState("");
   const [newRunOpen, setNewRunOpen] = useState(false);
+  const [cancelConfirmationOpen, setCancelConfirmationOpen] = useState(false);
 
   const createRun = (input: CreateOfficeRunInput) => {
     setUserAnswer("");
+    setCancelConfirmationOpen(false);
     onCreateRun(input);
+  };
+
+  const cancelRun = () => {
+    setCancelConfirmationOpen(false);
+    setUserAnswer("");
+    onDispatch({ type: "CANCEL" });
   };
 
   return <Drawer open={open} onOpenChange={setOpen}>
@@ -80,6 +90,11 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId
 
         <div className="office-next-step"><p className="eyebrow">PRÓXIMO PASSO</p><strong>{snapshot.nextStep}</strong><span>Origem: {snapshot.source} · Responsável: {snapshot.responsible}</span></div>
 
+        {(snapshot.parameters || snapshot.notes) && <section className="office-request-context" aria-label="Parâmetros do pedido">
+          {snapshot.parameters && <div><span>Parâmetros</span><p>{snapshot.parameters}</p></div>}
+          {snapshot.notes && <div><span>Contexto adicional</span><p>{snapshot.notes}</p></div>}
+        </section>}
+
         {snapshot.approvals.length > 0 && <section className="office-approvals" aria-labelledby="office-approvals-title">
           <div className="platform-section-heading"><div><p className="eyebrow">DECISÕES</p><h2 id="office-approvals-title"><ShieldCheck size={17} /> Aprovações</h2></div><span className="checkpoint-tag">{snapshot.approvals.filter((approval) => approval.state === "pending").length} pendentes</span></div>
           <p className="office-simulation-note">Cada item mostra exatamente o material, a versão e o motivo da decisão. Aprovar um item não aprova os demais.</p>
@@ -116,7 +131,13 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId
             </div>}
             {state === "error" && <button className="primary-button" type="button" onClick={() => onDispatch({ type: "RETRY" })}><RefreshCw size={16} /> Continuar de onde parou</button>}
             {state === "success" && <button className="secondary-button" type="button" onClick={() => { setUserAnswer(""); setNewRunOpen(true); }}><Plus size={16} /> Preparar novo pedido</button>}
+            {snapshot && state !== "success" && state !== "cancelled" && !cancelConfirmationOpen && <button className="secondary-button danger-button" type="button" onClick={() => setCancelConfirmationOpen(true)}><XCircle size={16} /> Cancelar pedido</button>}
           </div>
+          {cancelConfirmationOpen && <div className="office-cancel-confirmation" role="alert">
+            <div><strong>Cancelar este pedido?</strong><p>O trabalho será interrompido e nenhuma nova etapa será iniciada.</p></div>
+            <div className="office-cancel-actions"><button className="secondary-button" type="button" onClick={() => setCancelConfirmationOpen(false)}><X size={15} /> Voltar</button><button className="primary-button danger-button" type="button" onClick={cancelRun}><XCircle size={15} /> Sim, cancelar pedido</button></div>
+          </div>}
+          {state === "cancelled" && <p className="office-cancelled-note" role="status"><XCircle size={16} /> Este pedido foi cancelado. Você pode criar um novo quando quiser.</p>}
         </section>
 
         <section className="office-scenarios">
@@ -133,6 +154,6 @@ export function OfficeControlDrawer({ open, setOpen, snapshot, focusedApprovalId
         <footer className="office-delivery"><div><p className="eyebrow">ENTREGA</p><strong>{snapshot.delivery.label}</strong></div><span className={snapshot.delivery.status === "ready" ? "service-ready" : "service-pending"}>{snapshot.delivery.status === "ready" ? <><CheckCircle2 size={15} /> Pronta</> : "Protegida até a aprovação"}</span></footer>
       </>}
     </DrawerContent>
-    <NewOfficeRunDrawer open={newRunOpen} setOpen={setNewRunOpen} onCreate={createRun} />
+    <NewOfficeRunDrawer open={newRunOpen} setOpen={setNewRunOpen} onCreate={createRun} leaders={leaders} />
   </Drawer>;
 }

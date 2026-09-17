@@ -14,6 +14,9 @@ function isOfficeSnapshot(value: unknown): value is OfficeSnapshot {
 function normalizeOfficeSnapshot(snapshot: OfficeSnapshot): OfficeSnapshot {
   return {
     ...snapshot,
+    leaderId: typeof snapshot.leaderId === "string" && snapshot.leaderId ? snapshot.leaderId : "social",
+    parameters: typeof snapshot.parameters === "string" ? snapshot.parameters : "",
+    responsible: typeof snapshot.responsible === "string" && snapshot.responsible ? snapshot.responsible : "Marina Social",
     notes: typeof snapshot.notes === "string" ? snapshot.notes : "",
     approvals: Array.isArray(snapshot.approvals) ? snapshot.approvals : [],
     events: snapshot.events.map((event) => ({ ...event, runId: event.runId ?? snapshot.runId })),

@@ -41,7 +41,7 @@ export function officeEventToActivity(event: OfficeEvent, run: OfficeSnapshot): 
     tone: notificationTone[event.type],
     origin: event.source,
     impact: event.impact,
-    agentId: "social",
+    agentId: run.leaderId || "social",
     relatedLabel: run.title,
     officeRunId: run.runId,
     officeApprovalId: event.approvalId,

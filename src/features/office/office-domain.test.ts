@@ -47,4 +47,25 @@ describe("office flow state machine", () => {
     expect(afterSecondDecision.state).toBe("working");
     expect(afterSecondDecision.checkpoint).toBe("approval-approved");
   });
+
+  it("keeps the selected leader on the request and its events", () => {
+    const snapshot = createOfficeSnapshot(now, "office-leader-test", { title: "Relatório semanal", objective: "Preparar um relatório para a reunião de segunda.", leaderId: "insights", leaderName: "Rafael Analista", parameters: "Público prioritário", delivery: "Relatório revisado", notes: "" });
+    const started = reduceOfficeSnapshot(snapshot, { type: "START" }, now);
+
+    expect(started.leaderId).toBe("insights");
+    expect(started.responsible).toBe("Rafael Analista");
+    expect(started.events[0].responsible).toBe("Rafael Analista");
+  });
+
+  it("cancels an active request and its pending approvals", () => {
+    const started = reduceOfficeSnapshot(createOfficeSnapshot(now), { type: "START" }, now);
+    const waiting = reduceOfficeSnapshot(started, { type: "REQUEST_APPROVAL" }, now);
+    const cancelled = reduceOfficeSnapshot(waiting, { type: "CANCEL" }, now);
+
+    expect(cancelled.state).toBe("cancelled");
+    expect(cancelled.checkpoint).toBe("run-cancelled");
+    expect(cancelled.approvals[0].state).toBe("cancelled");
+    expect(cancelled.events[0].type).toBe("run.cancelled");
+    expect(reduceOfficeSnapshot(cancelled, { type: "START" }, now)).toBe(cancelled);
+  });
 });
