@@ -68,7 +68,7 @@ function FilesPanel({ state, setState, demoMode, workspaceId, onRefresh }: { sta
       const payload = await response.json().catch(() => ({})) as { message?: string; status?: string };
       if (!response.ok && response.status !== 202) throw new Error(payload.message || "Não foi possível enviar o arquivo.");
       setDescription("");
-      setNotice(payload.status === "WAITING_USER" ? "Áudio armazenado. A interpretação aguarda a chave da OpenAI e a revisão da transcrição." : "Arquivo armazenado e convertido. Só o Markdown confirmado segue para o RAG.");
+      setNotice(payload.status === "WAITING_USER" ? "Áudio armazenado. A interpretação aguarda o Vercel AI Gateway e a revisão da transcrição." : "Arquivo armazenado e convertido. Só o Markdown confirmado segue para o RAG.");
       await onRefresh();
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Não foi possível enviar o arquivo agora.");
@@ -85,10 +85,10 @@ function FilesPanel({ state, setState, demoMode, workspaceId, onRefresh }: { sta
     const format = detectKnowledgeFormat(file.name, file.type);
     const id = `local-${file.name}-${file.size}`;
     const waitingAudio = format === "audio";
-    const document: KnowledgeDocument = { id, workspaceId: state.onboarding.workspaceId, name: file.name, mimeType: file.type || "application/octet-stream", format, size: file.size, checksum: "sha256:calculado-no-worker", origin: "Upload local", description: description.trim() || undefined, processingStatus: waitingAudio ? "WAITING_USER" : "NORMALIZING", processingError: waitingAudio ? "Configure OPENAI_API_KEY para usar o Whisper e revisar a transcrição." : undefined, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    const document: KnowledgeDocument = { id, workspaceId: state.onboarding.workspaceId, name: file.name, mimeType: file.type || "application/octet-stream", format, size: file.size, checksum: "sha256:calculado-no-worker", origin: "Upload local", description: description.trim() || undefined, processingStatus: waitingAudio ? "WAITING_USER" : "NORMALIZING", processingError: waitingAudio ? "Configure AI_GATEWAY_API_KEY ou autenticação OIDC da Vercel para usar o Whisper e revisar a transcrição." : undefined, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     setState((current) => ({ ...current, documents: [document, ...current.documents] }));
     setDescription("");
-    if (waitingAudio) setNotice("Áudio armazenado. A interpretação aguarda a chave da OpenAI e não aparece no RAG antes da revisão.");
+    if (waitingAudio) setNotice("Áudio armazenado. A interpretação aguarda o Vercel AI Gateway e não aparece no RAG antes da revisão.");
     else {
       setNotice(`${formatLabels[format]} confirmado. O arquivo só será indexado depois da normalização.`);
       window.setTimeout(() => setState((current) => updateDocument(current, id, { processingStatus: "READY", processingError: undefined, updatedAt: new Date().toISOString() })), 450);

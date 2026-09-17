@@ -8,7 +8,7 @@ Configuração de serviços: [EXTERNAL_SERVICES.md](EXTERNAL_SERVICES.md).
 
 `COMPLETE_WITH_INTEGRATION_REQUIREMENTS` no corte de 16/09/2026. As sete sub sprints foram executadas em ordem: upload e storage, onboarding, conversão, RAG em PostgreSQL/pgvector, conflitos e perfil de trabalho.
 
-O caminho obrigatório ficou explícito e implementado: original preservado no UploadThing → extração/transcrição → correção de áudio no `gpt-5.6-luna` com raciocínio `medium` → Markdown canônico (ou CSV derivado + Markdown tabular para planilhas) → chunks estruturais → embeddings → pgvector. Áudio sem `OPENAI_API_KEY` permanece em `WAITING_USER` e não gera evidência de RAG.
+O caminho obrigatório ficou explícito e implementado: original preservado no UploadThing → extração/transcrição → Whisper `openai/whisper-1` pelo Vercel AI Gateway → correção de áudio no `gpt-5.6-luna` com raciocínio `medium` → Markdown canônico (ou CSV derivado + Markdown tabular para planilhas) → chunks estruturais → embeddings → pgvector. Áudio sem `AI_GATEWAY_API_KEY` e sem OIDC disponível permanece em `WAITING_USER` e não gera evidência de RAG.
 
 O ciclo de vida também está explícito: o workspace pode apagar completamente chunks/embeddings e criar uma nova geração com confirmação obrigatória, ou substituir o RAG de um arquivo pronto sem remover evidências dos demais. Originais, conversões e auditoria não são apagados pela limpeza do índice.
 

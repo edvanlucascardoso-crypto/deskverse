@@ -4,7 +4,7 @@ import { requireServerUser } from "@/lib/auth-session";
 import { can } from "@/lib/permissions/rbac";
 import { getWorkspaceAccess } from "@/features/workspace/platform-workspace-repository";
 import { createDocumentRecord, getDocumentStorageReference, removeDocumentRecord, saveDocumentStorageReference, saveDocumentVersionResult } from "@/features/knowledge/document-repository";
-import { createOpenAiWhisperProvider, createTranscriptPolisher, AudioTranscriptionError } from "@/features/knowledge/audio-transcription";
+import { createVercelAiGatewayWhisperProvider, createTranscriptPolisher, AudioTranscriptionError } from "@/features/knowledge/audio-transcription";
 import { createNodeDocumentConverter } from "@/features/knowledge/node-document-converters";
 import { createDeterministicEmbeddingProvider, createHttpEmbeddingProvider } from "@/features/knowledge/embedding";
 import { createHttpInferenceGateway } from "@/lib/platform/http-inference-gateway";
@@ -54,7 +54,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ wor
     await getOrCreateRagIndex(access.workspaceId);
     const index = process.env.DATABASE_URL ? createPrismaKnowledgeIndex() : createInMemoryKnowledgeIndex();
     const embedding = process.env.INFERENCE_GATEWAY_URL ? createHttpEmbeddingProvider() : createDeterministicEmbeddingProvider();
-    const pipeline = await runDocumentKnowledgePipeline({ ...base, converter: createNodeDocumentConverter(), embeddingProvider: embedding, index, ...(isAudioFormat(format) ? { transcriber: createOpenAiWhisperProvider(), polisher: createTranscriptPolisher(createHttpInferenceGateway()) } : {}) });
+    const pipeline = await runDocumentKnowledgePipeline({ ...base, converter: createNodeDocumentConverter(), embeddingProvider: embedding, index, ...(isAudioFormat(format) ? { transcriber: createVercelAiGatewayWhisperProvider(), polisher: createTranscriptPolisher(createHttpInferenceGateway()) } : {}) });
     const saved = await saveDocumentVersionResult({ documentId: record.document.id, versionId: record.version.id, status: "READY", extractedText: pipeline.extractedText, canonicalMarkdown: pipeline.canonicalMarkdown, derivedCsv: pipeline.derivedCsv, extractionConfidence: pipeline.extractionConfidence, conversionTrace: pipeline.conversionTrace as unknown as import("@prisma/client").Prisma.InputJsonValue });
     await markRagReady({ workspaceId: access.workspaceId, status: "READY", userId: user.id, action: "document_upload" });
     return NextResponse.json({ documentId: record.document.id, versionId: saved.id, status: saved.processingStatus, format, chunks: pipeline.chunks.length, storage: "UploadThing" }, { status: 201 });

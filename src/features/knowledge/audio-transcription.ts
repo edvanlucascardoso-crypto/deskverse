@@ -1,8 +1,10 @@
+import { experimental_transcribe, type TranscriptionResult } from "ai";
+import { createGateway, GatewayAuthenticationError } from "@ai-sdk/gateway";
 import type { InferenceGateway } from "@/lib/platform/contracts";
 import type { TraceContext } from "@/lib/platform/contracts";
 import { trace } from "./knowledge-domain";
 
-export const whisperModel = "whisper-1";
+export const whisperModel = "openai/whisper-1";
 export const transcriptReviewModel = "gpt-5.6-luna";
 export const transcriptReviewReasoning = "medium";
 
@@ -26,23 +28,54 @@ export class AudioTranscriptionError extends Error {
   }
 }
 
-export function createOpenAiWhisperProvider(source: Record<string, string | undefined> = process.env): AudioTranscriptionProvider {
+type GatewayTranscribe = typeof experimental_transcribe;
+
+type VercelWhisperProviderDependencies = {
+  transcribe?: GatewayTranscribe;
+};
+
+function hasGatewayAuthentication(source: Record<string, string | undefined>) {
+  return Boolean(source.AI_GATEWAY_API_KEY || source.VERCEL_OIDC_TOKEN || source.VERCEL === "1");
+}
+
+function missingGatewayAuthenticationError() {
+  return new AudioTranscriptionError(
+    "AI_GATEWAY_AUTH_MISSING",
+    "A transcrição de áudio aguarda a configuração do Vercel AI Gateway (`AI_GATEWAY_API_KEY`) ou a autenticação OIDC da Vercel.",
+    true,
+  );
+}
+
+function gatewayErrorMessage(error: unknown) {
+  return error instanceof Error && error.message.trim()
+    ? error.message
+    : "O Vercel AI Gateway não retornou uma transcrição utilizável.";
+}
+
+export function createVercelAiGatewayWhisperProvider(
+  source: Record<string, string | undefined> = process.env,
+  dependencies: VercelWhisperProviderDependencies = {},
+): AudioTranscriptionProvider {
+  const gateway = createGateway({ apiKey: source.AI_GATEWAY_API_KEY });
+  const transcribe = dependencies.transcribe ?? experimental_transcribe;
+  const model = source.AI_GATEWAY_TRANSCRIPTION_MODEL?.trim() || whisperModel;
+
   return {
-    async transcribe({ name, mimeType, bytes, trace: traceContext }) {
-      const apiKey = source.OPENAI_API_KEY;
-      if (!apiKey) throw new AudioTranscriptionError("OPENAI_KEY_MISSING", "A transcrição de áudio aguarda a configuração da chave da OpenAI.", true);
-      const form = new FormData();
-      form.append("file", new Blob([Buffer.from(bytes)], { type: mimeType || "application/octet-stream" }), name);
-      form.append("model", source.OPENAI_TRANSCRIPTION_MODEL || whisperModel);
-      form.append("response_format", "json");
-      const response = await fetch(source.OPENAI_TRANSCRIPTION_URL || "https://api.openai.com/v1/audio/transcriptions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}` },
-        body: form,
-      });
-      const payload = await response.json().catch(() => ({})) as { text?: string; error?: { message?: string } };
-      if (!response.ok || !payload.text?.trim()) throw new AudioTranscriptionError("WHISPER_FAILED", payload.error?.message || "A OpenAI não retornou uma transcrição utilizável.");
-      return { text: payload.text.trim(), provider: "openai", model: source.OPENAI_TRANSCRIPTION_MODEL || whisperModel };
+    async transcribe({ bytes }) {
+      if (!hasGatewayAuthentication(source) && transcribe === experimental_transcribe) throw missingGatewayAuthenticationError();
+      try {
+        const result: TranscriptionResult = await transcribe({
+          model: gateway.transcriptionModel(model),
+          audio: bytes,
+          maxRetries: 2,
+        });
+        if (!result.text.trim()) throw new AudioTranscriptionError("WHISPER_EMPTY", "O Vercel AI Gateway não retornou uma transcrição utilizável.");
+        return { text: result.text.trim(), provider: "Vercel AI Gateway", model };
+      } catch (error) {
+        if (error instanceof AudioTranscriptionError) throw error;
+        if (GatewayAuthenticationError.isInstance(error) && !source.AI_GATEWAY_API_KEY && !source.VERCEL_OIDC_TOKEN) throw missingGatewayAuthenticationError();
+        throw new AudioTranscriptionError("WHISPER_GATEWAY_FAILED", gatewayErrorMessage(error));
+      }
     },
   };
 }

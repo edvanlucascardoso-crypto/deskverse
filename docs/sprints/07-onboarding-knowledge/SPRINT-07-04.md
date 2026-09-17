@@ -18,8 +18,8 @@ Entregar extração, normalização, falhas parciais e proveniência como uma fa
 - PDF → Markdown canônico. PDF escaneado passa por OCR e mantém a confiança da extração.
 - Word `.docx` → Markdown canônico. Títulos, listas, tabelas e links devem permanecer rastreáveis; `.doc` sem adapter compatível deve falhar de forma recuperável.
 - XLSX/XLS → CSV por planilha → Markdown tabular canônico para chunking e busca. O CSV derivado permanece disponível para download/auditoria.
-- Áudio → texto usando o adapter de transcrição da OpenAI com Whisper. O texto bruto nunca é usado diretamente no RAG: passa pelo `InferenceGateway` com o modelo `gpt-5.6-luna` e raciocínio solicitado `medium` para correção e aprimoramento, preservando a indicação de que o conteúdo é transcrito e revisado.
-- A chamada de Whisper e a revisão de texto devem ficar atrás de adapters; sem `OPENAI_API_KEY` o áudio fica em estado recuperável `WAITING_USER`/`FAILED` com próximo passo explícito. Testes locais podem usar um provider fake e não fazem chamada externa.
+- Áudio → texto usando o Vercel AI Gateway com o modelo `openai/whisper-1`. O texto bruto nunca é usado diretamente no RAG: passa pelo `InferenceGateway` com o modelo `gpt-5.6-luna` e raciocínio solicitado `medium` para correção e aprimoramento, preservando a indicação de que o conteúdo é transcrito e revisado.
+- A chamada de Whisper e a revisão de texto devem ficar atrás de adapters; sem `AI_GATEWAY_API_KEY` e sem OIDC disponível o áudio fica em estado recuperável `WAITING_USER`/`FAILED` com próximo passo explícito. O aplicativo não chama diretamente `/v1/audio/transcriptions` da OpenAI. Testes locais podem usar um provider fake e não fazem chamada externa.
 
 - PDF, DOCX, PPTX, XLSX, TXT e HTML passam por um `DocumentNormalizer` atrás de adapter, sem amarrar o produto a uma biblioteca de conversão.
 - Para PDFs, preservar página, título, hierarquia, listas, tabelas, links e imagens com referência; PDF escaneado entra em OCR e mantém a indicação de confiança.
