@@ -32,7 +32,7 @@ REDIS_URL=
 UPLOADTHING_TOKEN=
 AI_GATEWAY_API_KEY=
 AI_GATEWAY_TRANSCRIPTION_MODEL=openai/whisper-1
-INFERENCE_GATEWAY_URL=
+INFERENCE_GATEWAY_URL= (opcional)
 ```
 
 O worker deve receber apenas referências assinadas e payload mínimo. Deve persistir estado e checksum no Neon antes de avançar a etapa. O código deve usar `AssetStorage`, sem espalhar URLs ou SDK do UploadThing pela normalização, OCR ou indexação, para permitir a migração posterior para o Pydio sem reprocessar documentos.
