@@ -1,6 +1,6 @@
 import { experimental_transcribe, type TranscriptionResult } from "ai";
 import { describe, expect, it, vi } from "vitest";
-import { AudioTranscriptionError, createVercelAiGatewayWhisperProvider, whisperModel } from "./audio-transcription";
+import { createVercelAiGatewayWhisperProvider, whisperModel } from "./audio-transcription";
 
 const trace = { traceId: "trace-audio", workspaceId: "workspace-a" };
 
@@ -34,7 +34,7 @@ describe("Vercel AI Gateway Whisper provider", () => {
   it("puts audio in WAITING_USER when Gateway authentication is unavailable", async () => {
     const provider = createVercelAiGatewayWhisperProvider({});
 
-    await expect(provider.transcribe(input())).rejects.toMatchObject<AudioTranscriptionError>({
+    await expect(provider.transcribe(input())).rejects.toMatchObject({
       code: "AI_GATEWAY_AUTH_MISSING",
       waitingForUser: true,
     });
